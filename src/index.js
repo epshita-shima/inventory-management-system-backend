@@ -30,9 +30,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: false}))
 app.use("/uploads", express.static("uploads"));
 const port = 5000;
-app.use(bodyParser())
 app.use(dynamicFields);
 
 const uri = process.env.MONGO_URI;

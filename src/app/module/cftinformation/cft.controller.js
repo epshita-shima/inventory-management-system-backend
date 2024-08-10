@@ -11,11 +11,15 @@ const getCFTInfoController = async (req, res, next) => {
 const insertCFTInfoController = async (req, res, next) => {
 
   try {
-    console.log('req.body:', req.body);
+    const data = Array.isArray(req.body) ? req.body[0] : req.body;
+
+    const { makeBy, makeDate, updateBy, updateDate, detailsData } = data;
+  
+    console.log(makeBy, makeDate, updateBy, updateDate, detailsData);
     console.log('req.files:', req.files);
 
-    const data = req.body;
-    const files = req.files;
+    // const data = req.body;
+    // const files = req.files;
 
     // const detailsData = JSON.parse(data.detailsData).map((detail, index) => ({
     //   itemId: detail.itemId,
