@@ -6,8 +6,8 @@ const DetailsDataSchema = new Schema({
   receipe: { type: String, required: true },
   materialUsed: { type: Number, required: true },
   asPerRatio: { type: Number, required: true },
-  excess: { type: Number, required: true },
-  less: { type: Number, required: true },
+  excess: { type: Number },
+  less: { type: Number },
 });
 
 const ProductionInfoSchema = new Schema({
