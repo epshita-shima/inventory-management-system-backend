@@ -8,6 +8,7 @@ const DetailsDataSchema = new Schema({
   asPerRatio: { type: Number, required: true },
   excess: { type: Number },
   less: { type: Number },
+  consumtionStatus:{ type: String, required: true },
 });
 
 const ProductionInfoSchema = new Schema({
@@ -16,19 +17,21 @@ const ProductionInfoSchema = new Schema({
   totalBatch: { type: String, required: true },
   receipeQtyRatio: { type: String, required: true },
   productionItemName: { type: String, required: true },
-  productionQty: { type: String, required: true },
+  productionQty: { type: Number, required: true },
   productionStart: { type: String, required: true },
   productionEnd: { type: String, required: true },
-  totalHour: { type: String, required: true },
-  wasteageQty: { type: String, required: true },
-  expectedProductionQtyPerBatch: { type: String, required: true },
-  expectedProductionQty: { type: String, required: true },
-  excessOrLessProductionQty: { type: String, required: true },
+  totalHour: { type: Number, required: true },
+  wastageQty: { type: Number, required: true },
+  expectedProductionQtyPerBatch: { type: Number, required: true },
+  expectedProductionQty: { type: Number, required: true },
+  excessOrLessProductionQty: { type: Number, required: true },
+  productionStatus:{ type: String, required: true },
   makeBy: { type: String, required: true },
   updateBy: { type: String },
   makeDate: { type: Date, required: true, default: Date.now },
   updateDate: { type: Date },
   detailsData: [DetailsDataSchema],
+
 });
 const ProductionInfoInfoModel = mongoose.model(
   "prodctioninformation",

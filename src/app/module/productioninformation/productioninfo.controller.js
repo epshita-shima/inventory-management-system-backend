@@ -17,8 +17,8 @@ async function insertProductInfoController(req, res) {
     }
   }
   const getFilteredProductionInfoController = async (req, res, next) => {
-    console.log('data',req.body)
-    const {fromDate, toDate } = req.body;
+    console.log('data',req.query)
+    const {fromDate, toDate } = req.query;
   console.log('contoller',fromDate,toDate)
     const filteredProductionData =
       await ProductionInfoService.getFilteredProductionInfoDB(
