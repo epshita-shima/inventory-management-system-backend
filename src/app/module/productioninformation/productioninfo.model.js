@@ -8,7 +8,7 @@ const DetailsDataSchema = new Schema({
   asPerRatio: { type: Number, required: true },
   excess: { type: Number },
   less: { type: Number },
-  consumtionStatus:{ type: String, required: true },
+  consumptionStatus:{ type: String, required: true },
 });
 
 const ProductionInfoSchema = new Schema({
