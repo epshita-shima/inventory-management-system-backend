@@ -4,5 +4,6 @@ const PaymentInfoController = require("./payment.controller");
 
 router.get('/',PaymentInfoController.getPaymentInfoController)
 router.post('/',PaymentInfoController.createPaymentInfoController);
+router.delete('/:id',PaymentInfoController.deletePaymentInfoController);
 
 module.exports=router

@@ -2,6 +2,7 @@ const mongoose =require('mongoose')
 
 const clientInfoSchema=new mongoose.Schema({
         clientName: {type: String,required:true},
+        clientShortName: {type: String,required:true},
         email: {type: String,required:true},
         mobileNo: {type: String,required:true},
         contactPerson: {type: String,required:true},

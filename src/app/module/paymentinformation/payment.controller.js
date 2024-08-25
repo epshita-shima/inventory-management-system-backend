@@ -43,5 +43,15 @@ const createPaymentInfoController = async (req, res, next) => {
     }
   }
 };
+const deletePaymentInfoController = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const paymentInfo = await PaymentInfoService.deletePaymentInfoDB(id);
+    return res.status(200).json(paymentInfo);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
 
-module.exports = { getPaymentInfoController, createPaymentInfoController };
+module.exports = { getPaymentInfoController, createPaymentInfoController,deletePaymentInfoController };
