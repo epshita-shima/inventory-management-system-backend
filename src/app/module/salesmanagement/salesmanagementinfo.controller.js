@@ -48,6 +48,16 @@ const updateInvoiceInformationController = async (req, res) => {
   }
 };
 
+const updateInvoiceStatusController = async (req, res) => {
+  try {
+      const result = await SalesManagementService.updateInvoicePIStatusDB(req.body);
+      return res.status(200).json(result);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 const deleteInvoiceInformationController = async (req, res) => {
   const { id } = req.params;
   try {
@@ -65,5 +75,6 @@ module.exports = {
   insertInvoiceInformationController,
   getInvoiceInformationByIdController,
   updateInvoiceInformationController,
+  updateInvoiceStatusController,
   deleteInvoiceInformationController,
 };

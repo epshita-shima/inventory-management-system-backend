@@ -9,8 +9,6 @@ async function getInvoiceInformationDB() {
   }
 }
 
-
-
 async function insertInvoiceInformationDB(purchaseOrderInfo) {
   console.log(purchaseOrderInfo);
   try {
@@ -55,23 +53,42 @@ async function updateInvoiceInformationDB(id, data) {
   }
 }
 
+async function updateInvoicePIStatusDB(data) {
+  console.log("data", data);
+  try {
+    const updatedStatusData = await SalesManagemnetModel.findByIdAndUpdate(
+      data._id,
+      { isApproved: data.isApproved },
+      { new: true }
+    );
+
+    return updatedStatusData;
+  } catch (error) {
+    console.error("Error updating multiple users:", error);
+    throw new Error("Failed to update multiple data");
+  }
+}
+
 const deleteInvoiceInformationDB = async (id) => {
-    try {
-      const deleteInvoiceInfoData = await SalesManagemnetModel.findByIdAndDelete(id);
-      console.log(deleteInvoiceInfoData, "delete");
-      if (!deleteInvoiceInfoData) {
-        throw new Error("PO info not found");
-      }
-      return deleteInvoiceInfoData;
-    } catch (error) {
-      throw new Error("Internal server error");
+  try {
+    const deleteInvoiceInfoData = await SalesManagemnetModel.findByIdAndDelete(
+      id
+    );
+    console.log(deleteInvoiceInfoData, "delete");
+    if (!deleteInvoiceInfoData) {
+      throw new Error("PO info not found");
     }
-  };
+    return deleteInvoiceInfoData;
+  } catch (error) {
+    throw new Error("Internal server error");
+  }
+};
 
 module.exports = {
   getInvoiceInformationDB,
   insertInvoiceInformationDB,
   getInvoiceInformationByIdDB,
   updateInvoiceInformationDB,
-  deleteInvoiceInformationDB
+  updateInvoicePIStatusDB,
+  deleteInvoiceInformationDB,
 };

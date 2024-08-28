@@ -6,6 +6,7 @@ router.get('/',SalesManagementController.getInvoiceInformationController);
 router.post('/',SalesManagementController.insertInvoiceInformationController);
 router.get('/:id',SalesManagementController.getInvoiceInformationByIdController);
 router.put('/:id',SalesManagementController.updateInvoiceInformationController);
+router.put('/',SalesManagementController.updateInvoiceStatusController);
 router.delete('/:id',SalesManagementController.deleteInvoiceInformationController)
 
 module.exports=router
