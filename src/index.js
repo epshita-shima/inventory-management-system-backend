@@ -60,8 +60,7 @@ mongoose
 // application route
 
 app.use("/userrole", userRoleRoutes);
-app.use("/userrole", userRoleRoutes);
-app.use("/getuserrole", userRoleRoutes);
+
 
 app.use("/menuitems", menuItemRoutes);
 app.use("/menuitems/update", menuItemRoutes);

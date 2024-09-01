@@ -59,6 +59,8 @@ async function updateInvoicePIStatusDB(data) {
     const updatedStatusData = await SalesManagemnetModel.findByIdAndUpdate(
       data._id,
       { isApproved: data.isApproved },
+      { approveBy: data.approveBy },
+      { approveDate: data.approveDate },
       { new: true }
     );
 
