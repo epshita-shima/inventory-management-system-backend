@@ -1,8 +1,8 @@
-const SalesManagemnetModel = require("./salesmanagementinfo.model");
+const SalesManagementModel = require("./salesmanagementinfo.model");
 
 async function getInvoiceInformationDB() {
   try {
-    const salesData = await SalesManagemnetModel.find();
+    const salesData = await SalesManagementModel.find();
     return salesData;
   } catch (error) {
     console.error("Error fetching production data:", error);
@@ -12,15 +12,25 @@ async function getInvoiceInformationDB() {
 async function insertInvoiceInformationDB(purchaseOrderInfo) {
   console.log(purchaseOrderInfo);
   try {
-    return await SalesManagemnetModel.insertMany(purchaseOrderInfo);
+    return await SalesManagementModel.insertMany(purchaseOrderInfo);
   } catch (error) {
     throw new Error("Error inserting items unit: " + error.message);
   }
 }
 
+async function getFilteredInvoiceInfoDB(customerID) {
+  try {
+    const data = await SalesManagementModel.find({ customerID: customerID });
+    return data;
+  } catch (error) {
+    console.error('Error querying data:', error);
+    throw error;
+  }
+}
+
 async function getInvoiceInformationByIdDB(id) {
   try {
-    const singleInvoiceInfo = await SalesManagemnetModel.findById(id);
+    const singleInvoiceInfo = await SalesManagementModel.findById(id);
     console.log(singleInvoiceInfo);
     return singleInvoiceInfo;
   } catch (error) {
@@ -31,7 +41,7 @@ async function getInvoiceInformationByIdDB(id) {
 
 async function updateInvoiceInformationDB(id, data) {
   try {
-    const updateInvoiceInfo = await SalesManagemnetModel.findByIdAndUpdate(
+    const updateInvoiceInfo = await SalesManagementModel.findByIdAndUpdate(
       id,
       { $set: data },
       { new: true }
@@ -53,10 +63,11 @@ async function updateInvoiceInformationDB(id, data) {
   }
 }
 
+
 async function updateInvoicePIStatusDB(data) {
   console.log("data", data);
   try {
-    const updatedStatusData = await SalesManagemnetModel.findByIdAndUpdate(
+    const updatedStatusData = await SalesManagementModel.findByIdAndUpdate(
       data._id,
       { isApproved: data.isApproved },
       { approveBy: data.approveBy },
@@ -73,7 +84,7 @@ async function updateInvoicePIStatusDB(data) {
 
 const deleteInvoiceInformationDB = async (id) => {
   try {
-    const deleteInvoiceInfoData = await SalesManagemnetModel.findByIdAndDelete(
+    const deleteInvoiceInfoData = await SalesManagementModel.findByIdAndDelete(
       id
     );
     console.log(deleteInvoiceInfoData, "delete");
@@ -89,6 +100,7 @@ const deleteInvoiceInformationDB = async (id) => {
 module.exports = {
   getInvoiceInformationDB,
   insertInvoiceInformationDB,
+  getFilteredInvoiceInfoDB,
   getInvoiceInformationByIdDB,
   updateInvoiceInformationDB,
   updateInvoicePIStatusDB,

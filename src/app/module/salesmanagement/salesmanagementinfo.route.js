@@ -4,6 +4,7 @@ const SalesManagementController = require("./salesmanagementinfo.controller");
 
 router.get('/',SalesManagementController.getInvoiceInformationController);
 router.post('/',SalesManagementController.insertInvoiceInformationController);
+router.get('/filtered',SalesManagementController.getFilteredInvoiceInfoController);
 router.get('/:id',SalesManagementController.getInvoiceInformationByIdController);
 router.put('/:id',SalesManagementController.updateInvoiceInformationController);
 router.put('/',SalesManagementController.updateInvoiceStatusController);
