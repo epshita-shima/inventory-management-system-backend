@@ -20,7 +20,8 @@ async function insertInvoiceInformationDB(purchaseOrderInfo) {
 
 async function getFilteredInvoiceInfoDB(customerID) {
   try {
-    const data = await SalesManagementModel.find({ customerID: customerID });
+    const data = await SalesManagementModel.find({ customerID: customerID
+     });
     return data;
   } catch (error) {
     console.error('Error querying data:', error);
@@ -38,7 +39,30 @@ async function getInvoiceInformationByIdDB(id) {
     throw new Error("Internal server error from service");
   }
 }
-
+async function updateInvoicePISpecialApproveDB( data) {
+  try {
+    const promises = data?.map(async (updateStatus) => {
+      // Update isactive field for each user
+      const updatedStatusData = await SalesManagementModel.findByIdAndUpdate(
+        updateStatus._id,
+        {
+          specialApproveForDelivary: updateStatus.specialApproveForDelivary,
+          specialApproveBy: updateStatus.specialApproveBy,
+          specialApproveDate: updateStatus.specialApproveDate,
+        },
+        { new: true }
+      );
+      return updatedStatusData;
+    });
+    console.log("updatedStatusData",promises)
+    const updatedData = await Promise.all(promises);
+    console.log("updatedData",updatedData)
+    return updatedData;
+  } catch (error) {
+    console.error("Error updating multiple users:", error);
+    throw new Error("Failed to update multiple data");
+  }
+}
 async function updateInvoiceInformationDB(id, data) {
   try {
     const updateInvoiceInfo = await SalesManagementModel.findByIdAndUpdate(
@@ -65,7 +89,14 @@ async function updateInvoiceInformationDB(id, data) {
 
 
 async function updateInvoicePIStatusDB(data) {
-  console.log("data", data);
+  const updatedDataItem = {
+    ...dataItem,
+   
+    isApproved: true,
+    approveBy: approveby, // ensure approveby is defined
+    approveDate: new Date(),
+  };
+
   try {
     const updatedStatusData = await SalesManagementModel.findByIdAndUpdate(
       data._id,
@@ -81,6 +112,7 @@ async function updateInvoicePIStatusDB(data) {
     throw new Error("Failed to update multiple data");
   }
 }
+
 
 const deleteInvoiceInformationDB = async (id) => {
   try {
@@ -104,5 +136,6 @@ module.exports = {
   getInvoiceInformationByIdDB,
   updateInvoiceInformationDB,
   updateInvoicePIStatusDB,
+  updateInvoicePISpecialApproveDB,
   deleteInvoiceInformationDB,
 };

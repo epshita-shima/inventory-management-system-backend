@@ -23,7 +23,7 @@ const purchaseOrderInfoRoute = require("./app/module/purchaseorderinformation/pu
 const goodsReceiveNoteRoute=require('./app/module/goodsreceivenoteinformation/grninfo.route');
 const productionRoute=require('./app/module/productioninformation/productioninfo.route')
 const salesManagementRoute=require('./app/module/salesmanagement/salesmanagementinfo.route')
-
+const paymentMethodInfoRoute=require('./app/module/paymentmethodinformation/paymentmethodinformation.route')
 // const upload = require("./app/module/multer/configuration");
 const dynamicFields=require('./app/module/multer/configuration')
 require("dotenv").config();
@@ -99,6 +99,8 @@ app.use("/purchaseorderinfo", purchaseOrderInfoRoute);
 app.use('/grninfo',goodsReceiveNoteRoute);
 app.use('/production',productionRoute);
 app.use('/invoiceinfo',salesManagementRoute);
+app.use('/payment-method',paymentMethodInfoRoute)
+
 // function errorHandler(err, req, res, next) {
 //   if (res.headersSent) {
 //     return next(err);

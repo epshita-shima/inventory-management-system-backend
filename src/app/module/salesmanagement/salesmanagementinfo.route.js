@@ -6,6 +6,7 @@ router.get('/',SalesManagementController.getInvoiceInformationController);
 router.post('/',SalesManagementController.insertInvoiceInformationController);
 router.get('/filtered',SalesManagementController.getFilteredInvoiceInfoController);
 router.get('/:id',SalesManagementController.getInvoiceInformationByIdController);
+router.put('/special-approve',SalesManagementController.updateInvoiceSpecialPIApproveController);
 router.put('/:id',SalesManagementController.updateInvoiceInformationController);
 router.put('/',SalesManagementController.updateInvoiceStatusController);
 router.delete('/:id',SalesManagementController.deleteInvoiceInformationController)
