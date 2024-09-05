@@ -99,7 +99,7 @@ app.use("/purchaseorderinfo", purchaseOrderInfoRoute);
 app.use('/grninfo',goodsReceiveNoteRoute);
 app.use('/production',productionRoute);
 app.use('/invoiceinfo',salesManagementRoute);
-app.use('/payment-method',paymentMethodInfoRoute)
+app.use('/payment-receive',paymentMethodInfoRoute)
 
 // function errorHandler(err, req, res, next) {
 //   if (res.headersSent) {

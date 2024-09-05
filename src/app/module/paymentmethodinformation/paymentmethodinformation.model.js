@@ -6,12 +6,12 @@ const DetailsDataSchema = new Schema({
   paymentMethod: { type: String, required: true },
   paymentStatus: { type: String, required: true },
   itemId: { type: String, required: true },
-  amount: { type: String, required: true },
-  quantity: { type: String, required: true },
-  bankName: { type: String, required: true },
-  chequeNo: { type: String, required: true },
-  chequeDate: { type: String, required: true },
-  depositeSlipNo: { type: String, required: true },
+  amount: { type: Number, required: true },
+  quantity: { type: Number, required: true },
+  bankId: { type: String, required: true },
+  chequeNo: { type: String },
+  chequeDate: { type: String },
+  depositeSlipNo: { type: String,required:true },
   remarks:{ type: String, required: true },
 });
 
