@@ -20,6 +20,7 @@ const salesManagementInfoSchema = new mongoose.Schema({
   approveBy:{ type: String, },
   approveDate:{ type: Date },
   isApproved:{type: Boolean,required:true},
+  mktPerson:{ type: String, required: true },
   specialApproveForDelivary:{type: Boolean,required:true},
   specialApproveBy:{type: String},
   specialApproveDate:{type: Date},

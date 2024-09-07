@@ -12,7 +12,7 @@ const DetailsDataSchema = new Schema({
   chequeNo: { type: String },
   chequeDate: { type: String },
   depositeSlipNo: { type: String,required:true },
-  remarks:{ type: String, required: true },
+  remarks:{ type: String },
 });
 
 const PaymentMethodInfoSchema = new Schema({
