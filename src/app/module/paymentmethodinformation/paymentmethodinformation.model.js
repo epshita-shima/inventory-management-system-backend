@@ -7,6 +7,7 @@ const DetailsDataSchema = new Schema({
   paymentStatus: { type: String, required: true },
   itemId: { type: String, required: true },
   amount: { type: Number, required: true },
+  unitPrice:{ type: Number, required: true },
   quantity: { type: Number, required: true },
   bankId: { type: String, required: true },
   chequeNo: { type: String },
