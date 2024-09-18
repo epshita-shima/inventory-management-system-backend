@@ -39,6 +39,7 @@ async function getInvoiceInformationByIdDB(id) {
     throw new Error("Internal server error from service");
   }
 }
+
 async function updateInvoicePISpecialApproveDB( data) {
   try {
     const promises = data?.map(async (updateStatus) => {
@@ -63,6 +64,7 @@ async function updateInvoicePISpecialApproveDB( data) {
     throw new Error("Failed to update multiple data");
   }
 }
+
 async function updateInvoiceInformationDB(id, data) {
   try {
     const updateInvoiceInfo = await SalesManagementModel.findByIdAndUpdate(
@@ -89,13 +91,6 @@ async function updateInvoiceInformationDB(id, data) {
 
 
 async function updateInvoicePIStatusDB(data) {
-  const updatedDataItem = {
-    ...dataItem,
-   
-    isApproved: true,
-    approveBy: approveby, // ensure approveby is defined
-    approveDate: new Date(),
-  };
 
   try {
     const updatedStatusData = await SalesManagementModel.findByIdAndUpdate(

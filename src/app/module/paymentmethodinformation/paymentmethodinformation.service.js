@@ -9,6 +9,33 @@ async function getPaymentMethodInfoDB() {
   }
 }
 
+async function getFilteredPaymentMethodInfoDB(clientId, piNumber) {
+  try {
+    const filter = {};
+
+    // Add condition for clientId if provided
+    if (clientId) {
+      filter.clientId = clientId;
+    }
+
+    // Add condition for piNumber if provided
+    if (piNumber) {
+      filter.piNumber = piNumber;
+    }
+
+    // If no filters are provided, return an empty array
+    if (Object.keys(filter).length === 0) {
+      return [];
+    }
+
+    // Query the database with the constructed filter object
+    const data = await PaymentMethodInfoModel.find(filter);
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error fetching payment method info");
+  }
+}
 
 async function insertPaymentMethodInfoDB(paymnetMethodInfo) {
   console.log(paymnetMethodInfo);
@@ -32,11 +59,36 @@ async function getPaymentMethodInfoByIdDB(id) {
 
 async function updatePaymentMethodInfoDB(id, data) {
   try {
-    const updatePaymentMethodInfo = await PaymentMethodInfoModel.findByIdAndUpdate(
-      id,
-      { $set: data },
-      { new: true }
-    );
+    const updatePaymentMethodInfo =
+      await PaymentMethodInfoModel.findByIdAndUpdate(
+        id,
+        { $set: data },
+        { new: true }
+      );
+    if (!updatePaymentMethodInfo) {
+      console.log("No matching document found for ID:", id);
+      return null;
+    }
+
+    if (updatePaymentMethodInfo) {
+      return updatePaymentMethodInfo;
+    } else {
+      console.log("No matching document found for ID:", id);
+      return null;
+    }
+  } catch (error) {
+    console.error(error);
+    throw new Error("Internal server error from service");
+  }
+}
+async function updatePreviousPaymentMethodInfoDB(data) {
+  try {
+    const updatePaymentMethodInfo =
+      await PaymentMethodInfoModel.findByIdAndUpdate(
+        data._id,
+        { $set: data },
+        { new: true }
+      );
     if (!updatePaymentMethodInfo) {
       console.log("No matching document found for ID:", id);
       return null;
@@ -55,22 +107,25 @@ async function updatePaymentMethodInfoDB(id, data) {
 }
 
 const deletePaymentMethodInfoDB = async (id) => {
-    try {
-      const deletePaymentMethodInfoData = await PaymentMethodInfoModel.findByIdAndDelete(id);
-      console.log(deletePaymentMethodInfoData, "delete");
-      if (!deletePaymentMethodInfoData) {
-        throw new Error("PO info not found");
-      }
-      return deletePaymentMethodInfoData;
-    } catch (error) {
-      throw new Error("Internal server error");
+  try {
+    const deletePaymentMethodInfoData =
+      await PaymentMethodInfoModel.findByIdAndDelete(id);
+    console.log(deletePaymentMethodInfoData, "delete");
+    if (!deletePaymentMethodInfoData) {
+      throw new Error("PO info not found");
     }
-  };
+    return deletePaymentMethodInfoData;
+  } catch (error) {
+    throw new Error("Internal server error");
+  }
+};
 
 module.exports = {
   getPaymentMethodInfoDB,
+  getFilteredPaymentMethodInfoDB,
   insertPaymentMethodInfoDB,
   getPaymentMethodInfoByIdDB,
   updatePaymentMethodInfoDB,
-  deletePaymentMethodInfoDB
+  updatePreviousPaymentMethodInfoDB,
+  deletePaymentMethodInfoDB,
 };

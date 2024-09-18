@@ -7,6 +7,17 @@ async function getPaymentMethodInfoController(req, res, next) {
   res.json(paymentMethodInfoData);
 }
 
+const getFilteredPaymentMethodInfoController = async (req, res, next) => {
+  console.log(req.query)
+  const { clientId, piNumber } = req.query;
+  const filteredPaymentReceive =
+    await PaymentMethodInfoService.getFilteredPaymentMethodInfoDB(
+      clientId,
+      piNumber
+    );
+  res.json(filteredPaymentReceive);
+};
+
 async function insertPaymentMethodInfoController(req, res) {
   try {
     const insertedPaymentMethod =
@@ -31,6 +42,7 @@ const getPaymentMethodInfoByIdController = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 const updatePaymentMethodInfoController = async (req, res) => {
   try {
     const { id } = req.params;
@@ -41,6 +53,19 @@ const updatePaymentMethodInfoController = async (req, res) => {
       id,
       updatePaymentMethodInfo
     );
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+const updatePreviousPaymentMethodInfoController = async (req, res) => {
+  try {
+    const updatePaymentMethodInfo = req.body; // Assuming the updated data is sent in the request body
+    console.log("updatedData", updatePaymentMethodInfo);
+    const result =
+      await PaymentMethodInfoService.updatePreviousPaymentMethodInfoDB(
+        updatePaymentMethodInfo
+      );
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -60,8 +85,11 @@ const deletePaymentMethodInfoController = async (req, res) => {
 };
 module.exports = {
   getPaymentMethodInfoController,
+  getFilteredPaymentMethodInfoController,
   insertPaymentMethodInfoController,
   getPaymentMethodInfoByIdController,
+
   updatePaymentMethodInfoController,
+  updatePreviousPaymentMethodInfoController,
   deletePaymentMethodInfoController,
 };

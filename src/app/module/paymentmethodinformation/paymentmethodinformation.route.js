@@ -3,9 +3,11 @@ const router = express.Router();
 const PaymentMethodController = require("./paymentmethodinformation.controller");
 
 router.get('/',PaymentMethodController.getPaymentMethodInfoController);
+router.get('/filtered',PaymentMethodController.getFilteredPaymentMethodInfoController);
 router.post('/',PaymentMethodController.insertPaymentMethodInfoController);
 router.get('/:id',PaymentMethodController.getPaymentMethodInfoByIdController);
 router.put('/:id',PaymentMethodController.updatePaymentMethodInfoController);
-router.delete('/:id',PaymentMethodController.deletePaymentMethodInfoController)
+router.put('/',PaymentMethodController.updatePreviousPaymentMethodInfoController);
+router.delete('/:id',PaymentMethodController.deletePaymentMethodInfoController);
 
 module.exports=router
