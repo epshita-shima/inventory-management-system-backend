@@ -43,21 +43,7 @@ const getPaymentMethodInfoByIdController = async (req, res) => {
   }
 };
 
-const updatePaymentMethodInfoController = async (req, res) => {
-  try {
-    const { id } = req.params;
-    console.log(id);
-    const updatePaymentMethodInfo = req.body; // Assuming the updated data is sent in the request body
-    console.log("updatedData", updatePaymentMethodInfo);
-    const result = await PaymentMethodInfoService.updatePaymentMethodInfoDB(
-      id,
-      updatePaymentMethodInfo
-    );
-    res.status(200).json(result);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+
 const updatePreviousPaymentMethodInfoController = async (req, res) => {
   try {
     const updatePaymentMethodInfo = req.body; // Assuming the updated data is sent in the request body
@@ -73,10 +59,14 @@ const updatePreviousPaymentMethodInfoController = async (req, res) => {
 };
 
 const deletePaymentMethodInfoController = async (req, res) => {
-  const { id } = req.params;
+  const { data } = req.body;
+  if (!data || !Array.isArray(data)) {
+    return res.status(400).json({ message: "Invalid data provided" });
+  }
   try {
     const paymentMethodInfo =
-      await PaymentMethodInfoService.deletePaymentMethodInfoDB(id);
+      await PaymentMethodInfoService.deletePaymentMethodInfoDB(data);
+      console.log('paymentMethodInfo',paymentMethodInfo)
     return res.status(200).json(paymentMethodInfo);
   } catch (error) {
     console.error(error);
@@ -88,8 +78,6 @@ module.exports = {
   getFilteredPaymentMethodInfoController,
   insertPaymentMethodInfoController,
   getPaymentMethodInfoByIdController,
-
-  updatePaymentMethodInfoController,
   updatePreviousPaymentMethodInfoController,
   deletePaymentMethodInfoController,
 };

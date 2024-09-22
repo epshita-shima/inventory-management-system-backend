@@ -57,62 +57,38 @@ async function getPaymentMethodInfoByIdDB(id) {
   }
 }
 
-async function updatePaymentMethodInfoDB(id, data) {
-  try {
-    const updatePaymentMethodInfo =
-      await PaymentMethodInfoModel.findByIdAndUpdate(
-        id,
-        { $set: data },
-        { new: true }
-      );
-    if (!updatePaymentMethodInfo) {
-      console.log("No matching document found for ID:", id);
-      return null;
-    }
-
-    if (updatePaymentMethodInfo) {
-      return updatePaymentMethodInfo;
-    } else {
-      console.log("No matching document found for ID:", id);
-      return null;
-    }
-  } catch (error) {
-    console.error(error);
-    throw new Error("Internal server error from service");
-  }
-}
 async function updatePreviousPaymentMethodInfoDB(data) {
-  console.log("data",data)
+  console.log("data", data);
   try {
     for (const detail of data) {
       await PaymentMethodInfoModel.updateOne(
-        { 'detailsData._id': detail._id }, // Find the document that contains the correct detailsData._id
-        { $set: { 'detailsData.$': detail } } // Update the matching detailsData array item
+        { "detailsData._id": detail._id }, // Find the document that contains the correct detailsData._id
+        { $set: { "detailsData.$": detail } } // Update the matching detailsData array item
       );
     }
-
   } catch (error) {
     console.error(error);
     throw new Error("Internal server error from service");
   }
 }
 
-const deletePaymentMethodInfoDB = async (id) => {
+const deletePaymentMethodInfoDB = async (data) => {
   try {
-    // const deletePaymentMethodInfoData =
-    //   await PaymentMethodInfoModel.findByIdAndDelete(id);
-    // console.log(deletePaymentMethodInfoData, "delete");
-    // if (!deletePaymentMethodInfoData) {
-    //   throw new Error("PO info not found");
-    // }
-    // return deletePaymentMethodInfoData;
-    const deletedPaymentData = await PaymentMethodInfoModel.findByIdAndDelete(id);
-    if(deletedPaymentData==null){
-      const deletedPaymnetDetailsData = await PaymentMethodInfoModel.updateOne({ 'detailsData._id': id }, { $pull: { detailsData: { _id: id } } });
-      return deletedPaymnetDetailsData
-    }
-    else{
-      return deletedPaymentData;
+    console.log("delete data", data);
+    for (const detail of data) {
+      const deletedPaymentData = await PaymentMethodInfoModel.findByIdAndDelete(
+        detail._id
+      );
+      if (deletedPaymentData == null) {
+        const deletedPaymnetDetailsData =
+          await PaymentMethodInfoModel.updateOne(
+            { "detailsData._id": detail._id },
+            { $pull: { detailsData: { _id: detail._id } } }
+          );
+        return deletedPaymnetDetailsData;
+      } else {
+        return deletedPaymentData;
+      }
     }
   } catch (error) {
     throw new Error("Internal server error");
@@ -120,12 +96,16 @@ const deletePaymentMethodInfoDB = async (id) => {
 };
 const deletePreviousPaymentMethodInfoDB = async (id) => {
   try {
-    const deletedPaymentData = await PaymentMethodInfoModel.findByIdAndDelete(id);
-    if(deletedPaymentData==null){
-      const deletedPaymnetDetailsData = await PaymentMethodInfoModel.updateOne({ 'detailsData._id': id }, { $pull: { detailsData: { _id: id } } });
-      return deletedPaymnetDetailsData
-    }
-    else{
+    const deletedPaymentData = await PaymentMethodInfoModel.findByIdAndDelete(
+      id
+    );
+    if (deletedPaymentData == null) {
+      const deletedPaymnetDetailsData = await PaymentMethodInfoModel.updateOne(
+        { "detailsData._id": id },
+        { $pull: { detailsData: { _id: id } } }
+      );
+      return deletedPaymnetDetailsData;
+    } else {
       return deletedPaymentData;
     }
   } catch (error) {
@@ -138,7 +118,6 @@ module.exports = {
   getFilteredPaymentMethodInfoDB,
   insertPaymentMethodInfoDB,
   getPaymentMethodInfoByIdDB,
-  updatePaymentMethodInfoDB,
   updatePreviousPaymentMethodInfoDB,
-  deletePaymentMethodInfoDB
+  deletePaymentMethodInfoDB,
 };

@@ -6,8 +6,7 @@ router.get('/',PaymentMethodController.getPaymentMethodInfoController);
 router.get('/filtered',PaymentMethodController.getFilteredPaymentMethodInfoController);
 router.post('/',PaymentMethodController.insertPaymentMethodInfoController);
 router.get('/:id',PaymentMethodController.getPaymentMethodInfoByIdController);
-router.put('/:id',PaymentMethodController.updatePaymentMethodInfoController);
 router.put('/',PaymentMethodController.updatePreviousPaymentMethodInfoController);
-router.delete('/:id',PaymentMethodController.deletePaymentMethodInfoController);
+router.delete('/',PaymentMethodController.deletePaymentMethodInfoController);
 
 module.exports=router
