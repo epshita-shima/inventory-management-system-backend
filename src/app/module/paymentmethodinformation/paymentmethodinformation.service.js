@@ -61,10 +61,26 @@ async function updatePreviousPaymentMethodInfoDB(data) {
   console.log("data", data);
   try {
     for (const detail of data) {
-      await PaymentMethodInfoModel.updateOne(
-        { "detailsData._id": detail._id }, // Find the document that contains the correct detailsData._id
-        { $set: { "detailsData.$": detail } } // Update the matching detailsData array item
-      );
+      if(detail.isRemoveStatus==true ){
+        if(detail.isParent==true){
+           await PaymentMethodInfoModel.findByIdAndDelete(
+            detail.parentId
+          );
+        }
+        else{
+          await PaymentMethodInfoModel.updateOne(
+            { "detailsData._id": detail._id },
+            { $pull: { detailsData: { _id: detail._id } } }
+          );
+        }
+      }
+      else{
+        await PaymentMethodInfoModel.updateOne(
+          { "detailsData._id": detail._id }, 
+          { $set: { "detailsData.$": detail }} 
+        );
+      }
+     
     }
   } catch (error) {
     console.error(error);

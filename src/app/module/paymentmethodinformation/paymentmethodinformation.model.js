@@ -9,10 +9,10 @@ const DetailsDataSchema = new Schema({
   amount: { type: Number, required: true },
   unitPrice:{ type: Number, required: true },
   quantity: { type: Number, required: true },
-  bankId: { type: String, required: true },
+  bankId: { type: String },
   chequeNo: { type: String },
   chequeDate: { type: String },
-  depositeSlipNo: { type: String,required:true },
+  depositeSlipNo: { type: String },
   remarks:{ type: String },
 });
 
