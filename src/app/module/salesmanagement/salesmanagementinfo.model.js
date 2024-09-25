@@ -8,6 +8,9 @@ const DetailsDataSchema = new Schema({
   quantity: { type: Number, required: true },
   unitPrice: { type: Number },
   totalAmount: { type: Number },
+  specialApproveForDelivary:{type: Boolean,required:true},
+  specialApproveBy:{type: String},
+  specialApproveDate:{type: Date},
 });
 
 const salesManagementInfoSchema = new mongoose.Schema({
@@ -21,9 +24,6 @@ const salesManagementInfoSchema = new mongoose.Schema({
   approveDate:{ type: Date },
   isApproved:{type: Boolean,required:true},
   mktPerson:{ type: String, required: true },
-  specialApproveForDelivary:{type: Boolean,required:true},
-  specialApproveBy:{type: String},
-  specialApproveDate:{type: Date},
   detailsData: [DetailsDataSchema],
   makeBy: { type: String, required: true },
   updateBy: { type: String },

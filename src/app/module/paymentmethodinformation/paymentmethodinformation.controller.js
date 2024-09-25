@@ -9,7 +9,7 @@ async function getPaymentMethodInfoController(req, res, next) {
 
 const getFilteredPaymentMethodInfoController = async (req, res, next) => {
   console.log(req.query)
-  const { clientId, piNumber } = req.query;
+  const { customerID, invoiceNo } = req.query;
   const filteredPaymentReceive =
     await PaymentMethodInfoService.getFilteredPaymentMethodInfoDB(
       clientId,
