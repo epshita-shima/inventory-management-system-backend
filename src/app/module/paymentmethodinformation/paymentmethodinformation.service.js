@@ -12,23 +12,18 @@ async function getPaymentMethodInfoDB() {
 async function getFilteredPaymentMethodInfoDB(clientId, piNumber) {
   try {
     const filter = {};
-
-    // Add condition for clientId if provided
     if (clientId) {
       filter.clientId = clientId;
     }
 
-    // Add condition for piNumber if provided
     if (piNumber) {
       filter.piNumber = piNumber;
     }
 
-    // If no filters are provided, return an empty array
     if (Object.keys(filter).length === 0) {
       return [];
     }
 
-    // Query the database with the constructed filter object
     const data = await PaymentMethodInfoModel.find(filter);
     return data;
   } catch (error) {

@@ -40,30 +40,38 @@ async function getInvoiceInformationByIdDB(id) {
   }
 }
 
-async function updateInvoicePISpecialApproveDB( data) {
+async function updateInvoicePISpecialApproveDB(dataArray) {
   try {
-    const promises = data?.map(async (updateStatus) => {
-      // Update isactive field for each user
-      const updatedStatusData = await SalesManagementModel.findByIdAndUpdate(
-        updateStatus._id,
+    const updatePromises = dataArray.map(async (data) => {
+      const result = await SalesManagementModel.updateOne(
         {
-          specialApproveForDelivary: updateStatus.specialApproveForDelivary,
-          specialApproveBy: updateStatus.specialApproveBy,
-          specialApproveDate: updateStatus.specialApproveDate,
+          "_id": data._id,
+          "detailsData._id": data.detailsData._id // Match the specific detailsData item
         },
-        { new: true }
+        {
+          $set: {
+            'detailsData.$.specialApproveForDelivary': data.detailsData.specialApproveForDelivary,
+            'detailsData.$.specialApproveBy': data.detailsData.specialApproveBy,
+            'detailsData.$.specialApproveDate': data.detailsData.specialApproveDate
+          }
+        }
       );
-      return updatedStatusData;
+      console.log(`Updated document with _id: ${data._id}`, result);
+      return result;
     });
-    console.log("updatedStatusData",promises)
-    const updatedData = await Promise.all(promises);
-    console.log("updatedData",updatedData)
-    return updatedData;
+
+    // Wait for all updates to complete
+    const results = await Promise.all(updatePromises);
+    return results;
   } catch (error) {
-    console.error("Error updating multiple users:", error);
-    throw new Error("Failed to update multiple data");
+    console.error("Error updating special approve fields:", error);
+    throw new Error("Failed to update special approve fields");
   }
 }
+
+
+
+
 
 async function updateInvoiceInformationDB(id, data) {
   try {
