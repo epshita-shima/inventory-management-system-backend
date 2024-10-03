@@ -1,8 +1,8 @@
-const PaymentMethodInfoModel = require("./paymentmethodinformation.model");
+const PaymentReceiveInfoModel = require("./paymentmethodinformation.model");
 
 async function getPaymentMethodInfoDB() {
   try {
-    const productionData = await PaymentMethodInfoModel.find();
+    const productionData = await PaymentReceiveInfoModel.find();
     return productionData;
   } catch (error) {
     console.error("Error fetching production data:", error);
@@ -24,7 +24,7 @@ async function getFilteredPaymentMethodInfoDB(clientId, piNumber) {
       return [];
     }
 
-    const data = await PaymentMethodInfoModel.find(filter);
+    const data = await PaymentReceiveInfoModel.find(filter);
     return data;
   } catch (error) {
     console.error(error);
@@ -33,9 +33,8 @@ async function getFilteredPaymentMethodInfoDB(clientId, piNumber) {
 }
 
 async function insertPaymentMethodInfoDB(paymnetMethodInfo) {
-  console.log(paymnetMethodInfo);
   try {
-    return await PaymentMethodInfoModel.insertMany(paymnetMethodInfo);
+    return await PaymentReceiveInfoModel.insertMany(paymnetMethodInfo);
   } catch (error) {
     throw new Error("Error inserting items unit: " + error.message);
   }
@@ -43,8 +42,7 @@ async function insertPaymentMethodInfoDB(paymnetMethodInfo) {
 
 async function getPaymentMethodInfoByIdDB(id) {
   try {
-    const singlePaymentMethodInfo = await PaymentMethodInfoModel.findById(id);
-    console.log(singlePaymentMethodInfo);
+    const singlePaymentMethodInfo = await PaymentReceiveInfoModel.findById(id);
     return singlePaymentMethodInfo;
   } catch (error) {
     console.error(error);
@@ -53,24 +51,23 @@ async function getPaymentMethodInfoByIdDB(id) {
 }
 
 async function updatePreviousPaymentMethodInfoDB(data) {
-  console.log("data", data);
   try {
     for (const detail of data) {
       if(detail.isRemoveStatus==true ){
         if(detail.isParent==true){
-           await PaymentMethodInfoModel.findByIdAndDelete(
+           await PaymentReceiveInfoModel.findByIdAndDelete(
             detail.parentId
           );
         }
         else{
-          await PaymentMethodInfoModel.updateOne(
+          await PaymentReceiveInfoModel.updateOne(
             { "detailsData._id": detail._id },
             { $pull: { detailsData: { _id: detail._id } } }
           );
         }
       }
       else{
-        await PaymentMethodInfoModel.updateOne(
+        await PaymentReceiveInfoModel.updateOne(
           { "detailsData._id": detail._id }, 
           { $set: { "detailsData.$": detail }} 
         );
@@ -85,14 +82,13 @@ async function updatePreviousPaymentMethodInfoDB(data) {
 
 const deletePaymentMethodInfoDB = async (data) => {
   try {
-    console.log("delete data", data);
     for (const detail of data) {
-      const deletedPaymentData = await PaymentMethodInfoModel.findByIdAndDelete(
+      const deletedPaymentData = await PaymentReceiveInfoModel.findByIdAndDelete(
         detail._id
       );
       if (deletedPaymentData == null) {
         const deletedPaymnetDetailsData =
-          await PaymentMethodInfoModel.updateOne(
+          await PaymentReceiveInfoModel.updateOne(
             { "detailsData._id": detail._id },
             { $pull: { detailsData: { _id: detail._id } } }
           );
@@ -105,13 +101,14 @@ const deletePaymentMethodInfoDB = async (data) => {
     throw new Error("Internal server error");
   }
 };
+
 const deletePreviousPaymentMethodInfoDB = async (id) => {
   try {
-    const deletedPaymentData = await PaymentMethodInfoModel.findByIdAndDelete(
+    const deletedPaymentData = await PaymentReceiveInfoModel.findByIdAndDelete(
       id
     );
     if (deletedPaymentData == null) {
-      const deletedPaymnetDetailsData = await PaymentMethodInfoModel.updateOne(
+      const deletedPaymnetDetailsData = await PaymentReceiveInfoModel.updateOne(
         { "detailsData._id": id },
         { $pull: { detailsData: { _id: id } } }
       );

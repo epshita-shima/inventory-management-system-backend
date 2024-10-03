@@ -6,6 +6,7 @@ const DetailsDataSchema = new Schema({
   paymentMethod: { type: String, required: true },
   paymentStatus: { type: String, required: true },
   itemId: { type: String, required: true },
+  piDetailsId:{ type: String, required: true },
   amount: { type: Number, required: true },
   unitPrice:{ type: Number, required: true },
   quantity: { type: Number, required: true },
@@ -26,7 +27,7 @@ const PaymentMethodInfoSchema = new Schema({
   detailsData: [DetailsDataSchema],
 });
 const PaymentMethodInfoModel = mongoose.model(
-  "paymentMethodinformation",
+  "paymentreceiveinformation",
   PaymentMethodInfoSchema
 );
 module.exports = PaymentMethodInfoModel;
