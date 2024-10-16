@@ -46,13 +46,24 @@ const getInvoiceInformationByIdController = async (req, res) => {
 const updateInvoiceSpecialPIApproveController = async (req, res) => {
   try {
     console.log('controller',req.body)
-      const result = await SalesManagementService.updateInvoicePISpecialApproveDB(req.body);
+      const result = await SalesManagementService.updateSpecialInvoiceApproveDB(req.body);
       return res.status(200).json(result);
   } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+const updateInvoiceShipmentNoController = async (req, res) => {
+  try {
+      const result = await SalesManagementService.updateInvoiceShipmentNoDB(req.body);
+      return res.status(200).json(result);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 const updateInvoiceInformationController = async (req, res) => {
   try {
     const { id } = req.params;
@@ -80,7 +91,6 @@ const updateInvoiceStatusController = async (req, res) => {
 };
 
 
-
 const deleteInvoiceInformationController = async (req, res) => {
   const { id } = req.params;
   try {
@@ -101,5 +111,6 @@ module.exports = {
   updateInvoiceInformationController,
   updateInvoiceStatusController,
   updateInvoiceSpecialPIApproveController,
+  updateInvoiceShipmentNoController,
   deleteInvoiceInformationController,
 };

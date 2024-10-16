@@ -49,7 +49,6 @@ async function updateItemInformationDB(id, data) {
 }
 
 async function updateItemInformationStatusDB( data) {
-  console.log('data',data)
   try {
     const promises = data?.map(async (updateStatus) => {
       // Update isactive field for each user

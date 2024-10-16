@@ -20,6 +20,7 @@ const salesManagementInfoSchema = new mongoose.Schema({
   customerID: { type: String, required: true },
   paymentId: { type: String, required: true },
   currency: { type: String, required: true },
+  shipmentNo:{ type: Number},
   approveBy:{ type: String, },
   approveDate:{ type: Date },
   isApproved:{type: Boolean,required:true},

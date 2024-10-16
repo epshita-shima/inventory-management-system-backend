@@ -1,11 +1,7 @@
 const SerialNoGenerate = require("./serialnogenerate.model");
-const { getNextSerialNumber, getSerialNoDB } = require("./serialnogenerate.service");
+const { getNextSerialNumber, getSerialNoDB,getDoShipmentNoDB } = require("./serialnogenerate.service");
 
 async function insertDocument(documentData) {
-    // const serialNo = await getNextSerialNumber();
-    // documentData.serialNo = serialNo; // Set the serialNo in the document data
-    // const document = new SerialNoGenerate(documentData);
-    // return document.save();
     console.log(documentData.type)
     const serialNo = await getNextSerialNumber(documentData.type);
     const document = new SerialNoGenerate({
@@ -13,7 +9,16 @@ async function insertDocument(documentData) {
       serialNo
     });
     return document.save();
+}
 
+async function insertDoDocumentController(documentData) {
+    console.log(documentData.piNumber)
+    const shipmentNo = await getDoShipmentNoDB(documentData.piNumber);
+    const document = new SerialNoGenerate({
+      ...documentData,
+      shipmentNo
+    });
+    return document.save();
 }
 
 const getSerialNumber=async(req,res,next)=>{
@@ -21,4 +26,5 @@ const getSerialNumber=async(req,res,next)=>{
     const serialNo = await getSerialNoDB(data)
     res.json(serialNo);
 }
-module.exports = { insertDocument,getSerialNumber };
+
+module.exports = { insertDocument,getSerialNumber,insertDoDocumentController};

@@ -26,8 +26,8 @@ const PaymentMethodInfoSchema = new Schema({
   updateDate: { type: Date },
   detailsData: [DetailsDataSchema],
 });
-const PaymentMethodInfoModel = mongoose.model(
+const PaymentReceiveInfoModel = mongoose.model(
   "paymentreceiveinformation",
   PaymentMethodInfoSchema
 );
-module.exports = PaymentMethodInfoModel;
+module.exports = PaymentReceiveInfoModel;

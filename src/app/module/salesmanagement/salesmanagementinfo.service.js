@@ -20,11 +20,10 @@ async function insertInvoiceInformationDB(purchaseOrderInfo) {
 
 async function getFilteredInvoiceInfoDB(customerID) {
   try {
-    const data = await SalesManagementModel.find({ customerID: customerID
-     });
+    const data = await SalesManagementModel.find({ customerID: customerID });
     return data;
   } catch (error) {
-    console.error('Error querying data:', error);
+    console.error("Error querying data:", error);
     throw error;
   }
 }
@@ -40,20 +39,22 @@ async function getInvoiceInformationByIdDB(id) {
   }
 }
 
-async function updateInvoicePISpecialApproveDB(dataArray) {
+async function updateSpecialInvoiceApproveDB(dataArray) {
   try {
     const updatePromises = dataArray.map(async (data) => {
       const result = await SalesManagementModel.updateOne(
         {
-          "_id": data._id,
-          "detailsData._id": data.detailsData._id // Match the specific detailsData item
+          _id: data._id,
+          "detailsData._id": data.detailsData._id, // Match the specific detailsData item
         },
         {
           $set: {
-            'detailsData.$.specialApproveForDelivary': data.detailsData.specialApproveForDelivary,
-            'detailsData.$.specialApproveBy': data.detailsData.specialApproveBy,
-            'detailsData.$.specialApproveDate': data.detailsData.specialApproveDate
-          }
+            "detailsData.$.specialApproveForDelivary":
+              data.detailsData.specialApproveForDelivary,
+            "detailsData.$.specialApproveBy": data.detailsData.specialApproveBy,
+            "detailsData.$.specialApproveDate":
+              data.detailsData.specialApproveDate,
+          },
         }
       );
       console.log(`Updated document with _id: ${data._id}`, result);
@@ -69,9 +70,20 @@ async function updateInvoicePISpecialApproveDB(dataArray) {
   }
 }
 
-
-
-
+async function updateInvoiceShipmentNoDB(data) {
+  try {
+    const updatedStatusData = await SalesManagementModel.findByIdAndUpdate(
+      data._id,
+      { shipmentNo: data.shipmentNo + 1},
+      { new: true }
+    );
+    console.log('data.shipmentNo',updatedStatusData)
+    return updatedStatusData;
+  } catch (error) {
+    console.error("Error updating multiple users:", error);
+    throw new Error("Failed to update multiple data");
+  }
+}
 
 async function updateInvoiceInformationDB(id, data) {
   try {
@@ -97,15 +109,14 @@ async function updateInvoiceInformationDB(id, data) {
   }
 }
 
-
 async function updateInvoicePIStatusDB(data) {
-
   try {
     const updatedStatusData = await SalesManagementModel.findByIdAndUpdate(
       data._id,
       { isApproved: data.isApproved },
       { approveBy: data.approveBy },
       { approveDate: data.approveDate },
+      { shipmentNo: data.shipmentNo + 1},
       { new: true }
     );
 
@@ -139,6 +150,7 @@ module.exports = {
   getInvoiceInformationByIdDB,
   updateInvoiceInformationDB,
   updateInvoicePIStatusDB,
-  updateInvoicePISpecialApproveDB,
+  updateSpecialInvoiceApproveDB,
+  updateInvoiceShipmentNoDB,
   deleteInvoiceInformationDB,
 };

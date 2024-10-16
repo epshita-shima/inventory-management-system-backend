@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const serialNoController=require('./serialnogenerate.controller')
+const serialNoController=require('./serialnogenerate.controller');
+
 router.post('/', async (req, res) => {
+    console.log(req.body)
     try {
         const serialNoData = req.body;
         const serialNo = await serialNoController.insertDocument(serialNoData);
@@ -12,6 +14,6 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.get('/',serialNoController.getSerialNumber)
+router.get('/',serialNoController.getSerialNumber);
 
 module.exports = router;

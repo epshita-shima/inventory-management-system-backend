@@ -1,31 +1,33 @@
 const SerialNoGenerate = require("./serialnogenerate.model");
 
 async function getNextSerialNumber(type) {
-    // const lastDocument = await SerialNoGenerate.findOne().sort({ serialNo: -1 }); // Get the document with the highest serialNo
-    // if (lastDocument) {
-    //     return  lastDocument.serialNo + 1 ; // Increment the last serialNo
-    // } else {
-    //     return 1; // If no document exists, start from 1
-    // }
+  const result = await SerialNoGenerate.findOneAndUpdate(
+    { type },
+    { $inc: { serialNo: 1 } },
+    { new: true, upsert: true }
+  );
+  return result.serialNo;
+}
+
+const getSerialNoDB = async () => {
+  try {
+    const serialNo = await SerialNoGenerate.find().select({
+      __v: 0,
+    });
+    return serialNo;
+  } catch (error) {
+    console.error("Error fetching users:", error);
+  }
+};
+
+const getDoShipmentNoDB = async () => {
     const result = await SerialNoGenerate.findOneAndUpdate(
-        { type },
-        { $inc: { serialNo: 1 } },
+        { piNumber },
+        { $inc: { shipmentNo: 1 } },
         { new: true, upsert: true }
       );
-      console.log(type)
-      return result.serialNo;
-}
+      return result.shipmentNo;
+};
 
-const getSerialNoDB=async()=>{
-    try {
-        const serialNo = await SerialNoGenerate.find().select({
-            __v:0
-        });
-        return serialNo;
-    } catch (error) {
-        // Handle errors
-        console.error("Error fetching users:", error);
-    }
-}
 
-module.exports = { getNextSerialNumber,getSerialNoDB };
+module.exports = { getNextSerialNumber, getSerialNoDB, getDoShipmentNoDB };
