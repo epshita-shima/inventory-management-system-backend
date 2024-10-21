@@ -7,11 +7,13 @@ const DetailsDataSchema = new Schema({
   previousDelivaryQty: { type: String, required: true },
   dueQty: { type: String, required: true },
   deliverQty: { type: String, required: true },
+  piNumber: { type: String, required: true },
 });
 
 const DOInfoSchema = new Schema({
   piNumber: { type: String, required: true },
   doNo: { type: String, required: true },
+  clientId:{ type: String, required: true },
   mushokChallanNo: { type: String },
   deliveryChallanNo: { type: String, required: true },
   shipmentNo:{ type: String, required: true },
@@ -19,7 +21,6 @@ const DOInfoSchema = new Schema({
   approveBy: { type: String},
   approveDate:  { type: Date},
   deliveryStatus:{type:Boolean,required: true},
-  updateDate: null,
   makeBy: { type: String, required: true },
   updateBy: { type: String },
   makeDate: { type: Date, required: true, default: Date.now },
