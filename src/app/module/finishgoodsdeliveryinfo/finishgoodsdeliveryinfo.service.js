@@ -1,5 +1,6 @@
 
 const FinishGoodsDeliveryInfoModel = require("./finishgoodsdeliveryinfo.model");
+const DeliveryOrderInfoModal = require('../deliveryorderinformation/deliveryorderinfo.module')
 async function getFinishGoodsDeliverInfoDB() {
     try {
       const deliveryData = await FinishGoodsDeliveryInfoModel.find({ deliveryStatus: false });
@@ -9,28 +10,16 @@ async function getFinishGoodsDeliverInfoDB() {
     }
   }
   
-  async function getFilteredFinishGoodsDeliverInfoInfoDB(clientId,approveStatus) {
+  async function getFilteredFinishGoodsDeliverInfoDB(clientId,approveStatus) {
     try {
         const filter = {};
         if (clientId) {
           filter.clientId = clientId;
         }
     
-        if (approveStatus !== undefined && approveStatus !== null) {
-            // If approveStatus is string 'true' or 'false', convert to boolean
-            if (approveStatus === 'true') {
-                console.log('true')
-              filter.approveStatus = true;
-            } else if (approveStatus === 'false') {
-                console.log('false')
-              filter.approveStatus = false;
-            } else {
-              // If already a boolean, just use it
-              filter.approveStatus = approveStatus;
-            }
-          }
-      
-          // Log the filter for debugging
+        if (approveStatus) {
+          filter.approveStatus = approveStatus;
+        }
           console.log('filter', filter);
       
         if (Object.keys(filter).length === 0) {
@@ -38,7 +27,7 @@ async function getFinishGoodsDeliverInfoDB() {
         }
         console.log('filter.approveStatus type:', typeof filter.approveStatus);
     
-        const data = await FinishGoodsDeliveryInfoModel.find(filter);
+        const data = await DeliveryOrderInfoModal.find(filter);
         console.log('data',data)
         return data;
       } catch (error) {
@@ -46,9 +35,27 @@ async function getFinishGoodsDeliverInfoDB() {
         throw new Error("Error fetching payment method info");
       }
   }
-
+  async function insertFinishGoodsDeliverInfoDB(finishGoodsDeliveryInfo) {
+    try {
+      return await FinishGoodsDeliveryInfoModel.insertMany(finishGoodsDeliveryInfo);
+    } catch (error) {
+      throw new Error("Error inserting items unit: " + error.message);
+    }
+  }
   
+  async function getFinishGoodsDeliverInfoByIdDB(id) {
+    try {
+      const singleDataInfo = await DeliveryOrderInfoModal.findById(id);
+      return singleDataInfo;
+    } catch (error) {
+      console.error(error);
+      throw new Error("Internal server error from service");
+    }
+  }
+ 
 module.exports = {
     getFinishGoodsDeliverInfoDB,
-    getFilteredFinishGoodsDeliverInfoInfoDB
+    getFilteredFinishGoodsDeliverInfoDB,
+    insertFinishGoodsDeliverInfoDB,
+    getFinishGoodsDeliverInfoByIdDB
   };

@@ -7,6 +7,7 @@ router.get('/filtered',DeliveryOrderController.getFilteredDOApproveInfoControlle
 router.post('/',DeliveryOrderController.insertDOInfoController);
 router.get('/:id',DeliveryOrderController.getDOInfoController);
 router.put('/approve-status',DeliveryOrderController.updateDOApproveStatusController);
+router.put('/delivery-status',DeliveryOrderController.updateDOStatusController);
 router.delete('/:id',DeliveryOrderController.deleteDOInfoController);
 
 module.exports=router

@@ -4,5 +4,7 @@ const FinishGoodsDeliveryController = require("./finishgoodsdeliveryinfo.control
 
 router.get('/',FinishGoodsDeliveryController.getFinishGoodsDeliveryInfoController);
 router.get('/filtered',FinishGoodsDeliveryController.getFilteredFinishGoodsDeliveryInfoController);
+router.post('/',FinishGoodsDeliveryController.insertFinishGoodsDeliverInfoController);
+router.get('/:id',FinishGoodsDeliveryController.getFinishGoodsDeliverInfoByIdController);
 
 module.exports=router

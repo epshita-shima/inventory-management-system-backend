@@ -40,27 +40,41 @@ async function getDOInfoByIdDB(id) {
 
 async function updateDOApproveStatusDB(data) {
   try {
- 
-      const result = await DOInfoModel.updateOne(
-        {
-          _id: data._id,
+    const result = await DOInfoModel.updateOne(
+      {
+        _id: data._id,
+      },
+      {
+        $set: {
+          approveStatus: data.approveStatus,
+          approveBy: data.approveBy,
+          approveDate: data.approveDate,
         },
-        {
-          $set: {
-            approveStatus: data.approveStatus,
-            approveBy: data.approveBy,
-            approveDate: data.approveDate,
-          },
-        }
-      );
-      console.log(`Updated document with _id: ${data._id}`, result);
-      return result;
- 
+      }
+    );
+    console.log(`Updated document with _id: ${data._id}`, result);
+    return result;
+
     // const results = await Promise.all(updatePromises);
     // return results;
   } catch (error) {
     console.error("Error updating special approve fields:", error);
     throw new Error("Failed to update special approve fields");
+  }
+}
+
+async function updateDOStatusDB(data) {
+  try {
+    const updatedStatusData = await DOInfoModel.findByIdAndUpdate(
+      data._id,
+      { deliveryStatus: data.deliveryStatus },
+      { new: true }
+    );
+    console.log("data.delivery status", updatedStatusData);
+    return updatedStatusData;
+  } catch (error) {
+    console.error("Error updating multiple users:", error);
+    throw new Error("Failed to update multiple data");
   }
 }
 
@@ -82,5 +96,6 @@ module.exports = {
   getDOInfoByIdDB,
   getFilteredDOApproveInfoDB,
   updateDOApproveStatusDB,
+  updateDOStatusDB,
   deleteDOInfoDB,
 };

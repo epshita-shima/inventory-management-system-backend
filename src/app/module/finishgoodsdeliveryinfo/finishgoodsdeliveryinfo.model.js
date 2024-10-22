@@ -5,13 +5,19 @@ const DetailsDataSchema = new Schema({
   piDetailsId:{ type: String, required: true},
   itemId: { type: String, required: true },
   deliverQty: { type: String, required: true },
-  piNumber: { type: String, required: true },
+  piId:{ type: String, required: true },
+  doId:{ type: String, required: true },
 });
 
 const FinishGoodsDeliveryInfoSchema = new Schema({
-  piNumber: { type: String, required: true },
-  doNo: { type: String, required: true },
+  finishGoodsDeliveryDate:{ type: Date,required:true},
+  piId:{ type: String, required: true },
+  doId:{ type: String, required: true },
+  driverName:{ type: String, required: true },
+  driverContactNo:{ type: String, required: true },
+  truckNo:{ type: String, required: true },
   clientId:{ type: String, required: true },
+  totalDelivarQty:{ type: Number, required: true },
   approveStatus: { type: Boolean, required: true },
   approveBy: { type: String},
   approveDate:  { type: Date},

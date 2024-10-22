@@ -56,7 +56,15 @@ const updateDOApproveStatusController = async (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
   }
 };
-
+const updateDOStatusController = async (req, res) => {
+  try {
+      const result = await DOInfoService.updateDOStatusDB(req.body);
+      return res.status(200).json(result);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
+};
 const deleteDOInfoController = async (req, res) => {
   const { id } = req.params;
   try {
@@ -70,4 +78,4 @@ const deleteDOInfoController = async (req, res) => {
   }
 };
 
-module.exports = {getDOInfoController,insertDOInfoController,getDOInfoByIdController,getFilteredDOApproveInfoController,updateDOApproveStatusController,deleteDOInfoController}
+module.exports = {getDOInfoController,insertDOInfoController,getDOInfoByIdController,getFilteredDOApproveInfoController,updateDOApproveStatusController,updateDOStatusController,deleteDOInfoController}
