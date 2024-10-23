@@ -8,6 +8,14 @@ async function getDOInfoDB() {
     console.error("Error fetching production data:", error);
   }
 }
+async function getDOAfterDeliverInfoDB() {
+  try {
+    const deliveryData = await DOInfoModel.find({ deliveryStatus: true });
+    return deliveryData;
+  } catch (error) {
+    console.error("Error fetching production data:", error);
+  }
+}
 
 async function getFilteredDOApproveInfoDB(approveStatus) {
   try {
@@ -92,6 +100,7 @@ const deleteDOInfoDB = async (id) => {
 
 module.exports = {
   getDOInfoDB,
+  getDOAfterDeliverInfoDB,
   insertDOInfoInfoDB,
   getDOInfoByIdDB,
   getFilteredDOApproveInfoDB,

@@ -3,6 +3,7 @@ const router = express.Router();
 const DeliveryOrderController = require("./deliveryorderinfo.controlller");
 
 router.get('/',DeliveryOrderController.getDOInfoController);
+router.get('/after-deliver',DeliveryOrderController.getDOAfterDeliverInfoController);
 router.get('/filtered',DeliveryOrderController.getFilteredDOApproveInfoController);
 router.post('/',DeliveryOrderController.insertDOInfoController);
 router.get('/:id',DeliveryOrderController.getDOInfoController);

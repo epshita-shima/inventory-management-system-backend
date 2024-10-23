@@ -7,6 +7,12 @@ async function getDOInfoController(req, res, next) {
       await DOInfoService.getDOInfoDB(data);
     res.json(doInfoData);
   }
+async function getDOAfterDeliverInfoController(req, res, next) {
+    const data = req.body;
+    const doInfoData =
+      await DOInfoService.getDOAfterDeliverInfoDB(data);
+    res.json(doInfoData);
+  }
   
   const getFilteredDOApproveInfoController = async (req, res) => {
     console.log("do approve",req.query)
@@ -78,4 +84,4 @@ const deleteDOInfoController = async (req, res) => {
   }
 };
 
-module.exports = {getDOInfoController,insertDOInfoController,getDOInfoByIdController,getFilteredDOApproveInfoController,updateDOApproveStatusController,updateDOStatusController,deleteDOInfoController}
+module.exports = {getDOInfoController,getDOAfterDeliverInfoController,insertDOInfoController,getDOInfoByIdController,getFilteredDOApproveInfoController,updateDOApproveStatusController,updateDOStatusController,deleteDOInfoController}
