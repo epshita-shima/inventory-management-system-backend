@@ -26,7 +26,7 @@ const salesManagementRoute=require('./app/module/salesmanagement/salesmanagement
 const paymentMethodInfoRoute=require('./app/module/paymentmethodinformation/paymentmethodinformation.route');
 const deliveryOrderInfo=require('./app/module/deliveryorderinformation/deliveryorderinfo.route');
 const finishGoodsDelivery=require('./app/module/finishgoodsdeliveryinfo/finishgoodsdeliveryinfo.route')
-
+const returnDeliveredRoute=require('./app/module/deliveredreturninformation/deliveredreturninformation.route')
 
 // const upload = require("./app/module/multer/configuration");
 const dynamicFields=require('./app/module/multer/configuration')
@@ -105,7 +105,8 @@ app.use('/production',productionRoute);
 app.use('/invoiceinfo',salesManagementRoute);
 app.use('/payment-receive',paymentMethodInfoRoute);
 app.use('/delivery-order',deliveryOrderInfo);
-app.use('/finish-goods-delivery',finishGoodsDelivery)
+app.use('/finish-goods-delivery',finishGoodsDelivery);
+app.use('/return-deliver',returnDeliveredRoute);
 // function errorHandler(err, req, res, next) {
 //   if (res.headersSent) {
 //     return next(err);

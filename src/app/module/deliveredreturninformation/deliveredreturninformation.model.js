@@ -26,7 +26,7 @@ const DeliveredReturnInfoSchema = new Schema({
 });
 
 const DeliveredReturnInfoModel = mongoose.model(
-  "deliveredreturninformation",
+  "returndeliveredinformation",
   DeliveredReturnInfoSchema
 );
 module.exports = DeliveredReturnInfoModel;

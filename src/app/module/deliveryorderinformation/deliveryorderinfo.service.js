@@ -45,6 +45,15 @@ async function getDOInfoByIdDB(id) {
     throw new Error("Internal server error from service");
   }
 }
+async function getDOSingleInfoByIdDB(id) {
+  try {
+    const singleDOInfo = await DOInfoModel.findById(id);
+    return singleDOInfo;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Internal server error from service");
+  }
+}
 
 async function updateDOApproveStatusDB(data) {
   try {
@@ -86,6 +95,53 @@ async function updateDOStatusDB(data) {
   }
 }
 
+// async function updateDOReturnStatusDB(data) {
+//   console.log("do return",data)
+//   try {
+//     // const updatedStatusData = await DOInfoModel.updateOne(
+//     //   { "detailsData._id": detail._id },
+//     //   { $pull: { detailsData: { _id: detail._id } } }
+    
+//     // );
+//     // console.log("data.delivery status", updatedStatusData);
+//     // return updatedStatusData;
+//     for (const detail of data) {
+//           await DOInfoModel.updateOne(
+//             { "detailsData._id": detail._id },
+//             { $pull: { detailsData: { _id: detail._id } } }
+//           );
+//         }
+
+//   } catch (error) {
+//     console.error("Error updating multiple users:", error);
+//     throw new Error("Failed to update multiple data");
+//   }
+// }
+
+async function updateDOReturnStatusDB(data) {
+  console.log("do return", data);
+  try {
+    // Loop through each item in the `detailsData` array
+    for (const detail of data.detailsData) {
+      // Update the `returnStatus` for each item in `detailsData` by its `_id`
+      const updatedStatusData = await DOInfoModel.updateOne(
+        { "detailsData._id": detail._id }, // Match the specific item
+        {
+          $set: {
+            "detailsData.$.returnStatus": detail.returnStatus // Update the `returnStatus` field
+          }
+        }
+      );
+      console.log("Updated delivery status for detail:", detail._id, updatedStatusData);
+    }
+    return { success: true, message: "Return status updated successfully" };
+  } catch (error) {
+    console.error("Error updating return status:", error);
+    throw new Error("Failed to update return status for detailsData");
+  }
+}
+
+
 const deleteDOInfoDB = async (id) => {
   try {
     const deleteDOInfoData = await DOInfoModel.findByIdAndDelete(id);
@@ -103,8 +159,10 @@ module.exports = {
   getDOAfterDeliverInfoDB,
   insertDOInfoInfoDB,
   getDOInfoByIdDB,
+  getDOSingleInfoByIdDB,
   getFilteredDOApproveInfoDB,
   updateDOApproveStatusDB,
   updateDOStatusDB,
+  updateDOReturnStatusDB,
   deleteDOInfoDB,
 };
