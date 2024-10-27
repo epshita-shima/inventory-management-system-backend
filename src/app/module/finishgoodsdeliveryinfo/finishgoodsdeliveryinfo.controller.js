@@ -8,7 +8,6 @@ async function getFinishGoodsDeliveryInfoController(req, res, next) {
 }
 
 const getFilteredFinishGoodsDeliveryInfoController = async (req, res) => {
-  console.log(req.query);
   const { clientId, approveStatus } = req.query;
   const filteredPaymentReceive =
     await FinishGoodsDeliveryInfoService.getFilteredFinishGoodsDeliverInfoDB(
@@ -19,7 +18,6 @@ const getFilteredFinishGoodsDeliveryInfoController = async (req, res) => {
 };
 
 async function insertFinishGoodsDeliverInfoController(req, res) {
-  console.log('req insert',req.body)
   try {
     const insertedFinishGoodsDeliverInfoInfo =
       await FinishGoodsDeliveryInfoService.insertFinishGoodsDeliverInfoDB(
@@ -46,9 +44,20 @@ const getFinishGoodsDeliverInfoByIdController = async (req, res) => {
   }
 };
 
+const updateFinishGoodsReturnStatusController = async (req, res) => {
+  try {
+    const result = await FinishGoodsDeliveryInfoService.updateFinishGoodsReturnStatusDB(req.body);
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   getFinishGoodsDeliveryInfoController,
   getFilteredFinishGoodsDeliveryInfoController,
   insertFinishGoodsDeliverInfoController,
   getFinishGoodsDeliverInfoByIdController,
+  updateFinishGoodsReturnStatusController
 };

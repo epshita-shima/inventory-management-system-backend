@@ -4,5 +4,7 @@ const ReturnDeliveredController = require("./deliveredreturninformation.controll
 
 router.get('/',ReturnDeliveredController.getReturnDeliveredInfoController);
 router.post('/',ReturnDeliveredController.insertReturnDeliveredInfoController);
+router.get('/:id',ReturnDeliveredController.getReturnDeliveredDataInfoByIdController);
+router.delete('/:id',ReturnDeliveredController.deleteReturnDeliveredInfoController);
 
 module.exports=router

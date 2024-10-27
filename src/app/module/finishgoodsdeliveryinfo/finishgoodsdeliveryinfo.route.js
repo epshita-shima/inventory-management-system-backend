@@ -6,5 +6,5 @@ router.get('/',FinishGoodsDeliveryController.getFinishGoodsDeliveryInfoControlle
 router.get('/filtered',FinishGoodsDeliveryController.getFilteredFinishGoodsDeliveryInfoController);
 router.post('/',FinishGoodsDeliveryController.insertFinishGoodsDeliverInfoController);
 router.get('/:id',FinishGoodsDeliveryController.getFinishGoodsDeliverInfoByIdController);
-
+router.put('/return-status',FinishGoodsDeliveryController.updateFinishGoodsReturnStatusController);
 module.exports=router

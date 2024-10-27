@@ -18,7 +18,34 @@ async function insertReturnDeliveredInfoController(req, res) {
     }
 }
 
+const getReturnDeliveredDataInfoByIdController = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const singleReturnDeliverInfo = await ReturnDeliveredInfoService.getReturnDeliveredDataInfoByIdDB(id);
+    if (!singleReturnDeliverInfo) {
+      return res.status(404).json({ message: "DO info not found" });
+    }
+    return res.status(200).json(singleReturnDeliverInfo);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const deleteReturnDeliveredInfoController = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const returnDeliverInfo = await ReturnDeliveredInfoService.deleteReturnDeliveredInfoDB(id);
+    return res.status(200).json(returnDeliverInfo);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
     getReturnDeliveredInfoController,
-    insertReturnDeliveredInfoController
+    insertReturnDeliveredInfoController,
+    getReturnDeliveredDataInfoByIdController,
+    deleteReturnDeliveredInfoController
 }

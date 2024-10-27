@@ -1,9 +1,10 @@
 
 const FinishGoodsDeliveryInfoModel = require("./finishgoodsdeliveryinfo.model");
-const DeliveryOrderInfoModal = require('../deliveryorderinformation/deliveryorderinfo.module')
+const DeliveryOrderInfoModal = require('../deliveryorderinformation/deliveryorderinfo.module');
+
 async function getFinishGoodsDeliverInfoDB() {
     try {
-      const deliveryData = await FinishGoodsDeliveryInfoModel.find({ deliveryStatus: false });
+      const deliveryData = await FinishGoodsDeliveryInfoModel.find();
       return deliveryData;
     } catch (error) {
       console.error("Error fetching production data:", error);
@@ -35,6 +36,7 @@ async function getFinishGoodsDeliverInfoDB() {
         throw new Error("Error fetching payment method info");
       }
   }
+  
   async function insertFinishGoodsDeliverInfoDB(finishGoodsDeliveryInfo) {
     try {
       return await FinishGoodsDeliveryInfoModel.insertMany(finishGoodsDeliveryInfo);
@@ -42,7 +44,7 @@ async function getFinishGoodsDeliverInfoDB() {
       throw new Error("Error inserting items unit: " + error.message);
     }
   }
-  
+
   async function getFinishGoodsDeliverInfoByIdDB(id) {
     try {
       const singleDataInfo = await DeliveryOrderInfoModal.findById(id);
@@ -52,10 +54,41 @@ async function getFinishGoodsDeliverInfoDB() {
       throw new Error("Internal server error from service");
     }
   }
+
+  async function updateFinishGoodsReturnStatusDB(data) {
+    try {
+      const documentId = new mongoose.Types.ObjectId(data._id);
+  
+      for (let item of data.detailsData) {
+        const nestedItemId = new mongoose.Types.ObjectId(item._id);
+  
+        const newReturnStatus = !item.returnStatus;
+        const updatedStatusData = await DeliveryOrderInfoModal.updateOne(
+          { _id: documentId, "detailsData._id": nestedItemId },
+          { $set: { "detailsData.$.returnStatus": newReturnStatus } },
+        );
+  
+        if (updatedStatusData.matchedCount === 0) {
+          console.log(
+            `No document found with _id: ${documentId} and detailsData._id: ${nestedItemId}`
+          );
+        } else {
+          console.log(
+            "Successfully updated returnStatus for detailsData._id:",
+            nestedItemId
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Error updating return status:", error);
+      throw new Error("Failed to update return status for detailsData");
+    }
+  }
  
 module.exports = {
     getFinishGoodsDeliverInfoDB,
     getFilteredFinishGoodsDeliverInfoDB,
     insertFinishGoodsDeliverInfoDB,
-    getFinishGoodsDeliverInfoByIdDB
+    getFinishGoodsDeliverInfoByIdDB,
+    updateFinishGoodsReturnStatusDB
   };

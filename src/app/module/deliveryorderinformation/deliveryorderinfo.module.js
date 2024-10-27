@@ -8,8 +8,7 @@ const DetailsDataSchema = new Schema({
   dueQty: { type: String, required: true },
   deliverQty: { type: String, required: true },
   piId: { type: String, required: true },
-  returnStatus:{ type: Boolean, required: true },
-  returnId:{ type: String },
+  
 });
 
 const DOInfoSchema = new Schema({

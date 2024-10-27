@@ -83,15 +83,7 @@ const updateDOStatusController = async (req, res) => {
   }
 };
 
-const updateDOReturnStatusController = async (req, res) => {
-  try {
-    const result = await DOInfoService.updateDOReturnStatusDB(req.body);
-    return res.status(200).json(result);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
+
 const deleteDOInfoController = async (req, res) => {
   const { id } = req.params;
   try {
@@ -112,6 +104,5 @@ module.exports = {
   getFilteredDOApproveInfoController,
   updateDOApproveStatusController,
   updateDOStatusController,
-  updateDOReturnStatusController,
   deleteDOInfoController,
 };
