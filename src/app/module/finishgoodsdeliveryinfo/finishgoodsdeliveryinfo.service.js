@@ -1,6 +1,7 @@
 
 const FinishGoodsDeliveryInfoModel = require("./finishgoodsdeliveryinfo.model");
 const DeliveryOrderInfoModal = require('../deliveryorderinformation/deliveryorderinfo.module');
+const mongoose = require("mongoose");
 
 async function getFinishGoodsDeliverInfoDB() {
     try {
@@ -26,8 +27,7 @@ async function getFinishGoodsDeliverInfoDB() {
         if (Object.keys(filter).length === 0) {
           return [];
         }
-        console.log('filter.approveStatus type:', typeof filter.approveStatus);
-    
+       
         const data = await DeliveryOrderInfoModal.find(filter);
         console.log('data',data)
         return data;
@@ -56,18 +56,21 @@ async function getFinishGoodsDeliverInfoDB() {
   }
 
   async function updateFinishGoodsReturnStatusDB(data) {
+    console.log('data._id',data)
     try {
       const documentId = new mongoose.Types.ObjectId(data._id);
   
-      for (let item of data.detailsData) {
+      for (let item of data?.detailsData) {
         const nestedItemId = new mongoose.Types.ObjectId(item._id);
-  
+        console.log("nestedItemId", nestedItemId)
         const newReturnStatus = !item.returnStatus;
-        const updatedStatusData = await DeliveryOrderInfoModal.updateOne(
+        console.log('newReturnStatus',newReturnStatus)
+        const updatedStatusData = await FinishGoodsDeliveryInfoModel.updateOne(
           { _id: documentId, "detailsData._id": nestedItemId },
-          { $set: { "detailsData.$.returnStatus": newReturnStatus } },
+          { $set: { "detailsData.$.returnStatus": newReturnStatus } }
+    
         );
-  
+        console.log(updatedStatusData)
         if (updatedStatusData.matchedCount === 0) {
           console.log(
             `No document found with _id: ${documentId} and detailsData._id: ${nestedItemId}`

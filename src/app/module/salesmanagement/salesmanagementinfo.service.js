@@ -1,4 +1,5 @@
 const SalesManagementModel = require("./salesmanagementinfo.model");
+const mongoose = require("mongoose");
 
 async function getInvoiceInformationDB() {
   try {
@@ -74,17 +75,79 @@ async function updateInvoiceShipmentNoDB(data) {
   try {
     const updatedStatusData = await SalesManagementModel.findByIdAndUpdate(
       data._id,
-      { shipmentNo: data.shipmentNo + 1},
+      { shipmentNo: data.shipmentNo + 1 },
       { new: true }
     );
-    console.log('data.shipmentNo',updatedStatusData)
+    console.log("data.shipmentNo", updatedStatusData);
     return updatedStatusData;
   } catch (error) {
     console.error("Error updating multiple users:", error);
     throw new Error("Failed to update multiple data");
   }
 }
+async function updateInvoiceDeliveredQuantityDB(data) {
+  try {
+    // Fetch the current deliveredQty for the matching itemId
+    const existingDoc = await SalesManagementModel.findOne(
+      { _id: data.piId },
+      { detailsData: 1 } // Retrieve the entire detailsData array
+    );
 
+    if (existingDoc && existingDoc.detailsData.length > 0) {
+      // Iterate through data.detailsData to update each item
+      const updatedDetailsData = data.detailsData.map((newDetail) => {
+        const existingDetail = existingDoc.detailsData.find(
+          (detail) => detail.itemId === newDetail.itemId
+        );
+        console.log(existingDetail);
+        if (existingDetail) {
+          // If the item exists, calculate the new deliveredQty
+          const existingDeliveredQty = existingDetail.deliveredQty || 0;
+          const newDeliveredQty = existingDeliveredQty + newDetail.deliverQty;
+          console.log("newDeliveredQty", newDeliveredQty);
+          return {
+            ...existingDetail,
+            deliveredQty: newDeliveredQty, // Update deliveredQty
+          };
+        } else {
+          console.log("newDetail", newDetail);
+          // If the item doesn't exist in the current document, keep the new one as is
+          return newDetail;
+        }
+      });
+
+      // Update the document with the new calculated deliveredQty for each item
+      const result = await SalesManagementModel.updateOne(
+        { _id: data.piId },
+        { $set: { detailsData: updatedDetailsData } }
+      );
+console.log('updatedDetailsData',updatedDetailsData)
+      console.log(
+        `Successfully updated document with _id: ${data.piId}`,
+        result
+      );
+      return result;
+    } else {
+      const result = await SalesManagementModel.updateOne(
+        {
+          _id: data.piId,
+          "detailsData.itemId": data.detailsData.itemId,
+        },
+        {
+          $set: {
+            "detailsData.$.deliveredQty": data.detailsData.deliverQty,
+          },
+        }
+      );
+
+      console.log(`Updated document with _id: ${data.piId}`, result);
+      return result;
+    }
+  } catch (error) {
+    console.error("Error updating delivered quantity:", error);
+    throw new Error("Failed to update delivered quantity");
+  }
+}
 async function updateInvoiceInformationDB(id, data) {
   try {
     const updateInvoiceInfo = await SalesManagementModel.findByIdAndUpdate(
@@ -116,7 +179,7 @@ async function updateInvoicePIStatusDB(data) {
       { isApproved: data.isApproved },
       { approveBy: data.approveBy },
       { approveDate: data.approveDate },
-      { shipmentNo: data.shipmentNo + 1},
+      { shipmentNo: data.shipmentNo + 1 },
       { new: true }
     );
 
@@ -126,7 +189,6 @@ async function updateInvoicePIStatusDB(data) {
     throw new Error("Failed to update multiple data");
   }
 }
-
 
 const deleteInvoiceInformationDB = async (id) => {
   try {
@@ -152,5 +214,6 @@ module.exports = {
   updateInvoicePIStatusDB,
   updateSpecialInvoiceApproveDB,
   updateInvoiceShipmentNoDB,
+  updateInvoiceDeliveredQuantityDB,
   deleteInvoiceInformationDB,
 };

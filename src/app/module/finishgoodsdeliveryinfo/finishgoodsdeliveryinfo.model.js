@@ -19,6 +19,7 @@ const FinishGoodsDeliveryInfoSchema = new Schema({
   driverContactNo:{ type: String, required: true },
   truckNo:{ type: String, required: true },
   clientId:{ type: String, required: true },
+  deliveryChallanNo: { type: String, required: true },
   totalDelivarQty:{ type: Number, required: true },
   approveStatus: { type: Boolean, required: true },
   approveBy: { type: String},

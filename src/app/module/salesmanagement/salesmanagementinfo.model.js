@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const Schema = mongoose.Schema;
 
 const DetailsDataSchema = new Schema({
@@ -11,6 +10,8 @@ const DetailsDataSchema = new Schema({
   specialApproveForDelivary:{type: Boolean,required:true},
   specialApproveBy:{type: String},
   specialApproveDate:{type: Date},
+  deliveredQty:{ type: Number, required: true },
+  returnQty:{ type: Number, required: true },
 });
 
 const salesManagementInfoSchema = new mongoose.Schema({

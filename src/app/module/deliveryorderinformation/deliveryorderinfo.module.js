@@ -5,10 +5,9 @@ const DetailsDataSchema = new Schema({
   piDetailsId:{ type: String, required: true },
   itemId: { type: String, required: true },
   previousDelivaryQty: { type: String, required: true },
-  dueQty: { type: String, required: true },
+  returnQty: { type: String, required: true },
   deliverQty: { type: String, required: true },
   piId: { type: String, required: true },
-  
 });
 
 const DOInfoSchema = new Schema({

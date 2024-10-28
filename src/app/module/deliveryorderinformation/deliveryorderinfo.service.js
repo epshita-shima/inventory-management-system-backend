@@ -1,5 +1,4 @@
 const DOInfoModel = require("./deliveryorderinfo.module");
-const mongoose = require("mongoose");
 
 async function getDOInfoDB() {
   try {
