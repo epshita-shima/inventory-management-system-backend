@@ -44,20 +44,10 @@ const getFinishGoodsDeliverInfoByIdController = async (req, res) => {
   }
 };
 
-const updateFinishGoodsReturnStatusController = async (req, res) => {
-  try {
-    const result = await FinishGoodsDeliveryInfoService.updateFinishGoodsReturnStatusDB(req.body);
-    return res.status(200).json(result);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
 
 module.exports = {
   getFinishGoodsDeliveryInfoController,
   getFilteredFinishGoodsDeliveryInfoController,
   insertFinishGoodsDeliverInfoController,
-  getFinishGoodsDeliverInfoByIdController,
-  updateFinishGoodsReturnStatusController
+  getFinishGoodsDeliverInfoByIdController
 };

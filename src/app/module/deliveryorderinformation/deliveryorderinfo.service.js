@@ -20,7 +20,6 @@ async function getDOAfterDeliverInfoDB() {
 async function getFilteredDOApproveInfoDB(approveStatus) {
   try {
     const data = await DOInfoModel.find({ approveStatus: approveStatus });
-    console.log(data);
     return data;
   } catch (error) {
     console.error("Error querying data:", error);
@@ -88,7 +87,6 @@ async function updateDOStatusDB(data) {
       { deliveryStatus: data.deliveryStatus },
       { new: true }
     );
-    console.log("data.delivery status", updatedStatusData);
     return updatedStatusData;
   } catch (error) {
     console.error("Error updating multiple users:", error);

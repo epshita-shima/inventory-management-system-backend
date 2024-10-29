@@ -11,7 +11,7 @@ async function insertReturnDeliveredInfoController(req, res) {
     console.log('return deliver',req.body)
     try {
       const insertedReturnDeliveredInfo =
-        await ReturnDeliveredInfoService.insertRetunDeliveredInfoDB(req.body);
+        await ReturnDeliveredInfoService.insertReturnDeliveredInfoDB(req.body);
       res.status(200).json(insertedReturnDeliveredInfo);
     } catch (error) {
       res.status(500).json({ error: error.message });

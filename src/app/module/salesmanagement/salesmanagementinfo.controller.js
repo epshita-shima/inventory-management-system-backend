@@ -90,16 +90,7 @@ const updateInvoiceStatusController = async (req, res) => {
   }
 };
 
-const updateInvoiceDeliverQtyController = async (req, res) => {
-  try {
-    console.log('controller',req.body)
-      const result = await SalesManagementService.updateInvoiceDeliveredQuantityDB(req.body);
-      return res.status(200).json(result);
-  } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Internal server error' });
-  }
-};
+
 
 const deleteInvoiceInformationController = async (req, res) => {
   const { id } = req.params;
@@ -122,6 +113,5 @@ module.exports = {
   updateInvoiceStatusController,
   updateInvoiceSpecialPIApproveController,
   updateInvoiceShipmentNoController,
-  updateInvoiceDeliverQtyController,
   deleteInvoiceInformationController,
 };

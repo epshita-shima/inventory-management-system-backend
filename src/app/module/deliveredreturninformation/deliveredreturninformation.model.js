@@ -15,6 +15,7 @@ const DeliveredReturnInfoSchema = new Schema({
   returnDate: { type: Date, required: true },
   piId: { type: String, required: true },
   doId: { type: String, required: true },
+  deliveredId:{ type: String, required: true },
   transferFromClientId:{ type: String, required: true},
   transferToCompanyId:{ type: String, required: true },
   clientId: { type: String, required: true },
