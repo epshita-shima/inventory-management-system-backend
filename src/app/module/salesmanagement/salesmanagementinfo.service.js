@@ -29,6 +29,49 @@ async function getFilteredInvoiceInfoDB(customerID) {
   }
 }
 
+async function getFilteredForReportInvoiceInfoDB(fromDate,toDate,itemId,clientId,piId ) {
+  console.log('report db',fromDate,toDate,itemId,clientId,piId)
+  try {
+    const filter = {};
+    if(fromDate){
+      filter.makeDate = fromDate;
+    }
+    if(toDate){
+      filter.makeDate = toDate;
+    }
+    if(fromDate && toDate){
+      filter.makeDate = { $gte: fromDate, $lte: toDate };
+    }
+    if (itemId) {
+      // Ensure filter.detailsData is defined and is an array
+      if (Array.isArray(filter.detailsData)) {
+          filter.detailsData.forEach((item) => {
+              item.itemId = itemId; // Set itemId for each item in the array
+          });
+      } else {
+          console.error("filter.detailsData is not an array or is undefined");
+      }
+  }
+    if (clientId) {
+      filter.customerID = clientId;
+    }
+
+    if (piId) {
+      filter._id = piId;
+    }
+
+    if (Object.keys(filter).length === 0) {
+      return [];
+    }
+
+    const data = await SalesManagementModel.find(filter);
+    console.log('order data',data)
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error fetching payment method info");
+  }
+}
 async function getInvoiceInformationByIdDB(id) {
   try {
     const singleInvoiceInfo = await SalesManagementModel.findById(id);
@@ -148,6 +191,7 @@ module.exports = {
   getInvoiceInformationDB,
   insertInvoiceInformationDB,
   getFilteredInvoiceInfoDB,
+  getFilteredForReportInvoiceInfoDB,
   getInvoiceInformationByIdDB,
   updateInvoiceInformationDB,
   updateInvoicePIStatusDB,
