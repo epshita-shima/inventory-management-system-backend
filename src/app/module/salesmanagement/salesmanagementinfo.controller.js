@@ -27,17 +27,7 @@ const getFilteredInvoiceInfoController = async (req, res) => {
     res.status(500).json({ error: 'An error occurred while fetching data' });
   }
 };
-const getFiltredForReportInvoiceInfoController = async (req, res) => {
-  const { fromDate,toDate,itemId,clientId,piId } = req.query;
-  console.log('report controller',fromDate,toDate,itemId,clientId,piId) // Assuming customerID is passed as a query parameter
-  try {
-    const filteredData = await SalesManagementService.getFilteredForReportInvoiceInfoDB(fromDate,toDate,itemId,clientId,piId );
-    res.json(filteredData);
-  } catch (error) {
-    console.error('Error in controller:', error);
-    res.status(500).json({ error: 'An error occurred while fetching data' });
-  }
-};
+
 
 const getInvoiceInformationByIdController = async (req, res) => {
   const { id } = req.params;
@@ -119,7 +109,6 @@ module.exports = {
   getInvoiceInformationController,
   insertInvoiceInformationController,
   getFilteredInvoiceInfoController,
-  getFiltredForReportInvoiceInfoController,
   getInvoiceInformationByIdController,
   updateInvoiceInformationController,
   updateInvoiceStatusController,
