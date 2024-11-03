@@ -1,5 +1,6 @@
 const OrderManagementModel = require("../salesmanagement/salesmanagementinfo.model");
 const SalesManagementModel = require("../finishgoodsdeliveryinfo/finishgoodsdeliveryinfo.model");
+const SalesReturnManagementModel=require('../deliveredreturninformation/deliveredreturninformation.model')
 const mongoose = require("mongoose");
 
 async function getFilteredForOrderReportInvoiceInfoDB(
@@ -86,7 +87,51 @@ async function getFilteredForSalesReportInvoiceInfoDB(
     throw new Error("Error fetching payment method info");
   }
 }
+
+async function getFilteredForSalesReturnReportInvoiceInfoDB(
+  fromDate,
+  toDate,
+  clientId,
+  piId,
+  reportStatus
+) {
+  console.log("report db 2", fromDate, toDate, clientId, piId, reportStatus);
+  try {
+    const filter = {};
+    if (fromDate) {
+      filter.
+      returnDate = fromDate;
+    }
+    if (toDate) {
+      filter.returnDate = toDate;
+    }
+    if (fromDate && toDate) {
+      filter.returnDate = { $gte: fromDate, $lte: toDate };
+    }
+
+    if (clientId) {
+      filter.clientId = clientId;
+    }
+
+    if (piId) {
+      filter.piId = piId;
+    }
+
+    if (Object.keys(filter).length === 0) {
+      return [];
+    }
+  
+      const data = await SalesReturnManagementModel.find(filter);
+      console.log("report salesdetailsreport data", data);
+      return data;
+  
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error fetching payment method info");
+  }
+}
 module.exports = {
   getFilteredForOrderReportInvoiceInfoDB,
-  getFilteredForSalesReportInvoiceInfoDB
+  getFilteredForSalesReportInvoiceInfoDB,
+  getFilteredForSalesReturnReportInvoiceInfoDB
 };
