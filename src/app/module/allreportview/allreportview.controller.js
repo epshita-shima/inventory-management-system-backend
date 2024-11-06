@@ -24,21 +24,10 @@ const getFiltredForReportInfoController = async (req, res) => {
           piId,
           reportStatus
         );
+      console.log("details order");
       res.json(filteredData);
     }
-    if (reportStatus == "ordersummaryreport") {
-      filteredData =
-        await ReportManagementService.getFilteredForOrderSummaryReportInfoDB(
-          fromDate,
-          toDate,
-          itemId,
-          clientId,
-          piId,
-          reportStatus
-        );
-      res.json(filteredData);
-    }
-    if (
+     else if (
       reportStatus === "salessummaryreport" ||
       reportStatus === "salesdetailsreport"
     ) {
@@ -52,8 +41,7 @@ const getFiltredForReportInfoController = async (req, res) => {
           reportStatus
         );
       res.json(filteredData);
-    }
-    if (
+    } else if (
       reportStatus === "salesreturnsummaryreport" ||
       reportStatus === "salesreturndetailsreport"
     ) {
@@ -67,7 +55,53 @@ const getFiltredForReportInfoController = async (req, res) => {
           reportStatus
         );
       res.json(filteredData);
+    } else {
+      console.error("Unknown reportStatus:", reportStatus);
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid reportStatus provided" });
     }
+  } catch (error) {
+    console.error("Error in controller:", error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+};
+const getFiltredForOrderSummaryReportInfoController = async (req, res) => {
+  console.log("req query", req.query);
+  const { fromDate, toDate, itemId, clientId, piId, reportStatus } = req.query;
+  try {
+    const filteredData =
+      await ReportManagementService.getFilteredForOrderSummaryReportInfoDB(
+        fromDate,
+        toDate,
+        itemId,
+        clientId,
+        piId,
+        reportStatus
+      );
+    console.log("summary");
+    res.json(filteredData);
+  } catch (error) {
+    console.error("Error in controller:", error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+};
+
+const getFiltredForSalesSummaryReportInfoController = async (req, res) => {
+  console.log("req query", req.query);
+  const { fromDate, toDate, itemId, clientId, piId, reportStatus } = req.query;
+  try {
+    const filteredData =
+      await ReportManagementService.getFilteredForSalesSummaryReportInfoDB(
+        fromDate,
+        toDate,
+        itemId,
+        clientId,
+        piId,
+        reportStatus
+      );
+    console.log("summary");
+    res.json(filteredData);
   } catch (error) {
     console.error("Error in controller:", error);
     res.status(500).json({ error: "An error occurred while fetching data" });
@@ -76,4 +110,6 @@ const getFiltredForReportInfoController = async (req, res) => {
 
 module.exports = {
   getFiltredForReportInfoController,
+  getFiltredForOrderSummaryReportInfoController,
+  getFiltredForSalesSummaryReportInfoController
 };
