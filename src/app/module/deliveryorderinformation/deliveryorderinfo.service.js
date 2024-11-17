@@ -2,7 +2,7 @@ const DOInfoModel = require("./deliveryorderinfo.module");
 
 async function getDOInfoDB() {
   try {
-    const deliveryData = await DOInfoModel.find({ deliveryStatus: false });
+    const deliveryData = await DOInfoModel.find();
     return deliveryData;
   } catch (error) {
     console.error("Error fetching production data:", error);

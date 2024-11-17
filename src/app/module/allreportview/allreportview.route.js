@@ -8,5 +8,6 @@ router.get('/sales-details',ReportManagementController.getFiltredForSalesDetails
 router.get('/sales-summary',ReportManagementController.getFiltredForSalesSummaryReportInfoController);
 router.get('/return-details',ReportManagementController.getFiltredForReturnDetailsReportInfoController);
 router.get('/return-summary',ReportManagementController.getFiltredForReturnSummaryReportInfoController);
+router.get('/combine',ReportManagementController.getFiltredForCombineReportInfoController);
 
 module.exports=router

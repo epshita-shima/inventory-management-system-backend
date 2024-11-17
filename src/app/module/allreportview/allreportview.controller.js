@@ -110,6 +110,24 @@ const getFiltredForReturnSummaryReportInfoController = async (req, res) => {
     res.status(500).json({ error: "An error occurred while fetching data" });
   }
 };
+const getFiltredForCombineReportInfoController = async (req, res) => {
+  const { fromDate, toDate, itemId, clientId, piId, reportStatus } = req.query;
+  try {
+    const filteredData =
+      await ReportManagementService.getFilteredForCombineReport(
+        fromDate,
+        toDate,
+        itemId,
+        clientId,
+        piId,
+        reportStatus
+      );
+    res.json(filteredData);
+  } catch (error) {
+    console.error("Error in controller:", error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+};
 
 module.exports = {
   getFiltredForReportInfoController,
@@ -117,5 +135,6 @@ module.exports = {
   getFiltredForSalesDetailsReportInfoController,
   getFiltredForSalesSummaryReportInfoController,
   getFiltredForReturnDetailsReportInfoController,
-  getFiltredForReturnSummaryReportInfoController
+  getFiltredForReturnSummaryReportInfoController,
+  getFiltredForCombineReportInfoController
 };
