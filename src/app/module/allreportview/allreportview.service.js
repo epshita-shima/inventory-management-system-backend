@@ -559,111 +559,131 @@ async function getFilteredForCombineReport(
     // Date range filter
     if (fromDate && toDate) {
       const dateRange = { $gte: new Date(fromDate), $lte: new Date(toDate) };
-
-      salesFilter.finishGoodsDeliveryDate = dateRange; // Adjusted for Sales Management
-      orderFilter.piDate = dateRange; // Assuming Order Management uses piDate
-      returnFilter.returnDate = dateRange; // For Return Management
+      orderFilter.piDate = dateRange;
     } else if (fromDate) {
       const startDate = { $gte: new Date(fromDate) };
-
-      salesFilter.finishGoodsDeliveryDate = startDate;
       orderFilter.piDate = startDate;
-      returnFilter.returnDate = startDate;
     } else if (toDate) {
       const endDate = { $lte: new Date(toDate) };
-
-      salesFilter.finishGoodsDeliveryDate = endDate;
       orderFilter.piDate = endDate;
-      returnFilter.returnDate = endDate;
     }
 
     // Other filters
     if (clientId) {
-      salesFilter.clientId = clientId;
-      orderFilter.clientId = clientId;
-      returnFilter.clientId = clientId;
+      orderFilter.customerID = clientId;
     }
 
     if (piId) {
-      orderFilter.piId = piId; // Specific to Order Management
+      orderFilter._id = piId; // Specific to Order Management
     }
-
-    const salesInfo = await SalesManagementModel.find(salesFilter).lean();
     const orderInfo = await OrderManagementModel.find(orderFilter).lean();
-    const returnInfo = await ReturnManagementModel.find(returnFilter).lean();
-    if (
-      !Array.isArray(salesInfo) ||
-      !Array.isArray(orderInfo) ||
-      !Array.isArray(returnInfo)
-    ) {
-   console.log('error occured')
-    }
-    const combineByPiId = (salesInfo, orderInfo, returnInfo) => {
-      const combinedData = {};
-    
-      const normalizedOrderInfo = orderInfo.map((item) => ({
-        ...item,
-        piId: item._id, 
-        _id: item._id, 
-      }));
-    
-      const addToCombinedData = (array, type) => {
 
-        array?.forEach((item) => {
-          console.log('item',item)
-          const { piId, detailsData } = item;
+    // function groupByDateAndId(data) {
+    //   const groupedData = {};
+    
+    //   data.forEach(record => {
+    //     const { _id: parentId, piDate, invoiceNo, detailsData } = record;
+    
+    //     detailsData.forEach(detail => {
+    //       const netQuantity = Number(detail.quantity) - Number(detail.deliveredQty) + Number(detail.returnQty);
           
-    console.log('piId',piId);
-    console.log("detailsData",detailsData)
-          if (!piId) {
-            console.log("Missing piId in item", item);
-            return;
+    //       const groupKey = `${piDate || null}-${parentId}`; // Unique key for grouping
+          
+    //       if (!groupedData[groupKey]) {
+    //         groupedData[groupKey] = {
+    //           date: piDate || null,
+    //           _id: parentId,
+    //           piNo: invoiceNo,
+    //           groupedDetails: []
+    //         };
+    //       }
+    
+    //       groupedData[groupKey].groupedDetails.push({
+    //         quantity: detail.quantity,
+    //         deliveredQty: detail.deliveredQty,
+    //         returnQty: detail.returnQty,
+    //         netQuantity: netQuantity
+    //       });
+    //     });
+    //   });
+    
+    //   return Object.values(groupedData);
+    // }
+    
+    // Example Usage
+   
+    function groupAndCalculateTotals(data) {
+      const groupedData = {};
+    
+      data.forEach(record => {
+        const { _id: parentId,customerID, piDate, invoiceNo, detailsData } = record;
+    
+        detailsData.forEach(detail => {
+          let groupKey;
+           if(fromDate && toDate && clientId && piId){
+            groupKey = `${piDate}-${customerID}-${invoiceNo}`; 
+          }
+          else if(fromDate && toDate && itemId){
+            groupKey = `${piDate}-${detail.itemId}`; 
+          }
+          else if(fromDate && toDate && clientId){
+            groupKey = `${piDate}-${customerID}`; 
+          }
+          else if(fromDate && toDate){
+            groupKey = `${piDate}`; 
+          }
+       
+          if (!groupKey) return;
+
+          if (!groupedData[groupKey]) {
+            groupedData[groupKey] = {
+              date: piDate || null,
+              _id: parentId,
+              piNo: invoiceNo,
+              totalQuantity: 0,
+              totalDeliveredQty: 0,
+              totalReturnQty: 0,
+              totalPiAmount:0,
+              piUnitPrice:0,
+              deliveredAvgUnitPrice:0,
+              totalDeliveredAmount:0,
+              returnAvgUnitPrice:0,
+              totalReturnAmount:0,
+            };
           }
     
-          if (!detailsData) {
-            console.log("Missing detailsData in item", item);
-            return;
-          }
+          // Accumulate totals
+          groupedData[groupKey].totalQuantity += Number(detail.quantity);
+          groupedData[groupKey].totalDeliveredQty += Number(detail.deliveredQty);
+          groupedData[groupKey].totalReturnQty += Number(detail.returnQty);
     
-          if (!combinedData[piId]) {
-            combinedData[piId] = {};
-          }
-    
-          detailsData.forEach((detail) => {
-            const { item: itemId } = detail;
-    
-            if (!itemId) {
-              console.log("Missing itemId in detail", detail);
-              return;
-            }
-    
-            if (!combinedData[piId][itemId]) {
-              combinedData[piId][itemId] = {
-                sales: [],
-                orders: [],
-                returns: [],
-              };
-            }
-    
-            console.log(`Adding ${type} for piId ${piId}, itemId ${itemId}`);
-            combinedData[piId][itemId][type].push(item);
-          });
+          groupedData[groupKey].piUnitPrice +=  Number(detail.unitPrice);
+          groupedData[groupKey].totalPiAmount = groupedData[groupKey].totalQuantity * groupedData[groupKey].piUnitPrice;
+          groupedData[groupKey].totalDeliveredAmount = groupedData[groupKey].totalDeliveredQty * groupedData[groupKey].piUnitPrice;
+         
+          groupedData[groupKey].deliveredAvgUnitPrice = groupedData[groupKey].totalDeliveredAmount / groupedData[groupKey].totalDeliveredQty;
+          groupedData[groupKey].totalReturnAmount = groupedData[groupKey].totalReturnQty * groupedData[groupKey].piUnitPrice;
+          groupedData[groupKey].returnAvgUnitPrice = groupedData[groupKey].totalReturnAmount / groupedData[groupKey].totalReturnQty;
         });
-      };
+      });
     
-      // Add data from all sources
-      addToCombinedData(salesInfo, "sales");
-      addToCombinedData(normalizedOrderInfo, "orders");
-      addToCombinedData(returnInfo, "returns");
+      // Calculate netQuantity for each group and convert to array
+      return Object.values(groupedData).map(group => {
+        const netQuantity = group.totalQuantity - group.totalDeliveredQty + group.totalReturnQty;
+        const totalNetAmount = netQuantity * group.piUnitPrice;
+        const netAvgUnitPrice = totalNetAmount / netQuantity;
+        return {
+          ...group,
+          netQuantity: netQuantity,
+          totalNetAmount: totalNetAmount,
+          netAvgUnitPrice: netAvgUnitPrice,
+        };
+      });
+    }
     
-      return combinedData;
-    };
-    
-    // Use the function with your data
-    const combinedData = combineByPiId(salesInfo, orderInfo, returnInfo);
-    
-    console.log(JSON.stringify(combinedData, null, 2));
-    
+    const groupedResult = groupAndCalculateTotals(orderInfo); 
+    return groupedResult
+
   } catch (error) {
     console.error("Error in getFilteredForCombineReport:", error);
     throw error;
