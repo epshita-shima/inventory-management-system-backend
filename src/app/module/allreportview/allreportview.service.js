@@ -551,11 +551,8 @@ async function getFilteredForCombineReport(
   piId
 ) {
   try {
-    // Construct filter based on parameters
-    const salesFilter = {};
     const orderFilter = {};
-    const returnFilter = {};
-
+    console.log("formdate", itemId);
     // Date range filter
     if (fromDate && toDate) {
       const dateRange = { $gte: new Date(fromDate), $lte: new Date(toDate) };
@@ -580,15 +577,15 @@ async function getFilteredForCombineReport(
 
     // function groupByDateAndId(data) {
     //   const groupedData = {};
-    
+
     //   data.forEach(record => {
     //     const { _id: parentId, piDate, invoiceNo, detailsData } = record;
-    
+
     //     detailsData.forEach(detail => {
     //       const netQuantity = Number(detail.quantity) - Number(detail.deliveredQty) + Number(detail.returnQty);
-          
+
     //       const groupKey = `${piDate || null}-${parentId}`; // Unique key for grouping
-          
+
     //       if (!groupedData[groupKey]) {
     //         groupedData[groupKey] = {
     //           date: piDate || null,
@@ -597,7 +594,7 @@ async function getFilteredForCombineReport(
     //           groupedDetails: []
     //         };
     //       }
-    
+
     //       groupedData[groupKey].groupedDetails.push({
     //         quantity: detail.quantity,
     //         deliveredQty: detail.deliveredQty,
@@ -606,84 +603,115 @@ async function getFilteredForCombineReport(
     //       });
     //     });
     //   });
-    
+
     //   return Object.values(groupedData);
     // }
-    
+
     // Example Usage
-   
-    function groupAndCalculateTotals(data) {
+    function groupAndCalculateTotals(data, fromDate, toDate, clientId, piId, itemId) {
       const groupedData = {};
     
-      data.forEach(record => {
-        const { _id: parentId,customerID, piDate, invoiceNo, detailsData } = record;
+      // Filter data if itemId is provided
+      const filteredData = itemId
+        ? data.flatMap((detail) => {
+            if (detail?.detailsData) {
+              const matchedDetails = detail.detailsData.filter(
+                (item) => item.itemId === itemId
+              );
+              if (matchedDetails.length > 0) {
+                return [{ ...detail, detailsData: matchedDetails }];
+              }
+            }
+            return [];
+          })
+        : data;
     
-        detailsData.forEach(detail => {
+      // Iterate over filtered data to group and calculate totals
+      filteredData.forEach((record) => {
+        const { customerID, piDate, invoiceNo, detailsData } = record;
+        const dateOnly = new Date(piDate).toISOString().split("T")[0]; // Extract YYYY-MM-DD
+    
+        detailsData.forEach((detail) => {
+          // Construct the grouping key
           let groupKey;
-           if(fromDate && toDate && clientId && piId){
-            groupKey = `${piDate}-${customerID}-${invoiceNo}`; 
+          if (fromDate && toDate && clientId && piId) {
+            groupKey = `${dateOnly}-${customerID}-${invoiceNo}`;
+          } else if (fromDate && toDate && itemId) {
+            groupKey = `${dateOnly}-${detail.itemId}`;
+          } else if (fromDate && toDate && clientId) {
+            groupKey = `${dateOnly}-${customerID}`;
+          } else if (fromDate && toDate) {
+            groupKey = `${dateOnly}`;
           }
-          else if(fromDate && toDate && itemId){
-            groupKey = `${piDate}-${detail.itemId}`; 
-          }
-          else if(fromDate && toDate && clientId){
-            groupKey = `${piDate}-${customerID}`; 
-          }
-          else if(fromDate && toDate){
-            groupKey = `${piDate}`; 
-          }
-       
+    
           if (!groupKey) return;
-
+    
+          // Initialize group if it doesn't exist
           if (!groupedData[groupKey]) {
             groupedData[groupKey] = {
               date: piDate || null,
-              _id: parentId,
-              piNo: invoiceNo,
-              totalQuantity: 0,
+              totalPIQuantity: 0,
               totalDeliveredQty: 0,
               totalReturnQty: 0,
-              totalPiAmount:0,
-              piUnitPrice:0,
-              deliveredAvgUnitPrice:0,
-              totalDeliveredAmount:0,
-              returnAvgUnitPrice:0,
-              totalReturnAmount:0,
+              totalPiAmount: 0,
+              piUnitPrice: 0,
+              deliveredAvgUnitPrice: 0,
+              totalDeliveredAmount: 0,
+              returnAvgUnitPrice: 0,
+              totalReturnAmount: 0,
             };
           }
     
           // Accumulate totals
-          groupedData[groupKey].totalQuantity += Number(detail.quantity);
-          groupedData[groupKey].totalDeliveredQty += Number(detail.deliveredQty);
-          groupedData[groupKey].totalReturnQty += Number(detail.returnQty);
+          groupedData[groupKey].totalPIQuantity += Number(detail.quantity || 0);
+          groupedData[groupKey].totalDeliveredQty += Number(detail.deliveredQty || 0);
+          groupedData[groupKey].totalReturnQty += Number(detail.returnQty || 0);
+          groupedData[groupKey].totalPiAmount =Number(detail.totalAmount)
+          const unitPrice = Number(detail.unitPrice || 0);
+          groupedData[groupKey].piUnitPrice = Math.round(groupedData[groupKey].totalPiAmount /groupedData[groupKey].totalPIQuantity);  // Assuming consistent unit price
     
-          groupedData[groupKey].piUnitPrice +=  Number(detail.unitPrice);
-          groupedData[groupKey].totalPiAmount = groupedData[groupKey].totalQuantity * groupedData[groupKey].piUnitPrice;
-          groupedData[groupKey].totalDeliveredAmount = groupedData[groupKey].totalDeliveredQty * groupedData[groupKey].piUnitPrice;
          
-          groupedData[groupKey].deliveredAvgUnitPrice = groupedData[groupKey].totalDeliveredAmount / groupedData[groupKey].totalDeliveredQty;
-          groupedData[groupKey].totalReturnAmount = groupedData[groupKey].totalReturnQty * groupedData[groupKey].piUnitPrice;
-          groupedData[groupKey].returnAvgUnitPrice = groupedData[groupKey].totalReturnAmount / groupedData[groupKey].totalReturnQty;
+    
+          groupedData[groupKey].totalDeliveredAmount =
+            groupedData[groupKey].totalDeliveredQty * unitPrice;
+    
+          groupedData[groupKey].deliveredAvgUnitPrice =
+            groupedData[groupKey].totalDeliveredQty > 0
+              ? Math.round(groupedData[groupKey].totalDeliveredAmount /
+                groupedData[groupKey].totalDeliveredQty) 
+              : 0;
+    
+          groupedData[groupKey].totalReturnAmount =
+            groupedData[groupKey].totalReturnQty * unitPrice;
+    
+          groupedData[groupKey].returnAvgUnitPrice =
+            groupedData[groupKey].totalReturnQty > 0
+              ?Math.round( groupedData[groupKey].totalReturnAmount /
+                groupedData[groupKey].totalReturnQty)
+              : 0;
         });
       });
     
-      // Calculate netQuantity for each group and convert to array
-      return Object.values(groupedData).map(group => {
-        const netQuantity = group.totalQuantity - group.totalDeliveredQty + group.totalReturnQty;
+      // Calculate net totals and convert grouped data to an array
+      return Object.values(groupedData).map((group) => {
+        const netQuantity =
+          group.totalPIQuantity - group.totalDeliveredQty + group.totalReturnQty;
         const totalNetAmount = netQuantity * group.piUnitPrice;
-        const netAvgUnitPrice = totalNetAmount / netQuantity;
+        const netAvgUnitPrice = Math.round(totalNetAmount / netQuantity)  ;
+    
         return {
           ...group,
-          netQuantity: netQuantity,
-          totalNetAmount: totalNetAmount,
-          netAvgUnitPrice: netAvgUnitPrice,
+          netQuantity,
+          totalNetAmount,
+          netAvgUnitPrice,
         };
       });
     }
     
-    const groupedResult = groupAndCalculateTotals(orderInfo); 
-    return groupedResult
-
+    const groupedResult = groupAndCalculateTotals(orderInfo, fromDate, toDate, clientId, piId, itemId);
+    console.log('groupresult',groupedResult)
+    return groupedResult;
+   
   } catch (error) {
     console.error("Error in getFilteredForCombineReport:", error);
     throw error;
