@@ -608,9 +608,16 @@ async function getFilteredForCombineReport(
     // }
 
     // Example Usage
-    function groupAndCalculateTotals(data, fromDate, toDate, clientId, piId, itemId) {
+    function groupAndCalculateTotals(
+      data,
+      fromDate,
+      toDate,
+      clientId,
+      piId,
+      itemId
+    ) {
       const groupedData = {};
-    
+
       // Filter data if itemId is provided
       const filteredData = itemId
         ? data.flatMap((detail) => {
@@ -625,12 +632,12 @@ async function getFilteredForCombineReport(
             return [];
           })
         : data;
-    
+
       // Iterate over filtered data to group and calculate totals
       filteredData.forEach((record) => {
         const { customerID, piDate, invoiceNo, detailsData } = record;
         const dateOnly = new Date(piDate).toISOString().split("T")[0]; // Extract YYYY-MM-DD
-    
+
         detailsData.forEach((detail) => {
           // Construct the grouping key
           let groupKey;
@@ -643,9 +650,9 @@ async function getFilteredForCombineReport(
           } else if (fromDate && toDate) {
             groupKey = `${dateOnly}`;
           }
-    
+
           if (!groupKey) return;
-    
+
           // Initialize group if it doesn't exist
           if (!groupedData[groupKey]) {
             groupedData[groupKey] = {
@@ -661,44 +668,53 @@ async function getFilteredForCombineReport(
               totalReturnAmount: 0,
             };
           }
-    
+
           // Accumulate totals
           groupedData[groupKey].totalPIQuantity += Number(detail.quantity || 0);
-          groupedData[groupKey].totalDeliveredQty += Number(detail.deliveredQty || 0);
+          groupedData[groupKey].totalDeliveredQty += Number(
+            detail.deliveredQty || 0
+          );
           groupedData[groupKey].totalReturnQty += Number(detail.returnQty || 0);
-          groupedData[groupKey].totalPiAmount =Number(detail.totalAmount)
+          groupedData[groupKey].totalPiAmount += Number(detail.totalAmount);
           const unitPrice = Number(detail.unitPrice || 0);
-          groupedData[groupKey].piUnitPrice = Math.round(groupedData[groupKey].totalPiAmount /groupedData[groupKey].totalPIQuantity);  // Assuming consistent unit price
-    
-         
-    
-          groupedData[groupKey].totalDeliveredAmount =
-            groupedData[groupKey].totalDeliveredQty * unitPrice;
-    
+          groupedData[groupKey].piUnitPrice = Math.round(
+            groupedData[groupKey].totalPiAmount /
+              groupedData[groupKey].totalPIQuantity
+          );
+
+          groupedData[groupKey].totalDeliveredAmount +=
+            detail.deliveredQty * unitPrice;
+
           groupedData[groupKey].deliveredAvgUnitPrice =
             groupedData[groupKey].totalDeliveredQty > 0
-              ? Math.round(groupedData[groupKey].totalDeliveredAmount /
-                groupedData[groupKey].totalDeliveredQty) 
+              ? Math.round(
+                  groupedData[groupKey].totalDeliveredAmount /
+                    groupedData[groupKey].totalDeliveredQty
+                )
               : 0;
-    
-          groupedData[groupKey].totalReturnAmount =
-            groupedData[groupKey].totalReturnQty * unitPrice;
-    
+
+          groupedData[groupKey].totalReturnAmount +=
+            detail.returnQty * unitPrice;
+
           groupedData[groupKey].returnAvgUnitPrice =
             groupedData[groupKey].totalReturnQty > 0
-              ?Math.round( groupedData[groupKey].totalReturnAmount /
-                groupedData[groupKey].totalReturnQty)
+              ? Math.round(
+                  groupedData[groupKey].totalReturnAmount /
+                    groupedData[groupKey].totalReturnQty
+                )
               : 0;
         });
       });
-    
+
       // Calculate net totals and convert grouped data to an array
       return Object.values(groupedData).map((group) => {
         const netQuantity =
-          group.totalPIQuantity - group.totalDeliveredQty + group.totalReturnQty;
+         (group.totalPIQuantity -
+          group.totalDeliveredQty)+
+          group.totalReturnQty;
         const totalNetAmount = netQuantity * group.piUnitPrice;
-        const netAvgUnitPrice = Math.round(totalNetAmount / netQuantity)  ;
-    
+        const netAvgUnitPrice = Math.round(totalNetAmount / netQuantity);
+
         return {
           ...group,
           netQuantity,
@@ -707,11 +723,16 @@ async function getFilteredForCombineReport(
         };
       });
     }
-    
-    const groupedResult = groupAndCalculateTotals(orderInfo, fromDate, toDate, clientId, piId, itemId);
-    console.log('groupresult',groupedResult)
-    return groupedResult;
-   
+
+    const groupedResult = groupAndCalculateTotals(
+      orderInfo,
+      fromDate,
+      toDate,
+      clientId,
+      piId,
+      itemId
+    );
+    return { groupedResult, orderInfo };
   } catch (error) {
     console.error("Error in getFilteredForCombineReport:", error);
     throw error;
