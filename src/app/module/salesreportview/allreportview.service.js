@@ -278,8 +278,7 @@ async function getFilteredForSalesSummaryReportInfoDB(
   toDate,
   itemId,
   clientId,
-  piId,
-  reportStatus
+  piId
 ) {
   try {
     const filter = {};

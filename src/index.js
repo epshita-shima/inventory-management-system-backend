@@ -27,8 +27,8 @@ const paymentMethodInfoRoute=require('./app/module/paymentmethodinformation/paym
 const deliveryOrderInfo=require('./app/module/deliveryorderinformation/deliveryorderinfo.route');
 const finishGoodsDelivery=require('./app/module/finishgoodsdeliveryinfo/finishgoodsdeliveryinfo.route');
 const returnDeliveredRoute=require('./app/module/deliveredreturninformation/deliveredreturninformation.route');
-const reportViewRoute=require('./app/module/allreportview/allreportview.route')
-
+const salesReportViewRoute=require('./app/module/salesreportview/allreportview.route')
+const productionReportViewRoute=require('./app/module/productionreportview/productionreport.route')
 // const upload = require("./app/module/multer/configuration");
 const dynamicFields=require('./app/module/multer/configuration')
 require("dotenv").config();
@@ -108,8 +108,8 @@ app.use('/payment-receive',paymentMethodInfoRoute);
 app.use('/delivery-order',deliveryOrderInfo);
 app.use('/finish-goods-delivery',finishGoodsDelivery);
 app.use('/return-deliver',returnDeliveredRoute);
-app.use('/report',reportViewRoute)
-
+app.use('/report',salesReportViewRoute)
+app.use('/production-report',productionReportViewRoute)
 // function errorHandler(err, req, res, next) {
 //   if (res.headersSent) {
 //     return next(err);
