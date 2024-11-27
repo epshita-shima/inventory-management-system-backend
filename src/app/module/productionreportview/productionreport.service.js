@@ -114,4 +114,89 @@ console.log("groupedData",Object.values(groupedData))
   }
 }
 
-module.exports = {getFilteredForProductionDatewiseDetailsReportInfoDB,getFilteredForProductionDatewiseSummaryReportInfoDB}
+
+async function getFilteredForProductionItemwiseDetailsReportInfoDB(
+  fromDate,
+  toDate,
+  productionItemName,
+  batchNo
+) {
+  try {
+    const filter = {};
+    if (fromDate) {
+      filter.productionDate = fromDate;
+    }
+    if (toDate) {
+      filter.productionDate = toDate;
+    }
+    if (fromDate && toDate) {
+      filter.productionDate = { $gte: fromDate, $lte: toDate };
+    }
+    if (productionItemName) {
+      filter.productionItemName = productionItemName;
+    }
+
+    if (batchNo) {
+      filter._id = batchNo;
+    }
+
+    if (Object.keys(filter).length === 0) {
+      return [];
+    }
+
+    const data = await ProductionModel.find(filter).lean();
+
+    return data
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error fetching payment method info");
+  }
+}
+
+async function getFilteredForRawMaterialConsumptionDetailsReportInfoDB(
+  fromDate,
+  toDate,
+  itemId,
+) {
+  try {
+    const filter = {};
+    if (fromDate) {
+      filter.productionDate = fromDate;
+    }
+    if (toDate) {
+      filter.productionDate = toDate;
+    }
+    if (fromDate && toDate) {
+      filter.productionDate = { $gte: fromDate, $lte: toDate };
+    }
+
+
+    if (Object.keys(filter).length === 0) {
+      return [];
+    }
+
+    const data = await ProductionModel.find(filter).lean();
+    console.log('data',data)
+    if (itemId) {
+      const filteredData = data.flatMap((detail) => {
+        const matchedDetails = detail.detailsData.filter(
+          (item) => item.itemId === itemId
+        );
+        if (matchedDetails.length > 0) {
+          return [{ ...detail, detailsData: matchedDetails }];
+        }
+        return [];
+      });
+      return filteredData;
+    } else {
+      return data;
+    }
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error fetching payment method info");
+  }
+}
+
+module.exports = {getFilteredForProductionDatewiseDetailsReportInfoDB,getFilteredForProductionDatewiseSummaryReportInfoDB,getFilteredForProductionItemwiseDetailsReportInfoDB,
+getFilteredForRawMaterialConsumptionDetailsReportInfoDB
+}

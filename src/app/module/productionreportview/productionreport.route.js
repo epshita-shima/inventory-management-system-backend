@@ -4,5 +4,7 @@ const ProductionController=require('./productionreport.controller');
 
 router.get('/datewise-details',ProductionController.getFiltredForProductionDatewiseDetailsReportController);
 router.get('/datewise-summary',ProductionController.getFiltredForProductionDatewiseSummaryReportController)
+router.get('/itemwise-details',ProductionController.getFiltredForProductionItemwiseSummaryReportController)
+router.get('/raw-material-consumption-details',ProductionController.getFiltredForRawMaterialConsumptionDetailsReportController)
 
 module.exports=router
