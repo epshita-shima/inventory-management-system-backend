@@ -1,4 +1,4 @@
-const ProductionModel=require('../productioninformation/productioninfo.model')
+const ProductionModel = require("../productioninformation/productioninfo.model");
 
 async function getFilteredForProductionDatewiseDetailsReportInfoDB(
   fromDate,
@@ -31,7 +31,7 @@ async function getFilteredForProductionDatewiseDetailsReportInfoDB(
 
     const data = await ProductionModel.find(filter).lean();
 
-    return data
+    return data;
   } catch (error) {
     console.error(error);
     throw new Error("Error fetching payment method info");
@@ -70,50 +70,47 @@ async function getFilteredForProductionDatewiseSummaryReportInfoDB(
     const data = await ProductionModel.find(filter).lean();
     if (!data.length) return [];
 
-
     const groupedData = {};
 
     // Process data and group by returnDate, productionItemName, clientId, and piId
     data.forEach((item) => {
-    
-        if (
-          (!productionItemName || item.productionItemName === productionItemName)
-        ) {
-          const dateKey = new Date(item.productionDate)
-            .toISOString()
-            .split("T")[0];
-          let key;
+      if (
+        !productionItemName ||
+        item.productionItemName === productionItemName
+      ) {
+        const dateKey = new Date(item.productionDate)
+          .toISOString()
+          .split("T")[0];
+        let key;
 
-          if (productionItemName && batchNo) {
-            key = `${dateKey}-${item.productionItemName}-${item.batchNo}`;
-          } else if (productionItemName) {
-            key = `${dateKey}-${item.productionItemName}`;
-          }  else if (batchNo) {
-            key = `${dateKey}-${item.batchNo}`;
-          } else {
-            key = `${dateKey}`;
-          }
-
-          if (!groupedData[key]) {
-            groupedData[key] = {
-              date: dateKey,
-              productionItemName: item.productionItemName,
-              totalProductionQty: 0,
-            };
-          }
-
-          groupedData[key].totalProductionQty += item.productionQty;
+        if (productionItemName && batchNo) {
+          key = `${dateKey}-${item.productionItemName}-${item.batchNo}`;
+        } else if (productionItemName) {
+          key = `${dateKey}-${item.productionItemName}`;
+        } else if (batchNo) {
+          key = `${dateKey}-${item.batchNo}`;
+        } else {
+          key = `${dateKey}`;
         }
-   
+
+        if (!groupedData[key]) {
+          groupedData[key] = {
+            date: dateKey,
+            productionItemName: item.productionItemName,
+            totalProductionQty: 0,
+          };
+        }
+
+        groupedData[key].totalProductionQty += item.productionQty;
+      }
     });
-console.log("groupedData",Object.values(groupedData))
+    console.log("groupedData", Object.values(groupedData));
     return Object.values(groupedData);
   } catch (error) {
     console.error(error);
     throw new Error("Error fetching payment method info");
   }
 }
-
 
 async function getFilteredForProductionItemwiseDetailsReportInfoDB(
   fromDate,
@@ -146,7 +143,7 @@ async function getFilteredForProductionItemwiseDetailsReportInfoDB(
 
     const data = await ProductionModel.find(filter).lean();
 
-    return data
+    return data;
   } catch (error) {
     console.error(error);
     throw new Error("Error fetching payment method info");
@@ -156,7 +153,7 @@ async function getFilteredForProductionItemwiseDetailsReportInfoDB(
 async function getFilteredForRawMaterialConsumptionDetailsReportInfoDB(
   fromDate,
   toDate,
-  itemId,
+  itemId
 ) {
   try {
     const filter = {};
@@ -170,13 +167,12 @@ async function getFilteredForRawMaterialConsumptionDetailsReportInfoDB(
       filter.productionDate = { $gte: fromDate, $lte: toDate };
     }
 
-
     if (Object.keys(filter).length === 0) {
       return [];
     }
 
     const data = await ProductionModel.find(filter).lean();
-    console.log('data',data)
+    console.log("data", data);
     if (itemId) {
       const filteredData = data.flatMap((detail) => {
         const matchedDetails = detail.detailsData.filter(
@@ -197,6 +193,72 @@ async function getFilteredForRawMaterialConsumptionDetailsReportInfoDB(
   }
 }
 
-module.exports = {getFilteredForProductionDatewiseDetailsReportInfoDB,getFilteredForProductionDatewiseSummaryReportInfoDB,getFilteredForProductionItemwiseDetailsReportInfoDB,
-getFilteredForRawMaterialConsumptionDetailsReportInfoDB
+async function getFilteredForRawMaterialConsumptionSummaryReportInfoDB(
+  fromDate,
+  toDate,
+  itemId
+) {
+  try {
+    const filter = {};
+    if (fromDate) {
+      filter.productionDate = fromDate;
+    }
+    if (toDate) {
+      filter.productionDate = toDate;
+    }
+    if (fromDate && toDate) {
+      filter.productionDate = { $gte: fromDate, $lte: toDate };
+    }
+
+    if (Object.keys(filter).length === 0) {
+      return [];
+    }
+
+    const data = await ProductionModel.find(filter).lean();
+    if (!data.length) return [];
+
+    const groupedData = {};
+
+    // Process data and group by returnDate, productionItemName, clientId, and piId
+    data.forEach((item) => {
+      item.detailsData.forEach((detail) => {
+        const materialUsed = parseInt(detail.materialUsed, 10);
+        if (isNaN(materialUsed)) return;
+
+        if ((!itemId || detail.itemId === itemId)){
+          const dateKey = new Date(item.productionDate)
+            .toISOString()
+            .split("T")[0];
+          let key;
+
+          if (detail.itemId) {
+            key = `${dateKey}-${detail.itemId}`;
+          } 
+
+          if (!groupedData[key]) {
+            groupedData[key] = {
+              date: dateKey,
+              itemId: detail.itemId,
+              totalMaterialUsed: 0,
+            };
+          }
+
+          groupedData[key].totalMaterialUsed += materialUsed;
+        }
+      });
+    });
+    console.log("groupedData", Object.values(groupedData));
+    return Object.values(groupedData);
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error fetching payment method info");
+  }
 }
+
+module.exports = {
+  getFilteredForProductionDatewiseDetailsReportInfoDB,
+  getFilteredForProductionDatewiseSummaryReportInfoDB,
+  getFilteredForProductionItemwiseDetailsReportInfoDB,
+  getFilteredForRawMaterialConsumptionDetailsReportInfoDB,
+  getFilteredForRawMaterialConsumptionSummaryReportInfoDB
+};
