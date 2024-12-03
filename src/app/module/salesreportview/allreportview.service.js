@@ -574,39 +574,6 @@ async function getFilteredForCombineReport(
     }
     const orderInfo = await OrderManagementModel.find(orderFilter).lean();
 
-    // function groupByDateAndId(data) {
-    //   const groupedData = {};
-
-    //   data.forEach(record => {
-    //     const { _id: parentId, piDate, invoiceNo, detailsData } = record;
-
-    //     detailsData.forEach(detail => {
-    //       const netQuantity = Number(detail.quantity) - Number(detail.deliveredQty) + Number(detail.returnQty);
-
-    //       const groupKey = `${piDate || null}-${parentId}`; // Unique key for grouping
-
-    //       if (!groupedData[groupKey]) {
-    //         groupedData[groupKey] = {
-    //           date: piDate || null,
-    //           _id: parentId,
-    //           piNo: invoiceNo,
-    //           groupedDetails: []
-    //         };
-    //       }
-
-    //       groupedData[groupKey].groupedDetails.push({
-    //         quantity: detail.quantity,
-    //         deliveredQty: detail.deliveredQty,
-    //         returnQty: detail.returnQty,
-    //         netQuantity: netQuantity
-    //       });
-    //     });
-    //   });
-
-    //   return Object.values(groupedData);
-    // }
-
-    // Example Usage
     function groupAndCalculateTotals(
       data,
       fromDate,

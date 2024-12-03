@@ -29,6 +29,7 @@ const finishGoodsDelivery=require('./app/module/finishgoodsdeliveryinfo/finishgo
 const returnDeliveredRoute=require('./app/module/deliveredreturninformation/deliveredreturninformation.route');
 const salesReportViewRoute=require('./app/module/salesreportview/allreportview.route')
 const productionReportViewRoute=require('./app/module/productionreportview/productionreport.route')
+const combineReportRoute=require('./app/module/combinereport/combinereport.route')
 // const upload = require("./app/module/multer/configuration");
 const dynamicFields=require('./app/module/multer/configuration')
 require("dotenv").config();
@@ -108,14 +109,9 @@ app.use('/payment-receive',paymentMethodInfoRoute);
 app.use('/delivery-order',deliveryOrderInfo);
 app.use('/finish-goods-delivery',finishGoodsDelivery);
 app.use('/return-deliver',returnDeliveredRoute);
-app.use('/report',salesReportViewRoute)
-app.use('/production-report',productionReportViewRoute)
-// function errorHandler(err, req, res, next) {
-//   if (res.headersSent) {
-//     return next(err);
-//   }
-//   res.status(500).json({ error: err });
-// }
+app.use('/report',salesReportViewRoute);
+app.use('/production-report',productionReportViewRoute);
+app.use('/combine-report',combineReportRoute);
 
 app.get("/", (req, res) => {
   res.send("Running inventory management");
