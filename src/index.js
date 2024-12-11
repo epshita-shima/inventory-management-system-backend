@@ -30,6 +30,9 @@ const returnDeliveredRoute=require('./app/module/deliveredreturninformation/deli
 const salesReportViewRoute=require('./app/module/salesreportview/allreportview.route')
 const productionReportViewRoute=require('./app/module/productionreportview/productionreport.route')
 const combineReportRoute=require('./app/module/combinereport/combinereport.route')
+const purchaseReportRoute=require('./app/module/purchasereport/purchasereport.route')
+
+
 // const upload = require("./app/module/multer/configuration");
 const dynamicFields=require('./app/module/multer/configuration')
 require("dotenv").config();
@@ -112,6 +115,8 @@ app.use('/return-deliver',returnDeliveredRoute);
 app.use('/report',salesReportViewRoute);
 app.use('/production-report',productionReportViewRoute);
 app.use('/combine-report',combineReportRoute);
+app.use('/purchase-report',purchaseReportRoute);
+
 
 app.get("/", (req, res) => {
   res.send("Running inventory management");
