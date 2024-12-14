@@ -1,3 +1,4 @@
+const { errorlogger, logger } = require("../../../shared/logger");
 const CFTInfosModal = require("./cft.model");
 
 async function getCFTInfosDB(){
@@ -5,12 +6,11 @@ async function getCFTInfosDB(){
         const CFTInfos = await CFTInfosModal.find();
         return CFTInfos;
       } catch (error) {
-        console.error("Error fetching item size:", error);
+        errorlogger.error("Error fetching item size:", error);
       }
 }
 
 async function insertCFTInfosDB(cftData) {
-  console.log('cftData',cftData)
     try {
       return await CFTInfosModal.insertMany(cftData);
     } catch (error) {
@@ -21,10 +21,9 @@ async function insertCFTInfosDB(cftData) {
   async function getCFTInfosByIdDB(id) {
     try {
       const singleCFTData = await CFTInfosModal.findById(id);
-      console.log(singleCFTData);
       return singleCFTData;
     } catch (error) {
-      console.error(error);
+      errorlogger.error(error);
       throw new Error("Internal server error from service");
     }
   }
@@ -39,17 +38,16 @@ async function insertCFTInfosDB(cftData) {
       if (updateCFTInfo) {
         return updateCFTInfo;
       } else {
-        console.log("No matching document found for ID:", id);
+        logger.info("No matching document found for ID:", id);
         return null;
       }
     } catch (error) {
-      console.error(error);
+      errorlogger.error(error);
       throw new Error("Internal server error from service");
     }
   }
 
   async function updateCFTInfosStatusDB( data) {
-    console.log('data',data)
     try {
       const promises = data?.map(async (updateStatus) => {
         // Update isactive field for each user
@@ -63,7 +61,7 @@ async function insertCFTInfosDB(cftData) {
       const updatedStatusData = await Promise.all(promises);
       return updatedStatusData;
     } catch (error) {
-      console.error("Error updating multiple users:", error);
+      errorlogger.error("Error updating multiple users:", error);
       throw new Error("Failed to update multiple data");
     }
   }
@@ -71,7 +69,6 @@ async function insertCFTInfosDB(cftData) {
   const deleteCFTInfosDB = async (id) => {
     try {
       const deleteCFTInfoData= await CFTInfosModal.findByIdAndDelete(id);
-      console.log(deleteCFTInfoData, "delete");
       if (!deleteCFTInfoData) {
         throw new Error("Item not found");
       }

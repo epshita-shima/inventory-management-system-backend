@@ -5,6 +5,7 @@ const SalesModel = require("../finishgoodsdeliveryinfo/finishgoodsdeliveryinfo.m
 const ReturnModel = require("../deliveredreturninformation/deliveredreturninformation.model");
 const RawMaterialModel = require("../rmiteminformation/iteminfo.model");
 const FinishGoodsModel = require("../fgiteminformation/iteminfo.model");
+const { errorlogger } = require("../../../shared/logger");
 async function getFilteredForManagementCombineReportDB(fromDate, toDate) {
   console.log("combine service", fromDate, toDate); // Fixing the typo
   try {
@@ -347,7 +348,7 @@ async function getFilteredForManagementCombineReportDB(fromDate, toDate) {
       groupedReturnResult,
     };
   } catch (error) {
-    console.error("Error fetching data:", error);
+    errorlogger.error("Error fetching data:", error);
     throw new Error("Error fetching payment method info");
   }
 }

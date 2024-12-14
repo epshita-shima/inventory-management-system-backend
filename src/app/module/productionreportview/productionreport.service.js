@@ -1,3 +1,4 @@
+const { errorlogger } = require("../../../shared/logger");
 const ProductionModel = require("../productioninformation/productioninfo.model");
 
 async function getFilteredForProductionDatewiseDetailsReportInfoDB(
@@ -33,7 +34,7 @@ async function getFilteredForProductionDatewiseDetailsReportInfoDB(
 
     return data;
   } catch (error) {
-    console.error(error);
+   errorlogger.error(error);
     throw new Error("Error fetching payment method info");
   }
 }
@@ -104,10 +105,9 @@ async function getFilteredForProductionDatewiseSummaryReportInfoDB(
         groupedData[key].totalProductionQty += item.productionQty;
       }
     });
-    console.log("groupedData", Object.values(groupedData));
     return Object.values(groupedData);
   } catch (error) {
-    console.error(error);
+   errorlogger.error(error);
     throw new Error("Error fetching payment method info");
   }
 }
@@ -145,7 +145,7 @@ async function getFilteredForProductionItemwiseDetailsReportInfoDB(
 
     return data;
   } catch (error) {
-    console.error(error);
+   errorlogger.error(error);
     throw new Error("Error fetching payment method info");
   }
 }
@@ -172,7 +172,6 @@ async function getFilteredForRawMaterialConsumptionDetailsReportInfoDB(
     }
 
     const data = await ProductionModel.find(filter).lean();
-    console.log("data", data);
     if (itemId) {
       const filteredData = data.flatMap((detail) => {
         const matchedDetails = detail.detailsData.filter(
@@ -188,7 +187,7 @@ async function getFilteredForRawMaterialConsumptionDetailsReportInfoDB(
       return data;
     }
   } catch (error) {
-    console.error(error);
+   errorlogger.error(error);
     throw new Error("Error fetching payment method info");
   }
 }
@@ -247,10 +246,10 @@ async function getFilteredForRawMaterialConsumptionSummaryReportInfoDB(
         }
       });
     });
-    console.log("groupedData", Object.values(groupedData));
+
     return Object.values(groupedData);
   } catch (error) {
-    console.error(error);
+   errorlogger.error(error);
     throw new Error("Error fetching payment method info");
   }
 }

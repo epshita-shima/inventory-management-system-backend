@@ -1,11 +1,12 @@
 const GoodsReceiveNoteInfoModel = require("./grninfo.model");
 const PurchaseOrderInfoModel = require("../purchaseorderinformation/purchaseorderinfo.model");
+const { errorlogger, logger } = require("../../../shared/logger");
 async function getGoodsReceiveNoteInfoDB() {
   try {
     const grnInfo = await GoodsReceiveNoteInfoModel.find();
     return grnInfo;
   } catch (error) {
-    console.error("Error fetching item size:", error);
+    errorlogger.error("Error fetching item size:", error);
   }
 }
 
@@ -20,10 +21,9 @@ async function insertGoodsReceiveNoteInfoDB(grnInfo) {
 async function getGoodsReceiveNoteInfoByIdDB(id) {
   try {
     const singleGRNInfo = await GoodsReceiveNoteInfoModel.findById(id);
-    console.log(singleGRNInfo);
     return singleGRNInfo;
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
     throw new Error("Internal server error from service");
   }
 }
@@ -52,7 +52,7 @@ async function getFilteredGRNDataInformationDB(
           end: month.end,
         }));
       } catch (error) {
-        console.error("Error parsing selectMonth:", error);
+        errorlogger.error("Error parsing selectMonth:", error);
         throw new Error("Invalid selectMonth format");
       }
       filter.$or = dateRanges.map((range) => ({
@@ -67,12 +67,11 @@ async function getFilteredGRNDataInformationDB(
       return data;
     }
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
   }
 }
 
 async function updateGoodsReceiveNoteInfoDB(id, data) {
-  console.log(data);
   try {
     const updateGRNInfo = await GoodsReceiveNoteInfoModel.findByIdAndUpdate(
       id,
@@ -82,11 +81,11 @@ async function updateGoodsReceiveNoteInfoDB(id, data) {
     if (updateGRNInfo) {
       return updateGRNInfo;
     } else {
-      console.log("No matching document found for ID:", id);
+     logger.info("No matching document found for ID:", id);
       return null;
     }
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
     throw new Error("Internal server error from service");
   }
 }
@@ -95,7 +94,6 @@ const deleteGoodsReceiveNoteInfoDB = async (id) => {
     const deleteGRNInfoData = await GoodsReceiveNoteInfoModel.findByIdAndDelete(
       id
     );
-    console.log(deleteGRNInfoData, "delete");
     if (!deleteGRNInfoData) {
       throw new Error("GRN info not found");
     }

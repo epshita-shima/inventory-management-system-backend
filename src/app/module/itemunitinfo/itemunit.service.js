@@ -1,3 +1,4 @@
+const { errorlogger } = require('../../../shared/logger');
 const ItemUnitInfoModel=require('./itemunit.model')
 
 async function getItemUnitDB(){
@@ -5,7 +6,7 @@ async function getItemUnitDB(){
         const itemunits= await ItemUnitInfoModel.find();
         return itemunits;
       } catch (error) {
-        console.error("Error fetching items unit:", error);
+        errorlogger.error("Error fetching items unit:", error);
       }
 }
 

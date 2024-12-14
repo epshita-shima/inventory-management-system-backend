@@ -1,3 +1,4 @@
+const { errorlogger } = require("../../../shared/logger");
 const GoodsReceiveNoteService = require("./grninfo.service");
 
 const getGoodsReceiveNoteInfoController = async (req, res, next) => {
@@ -41,7 +42,7 @@ const getGoodsReceiveNoteInfoByIdController = async (req, res) => {
     }
     return res.status(200).json(singleGRNInfo);
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -49,9 +50,7 @@ const getGoodsReceiveNoteInfoByIdController = async (req, res) => {
 const updateGoodsReceiveNoteInfoController = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
     const updatedGRNData = req.body;
-    console.log("updatedGRNData", updatedGRNData);
     const result = await GoodsReceiveNoteService.updateGoodsReceiveNoteInfoDB(
       id,
       updatedGRNData
@@ -70,7 +69,7 @@ const deleteGoodsReceiveNoteInfoController = async (req, res) => {
     );
     return res.status(200).json(grnInfo);
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

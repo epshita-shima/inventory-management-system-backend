@@ -1,3 +1,4 @@
+const { errorlogger } = require('../../../shared/logger');
 const PaymentInfoModel=require('./paymentinfo.model')
 
 
@@ -6,7 +7,7 @@ async function getIPaymentInfoDB(){
         const paymentInfo= await PaymentInfoModel.find();
         return paymentInfo;
       } catch (error) {
-        console.error("Error fetching item size:", error);
+        errorlogger.error("Error fetching item size:", error);
       }
 }
 async function insertPaymentInfoDB(paymentData) {
@@ -19,7 +20,7 @@ async function insertPaymentInfoDB(paymentData) {
 const deletePaymentInfoDB = async (id) => {
   try {
     const deleteProductionInfoData = await PaymentInfoModel.findByIdAndDelete(id);
-    console.log(deleteProductionInfoData, "delete");
+
     if (!deleteProductionInfoData) {
       throw new Error("PO info not found");
     }

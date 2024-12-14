@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "E:\\MalihaIT\\Porjects\\Maliha Eco Bricks\\authentication-practice\\user-authentication-backend\\logs\\winston\\successes\\.dca7fa69963eaa576fb23ef39471b1f74010998e-audit.json",
+    "files": [
+        {
+            "date": 1734176665189,
+            "name": "E:\\MalihaIT\\Porjects\\Maliha Eco Bricks\\authentication-practice\\user-authentication-backend\\logs\\winston\\successes\\meb-2024-12-14-17-success.log",
+            "hash": "bd3e99f32854adc778127fcca952afbb9c83aa111bb59c3b9be2e0f033f20ac3"
+        }
+    ],
+    "hashType": "sha256"
+}

@@ -2,13 +2,14 @@ const RetunDeliveredInfoModel = require("./deliveredreturninformation.model");
 const SalesManagementModel = require("../salesmanagement/salesmanagementinfo.model");
 const FinishGoodsDeliveryInfoModel = require("../finishgoodsdeliveryinfo/finishgoodsdeliveryinfo.model");
 const mongoose = require("mongoose");
+const { errorlogger } = require("../../../shared/logger");
 
 async function getRetunDeliveredInfoDB() {
   try {
     const deliveryReturnData = await RetunDeliveredInfoModel.find();
     return deliveryReturnData;
   } catch (error) {
-    console.error("Error fetching delivery Return data:", error);
+    errorlogger.error("Error fetching delivery Return data:", error);
   }
 }
 
@@ -86,15 +87,13 @@ async function insertReturnDeliveredInfoDB(returnInfo) {
       }
 
       const insertReturnInfo = await RetunDeliveredInfoModel.insertMany(returnInfo);
-      console.log(`Successfully updated document with _id: ${returnInfo.piId}`);
       return { success: true, insertReturnInfo };
 
     } else {
-      console.log(`No details found for _id: ${returnInfo.piId}`);
       return { success: false, message: 'No details found for the provided piId or doId' };
     }
   } catch (error) {
-    console.error("Error inserting delivery Return Data:", error);
+   errorlogger.error("Error inserting delivery Return Data:", error);
     throw new Error("Error inserting delivery return data: " + error.message);
   }
 }
@@ -107,18 +106,16 @@ async function getReturnDeliveredDataInfoByIdDB(id) {
     );
     return singleReturnDeliveredInfo;
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
     throw new Error("Internal server error from service");
   }
 }
 const deleteReturnDeliveredInfoDB = async (id) => {
-  console.log(id);
   try {
 
     const existingReturnInfo = await RetunDeliveredInfoModel.findOne(
       { _id: new mongoose.Types.ObjectId(id) }
     );
-    console.log("existingReturnInfo",existingReturnInfo)
     const existingInvoice = await SalesManagementModel.findOne(
       { _id: new mongoose.Types.ObjectId(existingReturnInfo.piId) },
     );
@@ -191,7 +188,6 @@ const deleteReturnDeliveredInfoDB = async (id) => {
         }
         const deleteReturnDeliverInfoData =
         await RetunDeliveredInfoModel.findByIdAndDelete(id);
-      console.log("deleteReturnDeliverInfoData", deleteReturnDeliverInfoData);
       if (!deleteReturnDeliverInfoData) {
         throw new Error("DO info not found");
       }
@@ -199,7 +195,6 @@ const deleteReturnDeliveredInfoDB = async (id) => {
     }
     
   } catch (error) {
-    console.error("Error deleting return delivered info:", error);
     throw new Error("Internal server error");
   }
 };

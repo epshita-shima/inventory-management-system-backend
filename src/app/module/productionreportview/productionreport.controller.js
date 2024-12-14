@@ -8,14 +8,6 @@ const getFiltredForProductionDatewiseDetailsReportController = async (
   const { fromDate, toDate, productionItemName, batchNo, reportStatus } =
     req.query;
   try {
-    console.log(
-      "controller",
-      fromDate,
-      toDate,
-      productionItemName,
-      batchNo,
-      reportStatus
-    );
     const filteredData =
       await ProductionService.getFilteredForProductionDatewiseDetailsReportInfoDB(
         fromDate,
@@ -37,14 +29,6 @@ const getFiltredForProductionDatewiseSummaryReportController = async (
   const { fromDate, toDate, productionItemName, batchNo, reportStatus } =
     req.query;
   try {
-    console.log(
-      "controller",
-      fromDate,
-      toDate,
-      productionItemName,
-      batchNo,
-      reportStatus
-    );
     const filteredData =
       await ProductionService.getFilteredForProductionDatewiseSummaryReportInfoDB(
         fromDate,

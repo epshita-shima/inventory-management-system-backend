@@ -1,3 +1,4 @@
+const { errorlogger } = require('../../../shared/logger');
 const BankInfoModel=require('./bankinfo.model')
 
 
@@ -6,7 +7,7 @@ async function getIBankInfoDB(){
         const bankInfo= await BankInfoModel.find();
         return bankInfo;
       } catch (error) {
-        console.error("Error fetching item size:", error);
+        errorlogger.error("Error fetching item size:", error);
       }
 }
 async function insertBankInfoDB(bankInfoData) {

@@ -37,6 +37,7 @@ const purchaseReportRoute=require('./app/module/purchasereport/purchasereport.ro
 const dynamicFields=require('./app/module/multer/configuration')
 require("dotenv").config();
 const cors = require("cors");
+const { logger, errorlogger } = require("./shared/logger");
 
 const app = express();
 app.use(cors());
@@ -60,9 +61,9 @@ mongoose.Promise = global.Promise;
 mongoose
   .connect(uri)
   .then(() => {
-    console.log("connection successfull");
+  logger.info("connection successfull");
   })
-  .catch((err) => console.log(err));
+  .catch((err) => errorlogger.error(err));
 
 // connect(process.env.MONGO_URI)
 // MongoClient.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -123,5 +124,5 @@ app.get("/", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`app litstening at port ${port}`);
+  logger.info(`app litstening at port ${port}`);
 });

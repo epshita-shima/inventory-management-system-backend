@@ -1,3 +1,4 @@
+const { errorlogger } = require("../../../shared/logger");
 const FinishGoodsDeliveryInfoService = require("./finishgoodsdeliveryinfo.service");
 
 async function getFinishGoodsDeliveryInfoController(req, res, next) {
@@ -39,7 +40,7 @@ const getFinishGoodsDeliverInfoByIdController = async (req, res) => {
     }
     return res.status(200).json(singleDataInfo);
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

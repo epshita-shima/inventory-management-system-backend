@@ -1,3 +1,4 @@
+const { errorlogger } = require("../../../shared/logger");
 const FinishGoodIteminfoService = require("./iteminfo.service");
 
 const getItemInfoController = async (req, res, next) => {
@@ -28,7 +29,7 @@ const getItemInfoByIdController = async (req, res) => {
     }
     return res.status(200).json(singleItemInfo);
   } catch (error) {
-    console.error(error);
+   errorlogger.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -36,9 +37,7 @@ const getItemInfoByIdController = async (req, res) => {
 const updateItemInformationController = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
-    const updatedItemData = req.body; // Assuming the updated data is sent in the request body
-    console.log("updatedItemData", updatedItemData);
+    const updatedItemData = req.body; 
     const result = await FinishGoodIteminfoService.updateItemInformationDB(
       id,
       updatedItemData
@@ -54,7 +53,7 @@ const updateItemInformationStatusController = async (req, res) => {
       const result = await FinishGoodIteminfoService.updateItemInformationStatusDB(req.body);
       return res.status(200).json(result);
   } catch (error) {
-      console.error(error);
+      errorlogger.error(error);
       res.status(500).json({ message: 'Internal server error' });
   }
 };
@@ -65,7 +64,7 @@ const deleteItemInformationController = async (req, res) => {
       const itemInfo = await FinishGoodIteminfoService.deleteItemInformationDB(id);
       return res.status(200).json(itemInfo);
   } catch (error) {
-      console.error(error);
+      errorlogger.error(error);
       return res.status(500).json({ message: 'Internal server error' });
   }
 };

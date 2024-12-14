@@ -1,3 +1,4 @@
+const { errorlogger } = require("../../../shared/logger");
 const ItemsizeModal = require("./itemsize.model");
 
 async function getItemSizesDB(){
@@ -5,7 +6,7 @@ async function getItemSizesDB(){
         const itemsizes = await ItemsizeModal.find();
         return itemsizes;
       } catch (error) {
-        console.error("Error fetching item size:", error);
+        errorlogger.error("Error fetching item size:", error);
       }
 }
 async function insertItemSizesDB(itemssize) {

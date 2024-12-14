@@ -1,3 +1,4 @@
+const { errorlogger } = require("../../../shared/logger");
 const ProductionInfoService = require("./productioninfo.service");
 
 async function getProductionInfoController(req, res, next) {
@@ -17,9 +18,7 @@ async function insertProductInfoController(req, res) {
     }
   }
   const getFilteredProductionInfoController = async (req, res, next) => {
-    console.log('data',req.query)
     const {fromDate, toDate } = req.query;
-  console.log('contoller',fromDate,toDate)
     const filteredProductionData =
       await ProductionInfoService.getFilteredProductionInfoDB(
         fromDate,
@@ -39,16 +38,14 @@ async function insertProductInfoController(req, res) {
       }
       return res.status(200).json(singleProductionInfo);
     } catch (error) {
-      console.error(error);
+      errorlogger.error(error);
       return res.status(500).json({ message: "Internal server error" });
     }
   };
   const updateProductionInfoController = async (req, res) => {
     try {
       const { id } = req.params;
-      console.log(id);
-      const updateProductionData = req.body; // Assuming the updated data is sent in the request body
-      console.log("updatedData", updateProductionData);
+      const updateProductionData = req.body; 
       const result = await ProductionInfoService.updateProductionInfoDB(
         id,
         updateProductionData
@@ -65,7 +62,7 @@ async function insertProductInfoController(req, res) {
       const productionInfo = await ProductionInfoService.deleteProductionInfoDB(id);
       return res.status(200).json(productionInfo);
     } catch (error) {
-      console.error(error);
+      errorlogger.error(error);
       return res.status(500).json({ message: "Internal server error" });
     }
   };

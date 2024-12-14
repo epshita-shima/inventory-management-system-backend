@@ -1,3 +1,4 @@
+const { errorlogger } = require("../../../shared/logger");
 const PaymentInfoService = require("./payment.service");
 
 const getPaymentInfoController = async (req, res, next) => {
@@ -49,7 +50,7 @@ const deletePaymentInfoController = async (req, res) => {
     const paymentInfo = await PaymentInfoService.deletePaymentInfoDB(id);
     return res.status(200).json(paymentInfo);
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

@@ -1,3 +1,4 @@
+const { errorlogger } = require('../../../shared/logger');
 const ClientInfoModel = require('./client.model');
 
 
@@ -6,7 +7,7 @@ async function getClientInfoDB() {
       const clientInfoData = await ClientInfoModel.find();
       return clientInfoData;
     } catch (error) {
-      console.error("Error fetching client:", error);
+      errorlogger.error("Error fetching client:", error);
     }
   }
 
@@ -22,10 +23,9 @@ async function insertClientInfoDB(clientData){
 async function getClientInfoByIdDB(id) {
     try {
       const singleclient = await ClientInfoModel.findById(id);
-      console.log(singleclient);
       return singleclient;
     } catch (error) {
-      console.error(error);
+      errorlogger.error(error);
       throw new Error("Internal server error from service");
     }
   }
@@ -50,7 +50,6 @@ async function getClientInfoByIdDB(id) {
   }
 
   async function updateClientInformationStatusDB( data) {
-    console.log('data',data)
     try {
       const promises = data?.map(async (updateStatus) => {
         // Update isactive field for each user
@@ -64,7 +63,7 @@ async function getClientInfoByIdDB(id) {
       const updatedStatusData = await Promise.all(promises);
       return updatedStatusData;
     } catch (error) {
-      console.error("Error updating multiple users:", error);
+      errorlogger.error("Error updating multiple users:", error);
       throw new Error("Failed to update multiple data");
     }
   }
@@ -72,7 +71,6 @@ async function getClientInfoByIdDB(id) {
   const deleteClientInformationDB = async (id) => {
     try {
       const deleteclientInfoData= await ClientInfoModel.findByIdAndDelete(id);
-      console.log(deleteclientInfoData, "delete");
       if (!deleteclientInfoData) {
         throw new Error("client not found");
       }

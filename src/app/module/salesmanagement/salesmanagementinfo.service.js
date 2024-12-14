@@ -1,3 +1,4 @@
+const { errorlogger, logger } = require("../../../shared/logger");
 const SalesManagementModel = require("./salesmanagementinfo.model");
 const mongoose = require("mongoose");
 
@@ -6,12 +7,11 @@ async function getInvoiceInformationDB() {
     const salesData = await SalesManagementModel.find();
     return salesData;
   } catch (error) {
-    console.error("Error fetching production data:", error);
+    errorlogger.error("Error fetching production data:", error);
   }
 }
 
 async function insertInvoiceInformationDB(purchaseOrderInfo) {
-  console.log(purchaseOrderInfo);
   try {
     return await SalesManagementModel.insertMany(purchaseOrderInfo);
   } catch (error) {
@@ -24,7 +24,7 @@ async function getFilteredInvoiceInfoDB(customerID) {
     const data = await SalesManagementModel.find({ customerID: customerID });
     return data;
   } catch (error) {
-    console.error("Error querying data:", error);
+    errorlogger.error("Error querying data:", error);
     throw error;
   }
 }
@@ -33,10 +33,9 @@ async function getFilteredInvoiceInfoDB(customerID) {
 async function getInvoiceInformationByIdDB(id) {
   try {
     const singleInvoiceInfo = await SalesManagementModel.findById(id);
-    console.log(singleInvoiceInfo);
     return singleInvoiceInfo;
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
     throw new Error("Internal server error from service");
   }
 }
@@ -59,7 +58,6 @@ async function updateSpecialInvoiceApproveDB(dataArray) {
           },
         }
       );
-      console.log(`Updated document with _id: ${data._id}`, result);
       return result;
     });
 
@@ -67,7 +65,7 @@ async function updateSpecialInvoiceApproveDB(dataArray) {
     const results = await Promise.all(updatePromises);
     return results;
   } catch (error) {
-    console.error("Error updating special approve fields:", error);
+    errorlogger.error("Error updating special approve fields:", error);
     throw new Error("Failed to update special approve fields");
   }
 }
@@ -79,10 +77,9 @@ async function updateInvoiceShipmentNoDB(data) {
       { shipmentNo: data.shipmentNo + 1 },
       { new: true }
     );
-    console.log("data.shipmentNo", updatedStatusData);
     return updatedStatusData;
   } catch (error) {
-    console.error("Error updating multiple users:", error);
+    errorlogger.error("Error updating multiple users:", error);
     throw new Error("Failed to update multiple data");
   }
 }
@@ -95,18 +92,18 @@ async function updateInvoiceInformationDB(id, data) {
       { new: true }
     );
     if (!updateInvoiceInfo) {
-      console.log("No matching document found for ID:", id);
+      logger.info("No matching document found for ID:", id);
       return null;
     }
 
     if (updateInvoiceInfo) {
       return updateInvoiceInfo;
     } else {
-      console.log("No matching document found for ID:", id);
+      logger.info("No matching document found for ID:", id);
       return null;
     }
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
     throw new Error("Internal server error from service");
   }
 }
@@ -124,7 +121,7 @@ async function updateInvoicePIStatusDB(data) {
 
     return updatedStatusData;
   } catch (error) {
-    console.error("Error updating multiple users:", error);
+    errorlogger.error("Error updating multiple users:", error);
     throw new Error("Failed to update multiple data");
   }
 }
@@ -134,7 +131,6 @@ const deleteInvoiceInformationDB = async (id) => {
     const deleteInvoiceInfoData = await SalesManagementModel.findByIdAndDelete(
       id
     );
-    console.log(deleteInvoiceInfoData, "delete");
     if (!deleteInvoiceInfoData) {
       throw new Error("PO info not found");
     }

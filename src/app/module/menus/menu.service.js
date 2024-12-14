@@ -1,3 +1,4 @@
+const { errorlogger, logger } = require("../../../shared/logger");
 const MenuItem = require("./menu.model");
 const { ObjectId } = require("mongodb");
 
@@ -7,7 +8,7 @@ const getMenuItemDB = async () => {
 
     return menuitem;
   } catch (error) {
-    console.error("Error fetching menu:", error);
+    errorlogger.error("Error fetching menu:", error);
   }
 };
 
@@ -72,7 +73,6 @@ const updateMenuDB = async (newItem) => {
           const existingItemIndex = childMenu.items.findIndex(
             (existingItem) => existingItem._id.toString() === item._id
           );
-          console.log('existingItemIndex',existingItemIndex)
           // If the item exists, isUpdated it; otherwise, create a new document for it
           if (existingItemIndex !== -1) {
             // Update existing item
@@ -123,7 +123,6 @@ async function insertMenuItems(menuItems) {
 }
 
 const getMenuByIdDB = async (id) => {
-  console.log(id)
   try {
     const parentMenu = await MenuItem.MenuItem.findById(id);
 
@@ -136,7 +135,6 @@ const getMenuByIdDB = async (id) => {
         const childNestedMenu = await MenuItem.MenuItem.findOne({
           "items.items._id":id
         });
-        console.log(childNestedMenu)
 
         if (!childNestedMenu) {
           const childNestedChildMenu = await MenuItem.MenuItem.findOne({
@@ -158,7 +156,7 @@ const getMenuByIdDB = async (id) => {
       return parentMenu;
     }
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
     throw new Error("Internal server error from service");
   }
 };
@@ -237,7 +235,7 @@ const updateSingleMenuDB = async (dataToUpdate) => {
 
     return updatedUser;
   } catch (error) {
-    console.error("Error updating multiple users:", error);
+    errorlogger.error("Error updating multiple users:", error);
     throw new Error("Failed to isUpdated multiple data");
   }
 };
@@ -267,7 +265,7 @@ const updateSingleMenuDataDB = async (id, data) => {
           if (updatedItem) {
             return updatedItem;
           } else {
-            console.log("No matching document found for ID:", id);
+            logger.info("No matching document found for ID:", id);
             return new Error("Error inserting menu item: " + error.message);;
           }
         }
@@ -281,7 +279,7 @@ const updateSingleMenuDataDB = async (id, data) => {
         if (updatedItem) {
           return updatedItem;
         } else {
-          console.log("No matching document found for ID:", id);
+          logger.info("No matching document found for ID:", id);
           return null;
         }
       }
@@ -294,12 +292,12 @@ const updateSingleMenuDataDB = async (id, data) => {
       if (updatedItem) {
         return updatedItem;
       } else {
-        console.log("No matching document found for ID:", id);
+        logger.info("No matching document found for ID:", id);
         return null;
       }
     }
   } catch (error) {
-    console.error("Error updating multiple users:", error);
+    errorlogger.error("Error updating multiple users:", error);
     throw new Error("Failed to isUpdated multiple data");
   }
 };

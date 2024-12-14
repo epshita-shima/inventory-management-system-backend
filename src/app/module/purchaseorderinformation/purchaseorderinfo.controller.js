@@ -1,3 +1,4 @@
+const { errorlogger } = require("../../../shared/logger");
 const PurchaseOrderInfoService = require("./purchaseorderinfo.service");
 
 async function getPurchaseOrderInfoController(req, res, next) {
@@ -27,7 +28,7 @@ const getPurchaseOrderInfoByIdController = async (req, res) => {
     }
     return res.status(200).json(singlePurchaseOrderInfo);
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -35,9 +36,7 @@ const getPurchaseOrderInfoByIdController = async (req, res) => {
 const updatePurchaseOrderInfoController = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
-    const updatePurchaseOrderData = req.body; // Assuming the updated data is sent in the request body
-    console.log("updatedData", updatePurchaseOrderData);
+    const updatePurchaseOrderData = req.body;
     const result = await PurchaseOrderInfoService.updatePurchaseOrderInfoDB(
       id,
       updatePurchaseOrderData
@@ -54,7 +53,7 @@ const updatePurchaseOrderInfoStatusController = async (req, res) => {
       await PurchaseOrderInfoService.updatePurchaseOrderInfoStatusDB(req.body);
     return res.status(200).json(result);
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -65,7 +64,7 @@ const deletePurchaseOrderInfoInformationController = async (req, res) => {
     const poInfo = await PurchaseOrderInfoService.deletePurchaseOrderInfoDB(id);
     return res.status(200).json(poInfo);
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

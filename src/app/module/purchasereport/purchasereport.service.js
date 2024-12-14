@@ -1,3 +1,4 @@
+const { errorlogger } = require("../../../shared/logger");
 const PurchaseManagementModel = require("../goodsreceivenoteinformation/grninfo.model");
 
 async function getFilteredForPurchaseReporDB(
@@ -49,7 +50,7 @@ async function getFilteredForPurchaseReporDB(
       return data;
     }
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
     throw new Error("Error fetching payment method info");
   }
 }
@@ -151,10 +152,10 @@ async function getFilteredForSalesSummaryReportInfoDB(
         }
       });
     });
-    console.log("Object.values(groupedData)", Object.values(groupedData));
+
     return Object.values(groupedData);
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
     throw new Error("Error fetching payment method info");
   }
 }

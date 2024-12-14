@@ -3,7 +3,6 @@ const PurchaseReportService=require('./purchasereport.service')
 
 const getFiltredForPurchaseDetailsReportController = async (req, res) => {
   const { fromDate, toDate, itemId, supplierId, poId, reportStatus } = req.query;
-  console.log('purchase controller',req.query)
   try {
     const  filteredData =
         await PurchaseReportService.getFilteredForPurchaseReporDB(
@@ -22,7 +21,7 @@ const getFiltredForPurchaseDetailsReportController = async (req, res) => {
 
 const getFiltredForPurchaseSummaryReportController = async (req, res) => {
   const { fromDate, toDate, itemId, supplierId, poId, reportStatus } = req.query;
-  console.log('purchase controller',req.query)
+
   try {
     const  filteredData =
         await PurchaseReportService.getFilteredForSalesSummaryReportInfoDB(

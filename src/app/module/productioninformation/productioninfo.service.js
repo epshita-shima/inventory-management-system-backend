@@ -1,3 +1,4 @@
+const { errorlogger, logger } = require("../../../shared/logger");
 const ProductionInfoModel = require("./productioninfo.model");
 
 async function getProductionInfoDB() {
@@ -5,13 +6,12 @@ async function getProductionInfoDB() {
     const productionData = await ProductionInfoModel.find();
     return productionData;
   } catch (error) {
-    console.error("Error fetching production data:", error);
+    errorlogger.error("Error fetching production data:", error);
   }
 }
 
 async function getFilteredProductionInfoDB(fromDate, toDate) {
   try {
-    console.log('service',fromDate, toDate)
     const filter = {};
 
     if (fromDate && toDate) {
@@ -25,11 +25,10 @@ async function getFilteredProductionInfoDB(fromDate, toDate) {
       return data;
     }
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
   }
 }
 async function insertProductInfoDB(purchaseOrderInfo) {
-  console.log(purchaseOrderInfo);
   try {
     return await ProductionInfoModel.insertMany(purchaseOrderInfo);
   } catch (error) {
@@ -40,10 +39,9 @@ async function insertProductInfoDB(purchaseOrderInfo) {
 async function getProductionInfoByIdDB(id) {
   try {
     const singleProductionInfo = await ProductionInfoModel.findById(id);
-    console.log(singleProductionInfo);
     return singleProductionInfo;
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
     throw new Error("Internal server error from service");
   }
 }
@@ -56,18 +54,18 @@ async function updateProductionInfoDB(id, data) {
       { new: true }
     );
     if (!updateProductionInfo) {
-      console.log("No matching document found for ID:", id);
+      logger.info("No matching document found for ID:", id);
       return null;
     }
 
     if (updateProductionInfo) {
       return updateProductionInfo;
     } else {
-      console.log("No matching document found for ID:", id);
+      logger.info("No matching document found for ID:", id);
       return null;
     }
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
     throw new Error("Internal server error from service");
   }
 }
@@ -75,7 +73,6 @@ async function updateProductionInfoDB(id, data) {
 const deleteProductionInfoDB = async (id) => {
     try {
       const deleteProductionInfoData = await ProductionInfoModel.findByIdAndDelete(id);
-      console.log(deleteProductionInfoData, "delete");
       if (!deleteProductionInfoData) {
         throw new Error("PO info not found");
       }

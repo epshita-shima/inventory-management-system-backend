@@ -1,3 +1,4 @@
+const { errorlogger } = require("../../../shared/logger");
 const menuItemService = require("./menu.service");
 
 const getMenuItems = async (req, res, next) => {
@@ -10,7 +11,6 @@ const updateMenuItems = async (req, res) => {
   
   try {
     const result = await menuItemService.updateMenuDB(req.body);
-    console.log('result',result)
     return res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -36,22 +36,20 @@ const getMenuById = async (req, res) => {
     }
     return res.status(200).json(menu);
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
 const getMenuChangingParentById = async (req, res) => {
   const {id} = req.params
-  console.log('singlechangingparent',id)
   try {
     const menu = await menuItemService.getMenuChangingParentByIdDB(id);
-    console.log(menu);
     if (!menu) {
       return res.status(404).json({ message: "Menu not found" });
     }
     return res.status(200).json(menu);
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -60,10 +58,9 @@ const updatedSingleMenuItems = async (req, res) => {
   try {
     const { id } = req.params;
     const result = await menuItemService.updateSingleMenuDB(req.body);
-    console.log("menu controller", result);
     return res.status(200).json(result);
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -71,9 +68,7 @@ const updatedSingleMenuItems = async (req, res) => {
 const updateSinglePortionMenuUpdate = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id)
-    const updatedItemData = req.body; // Assuming the updated data is sent in the request body
-    console.log('updatedItemData',updatedItemData)
+    const updatedItemData = req.body; 
     const result = await menuItemService.updateSingleMenuDataDB(id,updatedItemData);
     res.status(200).json(result);
   } catch (error) {
@@ -84,7 +79,6 @@ const updateSinglePortionMenuUpdate = async (req, res) => {
 const updateMenuNestedItemsController=async(req,res)=>{
   try {
     const result = await menuItemService.updateMenuNestedItemsDB(req.body);
-    console.log('resultcontroller', result.data2.items);
     res.status(200).json({ data1: result.data1, data2: result.data2 });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -96,7 +90,7 @@ const deleteMenuController = async (req, res) => {
       const menu = await menuItemService.deleteMenuDB(id);
       return res.status(200).json(menu);
   } catch (error) {
-      console.error(error);
+      errorlogger.error(error);
       return res.status(500).json({ message: 'Internal server error' });
   }
 };

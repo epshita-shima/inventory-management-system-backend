@@ -1,3 +1,4 @@
+const { errorlogger } = require("../../../shared/logger");
 const PaymentReceiveInfoModel = require("./paymentmethodinformation.model");
 
 async function getPaymentMethodInfoDB() {
@@ -5,7 +6,7 @@ async function getPaymentMethodInfoDB() {
     const productionData = await PaymentReceiveInfoModel.find();
     return productionData;
   } catch (error) {
-    console.error("Error fetching production data:", error);
+    errorlogger.error("Error fetching production data:", error);
   }
 }
 
@@ -27,7 +28,7 @@ async function getFilteredPaymentMethodInfoDB(clientId, piNumber) {
     const data = await PaymentReceiveInfoModel.find(filter);
     return data;
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
     throw new Error("Error fetching payment method info");
   }
 }
@@ -45,7 +46,7 @@ async function getPaymentMethodInfoByIdDB(id) {
     const singlePaymentMethodInfo = await PaymentReceiveInfoModel.findById(id);
     return singlePaymentMethodInfo;
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
     throw new Error("Internal server error from service");
   }
 }
@@ -75,7 +76,7 @@ async function updatePreviousPaymentMethodInfoDB(data) {
      
     }
   } catch (error) {
-    console.error(error);
+    errorlogger.error(error);
     throw new Error("Internal server error from service");
   }
 }
