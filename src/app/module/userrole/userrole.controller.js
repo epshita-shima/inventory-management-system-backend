@@ -16,10 +16,7 @@ const userRoleToDB=require("./userrole.service")
                 message: 'User roll with the same name already exists'
             });
         } else {
-            res.status(500).json({
-                status: 'error',
-                message: 'Failed to save data to the database'
-            });
+          next(error)
         }
     }
 

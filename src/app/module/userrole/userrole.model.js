@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 
 const userRoleSchema = new mongoose.Schema({
-    userrolename: String,
-    makeby:String,
-    updateby:String
+    userrolename: { type: String, required: true },
+    makeby:{ type: String },
+    updateby:{ type: String},
 }, { timestamps: true });
 
 const UserRole = mongoose.model('UserRole', userRoleSchema);

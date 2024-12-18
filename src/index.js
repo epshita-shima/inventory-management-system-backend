@@ -20,32 +20,32 @@ const clientInfoRoute = require("./app/module/clientinformation/client.route");
 const paymentInfoRoute = require("./app/module/paymentinformation/paymentinfo.route");
 const bankInfoRoute = require("./app/module/bankinformation/bankinfo.route");
 const purchaseOrderInfoRoute = require("./app/module/purchaseorderinformation/purchaseorderinfo.route");
-const goodsReceiveNoteRoute=require('./app/module/goodsreceivenoteinformation/grninfo.route');
-const productionRoute=require('./app/module/productioninformation/productioninfo.route');
-const salesManagementRoute=require('./app/module/salesmanagement/salesmanagementinfo.route');
-const paymentMethodInfoRoute=require('./app/module/paymentmethodinformation/paymentmethodinformation.route');
-const deliveryOrderInfo=require('./app/module/deliveryorderinformation/deliveryorderinfo.route');
-const finishGoodsDelivery=require('./app/module/finishgoodsdeliveryinfo/finishgoodsdeliveryinfo.route');
-const returnDeliveredRoute=require('./app/module/deliveredreturninformation/deliveredreturninformation.route');
-const salesReportViewRoute=require('./app/module/salesreportview/allreportview.route')
-const productionReportViewRoute=require('./app/module/productionreportview/productionreport.route')
-const combineReportRoute=require('./app/module/combinereport/combinereport.route')
-const purchaseReportRoute=require('./app/module/purchasereport/purchasereport.route')
-
+const goodsReceiveNoteRoute = require("./app/module/goodsreceivenoteinformation/grninfo.route");
+const productionRoute = require("./app/module/productioninformation/productioninfo.route");
+const salesManagementRoute = require("./app/module/salesmanagement/salesmanagementinfo.route");
+const paymentMethodInfoRoute = require("./app/module/paymentmethodinformation/paymentmethodinformation.route");
+const deliveryOrderInfo = require("./app/module/deliveryorderinformation/deliveryorderinfo.route");
+const finishGoodsDelivery = require("./app/module/finishgoodsdeliveryinfo/finishgoodsdeliveryinfo.route");
+const returnDeliveredRoute = require("./app/module/deliveredreturninformation/deliveredreturninformation.route");
+const salesReportViewRoute = require("./app/module/salesreportview/allreportview.route");
+const productionReportViewRoute = require("./app/module/productionreportview/productionreport.route");
+const combineReportRoute = require("./app/module/combinereport/combinereport.route");
+const purchaseReportRoute = require("./app/module/purchasereport/purchasereport.route");
 
 // const upload = require("./app/module/multer/configuration");
-const dynamicFields=require('./app/module/multer/configuration')
+const dynamicFields = require("./app/module/multer/configuration");
 require("dotenv").config();
 const cors = require("cors");
 const { logger, errorlogger } = require("./shared/logger");
+const  globalErrorHandler  = require("./app/middlewares/globalErrorHandler");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/uploads", express.static("uploads"));
-const port = 5000;
+const port = process.env.PORT;
 app.use(dynamicFields);
 
 const uri = process.env.MONGO_URI;
@@ -61,7 +61,7 @@ mongoose.Promise = global.Promise;
 mongoose
   .connect(uri)
   .then(() => {
-  logger.info("connection successfull");
+    logger.info("connection successfull");
   })
   .catch((err) => errorlogger.error(err));
 
@@ -70,7 +70,6 @@ mongoose
 // application route
 
 app.use("/userrole", userRoleRoutes);
-
 
 app.use("/menuitems", menuItemRoutes);
 app.use("/menuitems/update", menuItemRoutes);
@@ -106,22 +105,25 @@ app.use("/clientinfo", clientInfoRoute);
 app.use("/paymentinfo", paymentInfoRoute);
 app.use("/bankinfo", bankInfoRoute);
 app.use("/purchaseorderinfo", purchaseOrderInfoRoute);
-app.use('/grninfo',goodsReceiveNoteRoute);
-app.use('/production',productionRoute);
-app.use('/invoiceinfo',salesManagementRoute);
-app.use('/payment-receive',paymentMethodInfoRoute);
-app.use('/delivery-order',deliveryOrderInfo);
-app.use('/finish-goods-delivery',finishGoodsDelivery);
-app.use('/return-deliver',returnDeliveredRoute);
-app.use('/report',salesReportViewRoute);
-app.use('/production-report',productionReportViewRoute);
-app.use('/combine-report',combineReportRoute);
-app.use('/purchase-report',purchaseReportRoute);
+app.use("/grninfo", goodsReceiveNoteRoute);
+app.use("/production", productionRoute);
+app.use("/invoiceinfo", salesManagementRoute);
+app.use("/payment-receive", paymentMethodInfoRoute);
+app.use("/delivery-order", deliveryOrderInfo);
+app.use("/finish-goods-delivery", finishGoodsDelivery);
+app.use("/return-deliver", returnDeliveredRoute);
+app.use("/report", salesReportViewRoute);
+app.use("/production-report", productionReportViewRoute);
+app.use("/combine-report", combineReportRoute);
+app.use("/purchase-report", purchaseReportRoute);
 
+// app.get("/", (req, res, next) => {
+//   // res.send("Running inventory management");
+// // throw new Error('oree babhhh error')
+//   // next("oree babhhh error");
+// });
 
-app.get("/", (req, res) => {
-  res.send("Running inventory management");
-});
+app.use(globalErrorHandler);
 
 app.listen(port, () => {
   logger.info(`app litstening at port ${port}`);
