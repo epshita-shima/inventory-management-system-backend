@@ -1,5 +1,5 @@
 const { errorlogger } = require("../../../shared/logger");
-const RMIteminfoService = require("./iteminfo.service");
+const RMIteminfoService = require("./rawmaterialinfo.service");
 
 const getItemInfoController = async (req, res, next) => {
   const data = req.body;

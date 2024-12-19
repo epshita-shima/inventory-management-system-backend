@@ -30,7 +30,10 @@ const ProductionInfoSchema = new Schema({
   updateBy: { type: String },
   makeDate: { type: Date, required: true, default: Date.now },
   updateDate: { type: Date },
-  detailsData: [DetailsDataSchema],
+  detailsData: { 
+    type: [DetailsDataSchema], 
+    required: true // Make detailsData required
+  },
 
 });
 const ProductionInfoInfoModel = mongoose.model(

@@ -7,14 +7,15 @@ async function getProductionInfoController(req, res, next) {
     res.json(productionData);
   }
 
-async function insertProductInfoController(req, res) {
+async function insertProductInfoController(req, res,next) {
     try {
       const insertedProduction = await ProductionInfoService.insertProductInfoDB(
         req.body
       );
       res.status(200).json(insertedProduction);
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      // res.status(500).json({ error: error.message });
+      next(error)
     }
   }
   const getFilteredProductionInfoController = async (req, res, next) => {

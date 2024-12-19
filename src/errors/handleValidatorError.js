@@ -1,15 +1,32 @@
 const handleValidatorError = (err) => {
-  const errors = Object.values(err.errors).map((el) => {
+  if (err.name === "ValidationError") {
+    // Extract validation error details
+    const errors = Object.values(err.errors).map((el) => {
+      return {
+        path: el?.path || "Unknown path",
+        message: el?.message || "No message provided",
+      };
+    });
+    const statusCode = 400;
     return {
-      path: el?.path,
-      message: el.message,
+      statusCode,
+      message: "Validation Error",
+      errorMessages: errors,
     };
-  });
-  const statusCode = 400;
+  }
+
+  // Fallback for unexpected errors
+  console.error("Unexpected error in handleValidatorError:", err);
   return {
-    statusCode,
-    message: "Validation Error",
-    errorMessages: errors,
+    statusCode: 500,
+    message: "Internal Server Error",
+    errorMessages: [
+      {
+        path: "unknown",
+        message: err.message || "An unexpected error occurred.",
+      },
+    ],
   };
 };
-export default handleValidatorError
+
+module.exports = handleValidatorError;

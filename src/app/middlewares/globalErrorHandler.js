@@ -1,38 +1,48 @@
 const ApiError = require("../../errors/ApiError");
 const handleValidatorError = require("../../errors/handleValidatorError");
 
-const globalErrorHandler = (err, req, res, next) => {
+const globalErrorHandler = (error, req, res, next) => {
   let statusCode = 500;
-  let message = "Somthing went wrong!";
-  errorMessages = [{ path, message }];
+  let message = "Something went wrong!";
+  let errorMessages = [];
 
-  if (err.name === "ValidatorError") {
-    const simplifiedError = handleValidatorError(err);
+  if (error.name === "ValidationError") {
+    const simplifiedError = handleValidatorError(error);
+    console.log('simplifiedError',simplifiedError)
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
     errorMessages = simplifiedError.errorMessages;
-  } else if (err instanceof ApiError) {
-    statusCode = err?.statusCode;
-    message = err?.message;
-    errorMessages = err.message
+  } else if (error instanceof ApiError) {
+    statusCode = error?.statusCode;
+    message = error?.message;
+    errorMessages = error?.message
       ? [
           {
             path: "",
-            message: err.message,
+            message: error?.message,
           },
         ]
       : [];
-  } else if (err instanceof Error) {
-    message = err?.message;
-    errorMessages = err?.message ? [{ path: "", message: err.message }] : [];
+  } else if (error instanceof Error) {
+    message = error?.message;
+    errorMessages = error?.message
+      ? [
+          {
+            path: "",
+            message: error.message,
+          },
+        ]
+      : [];
   }
-  res.status().json({
+
+  res.status(statusCode).json({
     success: false,
     message,
     errorMessages,
-    stack: process.env.NODE_ENV !== "production" ? err?.stack : undefined,
+    stack: process.env.NODE_ENV !== "production" ? error?.stack : undefined,
   });
-  next(err);
+
+  next();
 };
 
 module.exports = globalErrorHandler;

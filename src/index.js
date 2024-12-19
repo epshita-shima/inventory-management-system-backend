@@ -4,15 +4,25 @@ const mongoose = require("mongoose");
 const multer = require("multer");
 
 // const { MongoClient } = require("mongoose");
+
+const dynamicFields = require("./app/module/multer/configuration");
+require("dotenv").config();
+const cors = require("cors");
+const ApiError = require("./errors/ApiError");
+const { logger, errorlogger } = require("./shared/logger");
+const  globalErrorHandler  = require("./app/middlewares/globalErrorHandler");
+
+const app = express();
+
 const userRoleRoutes = require("./app/module/userrole/userrole.route");
 const menuItemRoutes = require("./app/module/menus/menu.route");
 const serialGenerate = require("./app/module/serialnogenerate/serialnogenerate.route");
 const userCreateRoute = require("./app/module/user/user.route");
-const companyRoute = require("./app/module/reportdetails/reportdetails.route");
+const companyRoute = require("./app/module/companyinformation/companyinfo.route");
 const itemsizeRoute = require("./app/module/itemsize/itemsize.route");
 const itemunitRoute = require("./app/module/itemunitinfo/itemunit.route");
-const fgIteminfoRoute = require("./app/module/fgiteminformation/iteminfo.route");
-const rmIteminfoRoute = require("./app/module/rmiteminformation/iteminfo.route");
+const fgIteminfoRoute = require("./app/module/finishgoodsinformation/finishgoods.route");
+const rmIteminfoRoute = require("./app/module/rawmaterialinformation/rawmaterialinfo.route");
 const categoryInfoRoute = require("./app/module/categoryinformation/categoryinfo.route");
 const cftInfoRoute = require("./app/module/cftinformation/cft.route");
 const supplierInfoRoute = require("./app/module/supplierinformation/supplier.route");
@@ -32,14 +42,9 @@ const productionReportViewRoute = require("./app/module/productionreportview/pro
 const combineReportRoute = require("./app/module/combinereport/combinereport.route");
 const purchaseReportRoute = require("./app/module/purchasereport/purchasereport.route");
 
-// const upload = require("./app/module/multer/configuration");
-const dynamicFields = require("./app/module/multer/configuration");
-require("dotenv").config();
-const cors = require("cors");
-const { logger, errorlogger } = require("./shared/logger");
-const  globalErrorHandler  = require("./app/middlewares/globalErrorHandler");
 
-const app = express();
+// const upload = require("./app/module/multer/configuration");
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -123,6 +128,12 @@ app.use("/purchase-report", purchaseReportRoute);
 //   // next("oree babhhh error");
 // });
 
+// app.get("/", async(req, res) => {
+//  Promise.reject(new Error('Unhandled promise rejection'))
+// });
+process.on('unhandledRejection',err=>{
+  process.exist(1)
+})
 app.use(globalErrorHandler);
 
 app.listen(port, () => {

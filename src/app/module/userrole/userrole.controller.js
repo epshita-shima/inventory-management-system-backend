@@ -10,14 +10,15 @@ const userRoleToDB=require("./userrole.service")
             data: userrole
         });
     } catch (error) {
-        if (error.message === "User roll with the same name already exists") {
-            return res.status(400).json({
-                status: 'error',
-                message: 'User roll with the same name already exists'
-            });
-        } else {
+        // if (error.message === "User roll with the same name already exists") {
+        //     return res.status(400).json({
+        //         status: 'error',
+        //         message: 'User roll with the same name already exists'
+        //     });
+        // } else {
           next(error)
-        }
+        // }
+
     }
 
 };

@@ -1,3 +1,4 @@
+const ApiError = require("../../../errors/ApiError");
 const { errorlogger, logger } = require("../../../shared/logger");
 const ProductionInfoModel = require("./productioninfo.model");
 
@@ -30,9 +31,15 @@ async function getFilteredProductionInfoDB(fromDate, toDate) {
 }
 async function insertProductInfoDB(purchaseOrderInfo) {
   try {
-    return await ProductionInfoModel.insertMany(purchaseOrderInfo);
+    const purchaseInfoInsert= await ProductionInfoModel.insertMany(purchaseOrderInfo);
+    if(purchaseInfoInsert){
+      return purchaseInfoInsert
+    }
+    else{
+      throw new ApiError(400,'Failed to create')
+    }
   } catch (error) {
-    throw new Error("Error inserting items unit: " + error.message);
+    throw error
   }
 }
 

@@ -1,5 +1,5 @@
 const { errorlogger } = require('../../../shared/logger');
-const companyService = require('./reportdetails.service');
+const companyService = require('./companyinfo.service');
 
 const saveCompany=async(req, res)=> {
   try {

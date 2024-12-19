@@ -1,4 +1,4 @@
-const Company = require('./reportdetails.model');
+const Company = require('./companyinfo.model');
 
 const saveCompanyDetails=async (companyName,companyAddress, companyContact,companyEmail,footerAddress,footerContact)=> {
   try {

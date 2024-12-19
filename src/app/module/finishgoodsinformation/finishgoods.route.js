@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const FinishGoodItemInfoController = require("./iteminfo.controller");
+const FinishGoodItemInfoController = require("./finishgoods.controller");
 
 router.get('/',FinishGoodItemInfoController.getItemInfoController);
 router.post('/',FinishGoodItemInfoController.insertItemInfoController);

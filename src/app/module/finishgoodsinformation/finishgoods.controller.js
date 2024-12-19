@@ -1,5 +1,5 @@
 const { errorlogger } = require("../../../shared/logger");
-const FinishGoodIteminfoService = require("./iteminfo.service");
+const FinishGoodIteminfoService = require("./finishgoods.service");
 
 const getItemInfoController = async (req, res, next) => {
   const data = req.body;

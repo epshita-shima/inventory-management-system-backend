@@ -3,8 +3,8 @@ const OrderModel = require("../salesmanagement/salesmanagementinfo.model");
 const ProductionModel = require("../productioninformation/productioninfo.model");
 const SalesModel = require("../finishgoodsdeliveryinfo/finishgoodsdeliveryinfo.model");
 const ReturnModel = require("../deliveredreturninformation/deliveredreturninformation.model");
-const RawMaterialModel = require("../rmiteminformation/iteminfo.model");
-const FinishGoodsModel = require("../fgiteminformation/iteminfo.model");
+const RawMaterialModel = require("../rawmaterialinformation/rawmaterialinfo.model");
+const FinishGoodsModel = require("../finishgoodsinformation/finishgoods.model");
 const { errorlogger } = require("../../../shared/logger");
 async function getFilteredForManagementCombineReportDB(fromDate, toDate) {
   console.log("combine service", fromDate, toDate); // Fixing the typo

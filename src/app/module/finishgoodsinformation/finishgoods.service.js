@@ -1,9 +1,9 @@
 const { errorlogger, logger } = require("../../../shared/logger");
-const RMItemInfoModel = require("./iteminfo.model");
+const FinishGoodItemInfoModel = require("./finishgoods.model");
 
 async function getItemInfoDB() {
   try {
-    const itemInfoData = await RMItemInfoModel.find();
+    const itemInfoData = await FinishGoodItemInfoModel.find();
     return itemInfoData;
   } catch (error) {
     errorlogger.error("Error fetching items unit:", error);
@@ -12,7 +12,7 @@ async function getItemInfoDB() {
 
 async function insertItemInfotDB(itemunit) {
   try {
-    return await RMItemInfoModel.insertMany(itemunit);
+    return await FinishGoodItemInfoModel.insertMany(itemunit);
   } catch (error) {
     throw new Error("Error inserting items: " + error.message);
   }
@@ -20,7 +20,7 @@ async function insertItemInfotDB(itemunit) {
 
 async function getItemInfoByIdDB(id) {
   try {
-    const singleItem = await RMItemInfoModel.findById(id);
+    const singleItem = await FinishGoodItemInfoModel.findById(id);
     return singleItem;
   } catch (error) {
     errorlogger.error(error);
@@ -30,7 +30,7 @@ async function getItemInfoByIdDB(id) {
 
 async function updateItemInformationDB(id, data) {
   try {
-    const updatedItemInfo = await RMItemInfoModel.findByIdAndUpdate(
+    const updatedItemInfo = await FinishGoodItemInfoModel.findByIdAndUpdate(
       id,
       { $set: data },
       { new: true }
@@ -51,7 +51,7 @@ async function updateItemInformationStatusDB( data) {
   try {
     const promises = data?.map(async (updateStatus) => {
       // Update isactive field for each user
-      const updatedStatusData = await RMItemInfoModel.findByIdAndUpdate(
+      const updatedStatusData = await FinishGoodItemInfoModel.findByIdAndUpdate(
         updateStatus._id,
         { itemStatus: updateStatus.itemStatus },
         { new: true }
@@ -67,9 +67,10 @@ async function updateItemInformationStatusDB( data) {
 }
 
 
+
 const deleteItemInformationDB = async (id) => {
   try {
-    const deleteItemInfoData= await RMItemInfoModel.findByIdAndDelete(id);
+    const deleteItemInfoData= await FinishGoodItemInfoModel.findByIdAndDelete(id);
     if (!deleteItemInfoData) {
       throw new Error("Item not found");
     }
@@ -83,6 +84,6 @@ module.exports = {
   insertItemInfotDB,
   getItemInfoByIdDB,
   updateItemInformationDB,
-  deleteItemInformationDB,
-  updateItemInformationStatusDB
+  updateItemInformationStatusDB,
+  deleteItemInformationDB
 };

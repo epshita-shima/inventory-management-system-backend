@@ -15,7 +15,7 @@ const createUserRoleToDB=async(payload)=>{
         return userRole;
     } catch (error) {
         console.error("Error saving data to MongoDB:", error);
-        throw error// Throw the error to be handled by the caller
+        throw error
     }   
 }
 
