@@ -9,15 +9,16 @@ async function getInvoiceInformationController(req, res, next) {
   res.json(invoiceData);
 }
 
-async function insertInvoiceInformationController(req, res) {
+async function insertInvoiceInformationController(req, res,next) {
   try {
     const insertedInvoice =
       await SalesManagementService.insertInvoiceInformationDB(req.body);
     res.status(200).json(insertedInvoice);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error)
   }
 }
+
 const getFilteredInvoiceInfoController = async (req, res) => {
   const { customerID } = req.query; // Assuming customerID is passed as a query parameter
   try {
@@ -28,7 +29,6 @@ const getFilteredInvoiceInfoController = async (req, res) => {
     res.status(500).json({ error: 'An error occurred while fetching data' });
   }
 };
-
 
 const getInvoiceInformationByIdController = async (req, res) => {
   const { id } = req.params;
@@ -89,8 +89,6 @@ const updateInvoiceStatusController = async (req, res) => {
   }
 };
 
-
-
 const deleteInvoiceInformationController = async (req, res) => {
   const { id } = req.params;
   try {
@@ -103,6 +101,7 @@ const deleteInvoiceInformationController = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 module.exports = {
   getInvoiceInformationController,
   insertInvoiceInformationController,

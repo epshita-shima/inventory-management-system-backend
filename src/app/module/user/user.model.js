@@ -3,9 +3,9 @@ const mongoose = require("mongoose");
 const dropdownSchema = new mongoose.Schema({
   label: { type: String, required: true },
   url: { type: String, required: true },
-  permissions: [{ type: String }],
   isChecked: { type: Boolean, default: false },
   items: [this],
+  parentIds: [{ type: String }],
   trackId: { type: String, required: true },
   isInserted: { type: Boolean, default: false },
   isUpdated: { type: Boolean, default: false },
@@ -23,11 +23,10 @@ const userSchema = new mongoose.Schema({
   roleId: { type: String, required: true },
   menulist: [
     {
+      id:{ type: String },
       trackId: { type: String },
       label: { type: String, required: true },
       url: { type: String, required: true },
-      permissions: [{ type: String }], // Change the type based on your requirements
-      parentIds: [{ type: String }], // Change the type based on your requirements
       items: [dropdownSchema],
       isChecked: { type: Boolean, default: false },
       isInserted: { type: Boolean, default: false },

@@ -1,10 +1,10 @@
-const Server =require('http');
+const Server = require("http");
 const mongoose = require("mongoose");
-const app=require('./app');
-const config = require('./config');
-const { errorlogger, logger } = require('./shared/logger');
+const app = require("./app");
+const config = require("./config");
+const { errorlogger, logger } = require("./shared/logger");
 
-process.on('uncaughtException', error => {
+process.on("uncaughtException", (error) => {
   errorlogger.error(error);
   process.exit(1);
 });
@@ -13,7 +13,6 @@ let server;
 
 async function bootstrap() {
   try {
-  
     const uri = config.database_url;
 
     if (!uri) {
@@ -22,7 +21,7 @@ async function bootstrap() {
       );
       process.exit(1);
     }
-    
+
     mongoose.Promise = global.Promise;
     mongoose
       .connect(uri)
@@ -36,10 +35,11 @@ async function bootstrap() {
       console.log(`Application  listening on port ${config.port}`);
     });
   } catch (err) {
-    errorlogger.error('Failed to connect database', err);
+    errorlogger.error("Failed to connect database", err);
   }
 
-  process.on('unhandledRejection', error => {
+  process.on("unhandledRejection", (error) => {
+    console.log("unhandled Rejection is detected,we are closing or sever......")
     if (server) {
       server.close(() => {
         errorlogger.error(error);
@@ -52,3 +52,5 @@ async function bootstrap() {
 }
 
 bootstrap();
+
+  

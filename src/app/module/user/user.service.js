@@ -41,6 +41,7 @@ const getUserByIdDB = async (id) => {
 };
 
 const updateUserDB = async (id, isactive) => {
+  console.log('isactive',isactive)
   try {
     const user = await User.findByIdAndUpdate(
       id,
