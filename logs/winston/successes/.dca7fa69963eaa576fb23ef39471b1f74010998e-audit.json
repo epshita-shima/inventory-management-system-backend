@@ -154,6 +154,11 @@
             "date": 1735189850689,
             "name": "E:\\MalihaIT\\Porjects\\Maliha Eco Bricks\\authentication-practice\\user-authentication-backend\\logs\\winston\\successes\\meb-2024-12-26-11-success.log",
             "hash": "7073680158d51be3c9845bdb0c3997c3604ab242b143338d7220ae1957e2f61c"
+        },
+        {
+            "date": 1735194052255,
+            "name": "E:\\MalihaIT\\Porjects\\Maliha Eco Bricks\\authentication-practice\\user-authentication-backend\\logs\\winston\\successes\\meb-2024-12-26-12-success.log",
+            "hash": "ddf2f103601b5a8943a96824f7b0c3727ba63b8b37170ab28003bab35d776d18"
         }
     ],
     "hashType": "sha256"
