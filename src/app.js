@@ -20,15 +20,30 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/api/v1', routes);
 
-app.get('/', async (req, res, next) => {
-    try {
-        await Promise.reject(new Error('Handled promise rejection'));
-    } catch (error) {
-        next(error); 
-    }
-});
+
+// app.get('/', async (req, res, next) => {
+//     try {
+//         await Promise.reject(new Error('Handled promise rejection'));
+//     } catch (error) {
+//         next(error); 
+//     }
+// });
+app.use('/api/v1', routes);
+// app.use((err, req, res, next) => {
+//   console.error('Error:', err.message);
+
+//   res.status(err.status || 500).json({
+//       success: false,
+//       message: err.message || 'Internal Server Error',
+//       errorMessages: [
+//           {
+//               path: req.originalUrl,
+//               message: err.message || 'Internal Server Error',
+//           },
+//       ],
+//   });
+// });
 // app.get('/',async(req,res,next)=>{
 //   console.log(x)
 // })
