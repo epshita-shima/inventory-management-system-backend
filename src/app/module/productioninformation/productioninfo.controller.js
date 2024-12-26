@@ -39,7 +39,7 @@ async function insertProductInfoController(req, res,next) {
       }
       return res.status(200).json(singleProductionInfo);
     } catch (error) {
-      errorlogger.error(error);
+      console.log(error);
       return res.status(500).json({ message: "Internal server error" });
     }
   };
@@ -63,7 +63,7 @@ async function insertProductInfoController(req, res,next) {
       const productionInfo = await ProductionInfoService.deleteProductionInfoDB(id);
       return res.status(200).json(productionInfo);
     } catch (error) {
-      errorlogger.error(error);
+      console.log(error);
       return res.status(500).json({ message: "Internal server error" });
     }
   };

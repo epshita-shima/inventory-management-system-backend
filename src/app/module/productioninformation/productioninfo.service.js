@@ -7,7 +7,7 @@ async function getProductionInfoDB() {
     const productionData = await ProductionInfoModel.find();
     return productionData;
   } catch (error) {
-    errorlogger.error("Error fetching production data:", error);
+    console.log("Error fetching production data:", error);
   }
 }
 
@@ -26,7 +26,7 @@ async function getFilteredProductionInfoDB(fromDate, toDate) {
       return data;
     }
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
   }
 }
 async function insertProductInfoDB(purchaseOrderInfo) {
@@ -48,7 +48,7 @@ async function getProductionInfoByIdDB(id) {
     const singleProductionInfo = await ProductionInfoModel.findById(id);
     return singleProductionInfo;
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     throw new Error("Internal server error from service");
   }
 }
@@ -61,18 +61,18 @@ async function updateProductionInfoDB(id, data) {
       { new: true }
     );
     if (!updateProductionInfo) {
-      logger.info("No matching document found for ID:", id);
+      console.log("No matching document found for ID:", id);
       return null;
     }
 
     if (updateProductionInfo) {
       return updateProductionInfo;
     } else {
-      logger.info("No matching document found for ID:", id);
+      console.log("No matching document found for ID:", id);
       return null;
     }
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     throw new Error("Internal server error from service");
   }
 }

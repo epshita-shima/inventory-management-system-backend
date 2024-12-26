@@ -6,7 +6,7 @@ async function getItemSizesDB(){
         const itemsizes = await ItemsizeModal.find();
         return itemsizes;
       } catch (error) {
-        errorlogger.error("Error fetching item size:", error);
+        console.log("Error fetching item size:", error);
       }
 }
 async function insertItemSizesDB(itemssize) {

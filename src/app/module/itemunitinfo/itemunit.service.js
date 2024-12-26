@@ -6,7 +6,7 @@ async function getItemUnitDB(){
         const itemunits= await ItemUnitInfoModel.find();
         return itemunits;
       } catch (error) {
-        errorlogger.error("Error fetching items unit:", error);
+        console.log("Error fetching items unit:", error);
       }
 }
 

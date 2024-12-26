@@ -6,7 +6,7 @@ async function getCategoryInfoDB(){
         const categoryInfo = await CategoryInfoModal.find();
         return categoryInfo;
       } catch (error) {
-        errorlogger.error("Error fetching item size:", error);
+        console.log("Error fetching item size:", error);
       }
 }
 

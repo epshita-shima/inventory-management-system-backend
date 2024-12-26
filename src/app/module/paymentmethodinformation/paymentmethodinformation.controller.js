@@ -39,7 +39,7 @@ const getPaymentMethodInfoByIdController = async (req, res) => {
     }
     return res.status(200).json(singlePaymentMethodInfo);
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -68,7 +68,7 @@ const deletePaymentMethodInfoController = async (req, res) => {
       await PaymentMethodInfoService.deletePaymentMethodInfoDB(data);
     return res.status(200).json(paymentMethodInfo);
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

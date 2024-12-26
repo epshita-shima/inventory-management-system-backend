@@ -6,7 +6,7 @@ async function getCFTInfosDB(){
         const CFTInfos = await CFTInfosModal.find();
         return CFTInfos;
       } catch (error) {
-        errorlogger.error("Error fetching item size:", error);
+        console.log("Error fetching item size:", error);
       }
 }
 
@@ -23,7 +23,7 @@ async function insertCFTInfosDB(cftData) {
       const singleCFTData = await CFTInfosModal.findById(id);
       return singleCFTData;
     } catch (error) {
-      errorlogger.error(error);
+      console.log(error);
       throw new Error("Internal server error from service");
     }
   }
@@ -38,11 +38,11 @@ async function insertCFTInfosDB(cftData) {
       if (updateCFTInfo) {
         return updateCFTInfo;
       } else {
-        logger.info("No matching document found for ID:", id);
+        console.log("No matching document found for ID:", id);
         return null;
       }
     } catch (error) {
-      errorlogger.error(error);
+      console.log(error);
       throw new Error("Internal server error from service");
     }
   }
@@ -61,7 +61,7 @@ async function insertCFTInfosDB(cftData) {
       const updatedStatusData = await Promise.all(promises);
       return updatedStatusData;
     } catch (error) {
-      errorlogger.error("Error updating multiple users:", error);
+      console.log("Error updating multiple users:", error);
       throw new Error("Failed to update multiple data");
     }
   }

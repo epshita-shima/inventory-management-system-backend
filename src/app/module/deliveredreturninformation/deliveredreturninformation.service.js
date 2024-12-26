@@ -9,7 +9,7 @@ async function getRetunDeliveredInfoDB() {
     const deliveryReturnData = await RetunDeliveredInfoModel.find();
     return deliveryReturnData;
   } catch (error) {
-    errorlogger.error("Error fetching delivery Return data:", error);
+    console.log("Error fetching delivery Return data:", error);
   }
 }
 
@@ -93,7 +93,7 @@ async function insertReturnDeliveredInfoDB(returnInfo) {
       return { success: false, message: 'No details found for the provided piId or doId' };
     }
   } catch (error) {
-   errorlogger.error("Error inserting delivery Return Data:", error);
+   console.log("Error inserting delivery Return Data:", error);
     throw new Error("Error inserting delivery return data: " + error.message);
   }
 }
@@ -106,7 +106,7 @@ async function getReturnDeliveredDataInfoByIdDB(id) {
     );
     return singleReturnDeliveredInfo;
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     throw new Error("Internal server error from service");
   }
 }

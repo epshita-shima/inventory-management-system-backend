@@ -50,7 +50,7 @@ async function getFilteredForPurchaseReporDB(
       return data;
     }
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     throw new Error("Error fetching payment method info");
   }
 }
@@ -155,7 +155,7 @@ async function getFilteredForSalesSummaryReportInfoDB(
 
     return Object.values(groupedData);
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     throw new Error("Error fetching payment method info");
   }
 }

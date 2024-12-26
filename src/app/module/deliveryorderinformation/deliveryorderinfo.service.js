@@ -6,7 +6,7 @@ async function getDOInfoDB() {
     const deliveryData = await DOInfoModel.find();
     return deliveryData;
   } catch (error) {
-    errorlogger.error("Error fetching production data:", error);
+    console.log("Error fetching production data:", error);
   }
 }
 async function getDOAfterDeliverInfoDB() {
@@ -14,7 +14,7 @@ async function getDOAfterDeliverInfoDB() {
     const deliveryData = await DOInfoModel.find({ deliveryStatus: true });
     return deliveryData;
   } catch (error) {
-   errorlogger.error("Error fetching production data:", error);
+   console.log("Error fetching production data:", error);
   }
 }
 
@@ -23,7 +23,7 @@ async function getFilteredDOApproveInfoDB(approveStatus) {
     const data = await DOInfoModel.find({ approveStatus: approveStatus });
     return data;
   } catch (error) {
-   errorlogger.error("Error querying data:", error);
+   console.log("Error querying data:", error);
     throw error;
   }
 }
@@ -41,7 +41,7 @@ async function getDOInfoByIdDB(id) {
     const singleDOInfo = await DOInfoModel.findById(id);
     return singleDOInfo;
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     throw new Error("Internal server error from service");
   }
 }
@@ -51,7 +51,7 @@ async function getDOSingleInfoByIdDB(id) {
     const singleDOInfo = await DOInfoModel.findById(id);
     return singleDOInfo;
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     throw new Error("Internal server error from service");
   }
 }
@@ -75,7 +75,7 @@ async function updateDOApproveStatusDB(data) {
     // const results = await Promise.all(updatePromises);
     // return results;
   } catch (error) {
-    errorlogger.error("Error updating special approve fields:", error);
+    console.log("Error updating special approve fields:", error);
     throw new Error("Failed to update special approve fields");
   }
 }
@@ -89,7 +89,7 @@ async function updateDOStatusDB(data) {
     );
     return updatedStatusData;
   } catch (error) {
-    errorlogger.error("Error updating multiple users:", error);
+    console.log("Error updating multiple users:", error);
     throw new Error("Failed to update multiple data");
   }
 }

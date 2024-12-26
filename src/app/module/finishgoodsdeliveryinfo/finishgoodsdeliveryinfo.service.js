@@ -10,7 +10,7 @@ async function getFinishGoodsDeliverInfoDB() {
     const deliveryData = await FinishGoodsDeliveryInfoModel.find();
     return deliveryData;
   } catch (error) {
-    errorlogger.error("Error fetching production data:", error);
+    console.log("Error fetching production data:", error);
   }
 }
 
@@ -32,7 +32,7 @@ async function getFilteredFinishGoodsDeliverInfoDB(clientId, approveStatus) {
     const data = await DeliveryOrderInfoModal.find(filter);
     return data;
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     throw new Error("Error fetching payment method info");
   }
 }
@@ -110,7 +110,7 @@ async function insertFinishGoodsDeliverInfoDB(finishGoodsDeliveryInfo) {
   
       return { success: true, insertFGDelivery };
     } else {
-      logger.info(`No details found for _id: ${finishGoodsDeliveryInfo.doId}`);
+      console.log(`No details found for _id: ${finishGoodsDeliveryInfo.doId}`);
       return {
         success: false,
         message: "No details found for the provided piId or doId",
@@ -126,7 +126,7 @@ async function getFinishGoodsDeliverInfoByIdDB(id) {
     const singleDataInfo = await DeliveryOrderInfoModal.findById(id);
     return singleDataInfo;
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     throw new Error("Internal server error from service");
   }
 }

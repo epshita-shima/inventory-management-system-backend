@@ -8,7 +8,7 @@ async function getInvoiceInformationDB() {
     const salesData = await SalesManagementModel.find();
     return salesData;
   } catch (error) {
-    errorlogger.error("Error fetching production data:", error);
+    console.log("Error fetching production data:", error);
   }
 }
 
@@ -43,7 +43,7 @@ async function getFilteredInvoiceInfoDB(customerID, piNumber) {
       return data;
     }
   } catch (error) {
-    errorlogger.error("Error querying data:", error);
+    console.log("Error querying data:", error);
     throw error;
   }
 }
@@ -53,7 +53,7 @@ async function getInvoiceInformationByIdDB(id) {
     const singleInvoiceInfo = await SalesManagementModel.findById(id);
     return singleInvoiceInfo;
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     throw new Error("Internal server error from service");
   }
 }
@@ -83,7 +83,7 @@ async function updateSpecialInvoiceApproveDB(dataArray) {
     const results = await Promise.all(updatePromises);
     return results;
   } catch (error) {
-    errorlogger.error("Error updating special approve fields:", error);
+    console.log("Error updating special approve fields:", error);
     throw new Error("Failed to update special approve fields");
   }
 }
@@ -97,7 +97,7 @@ async function updateInvoiceShipmentNoDB(data) {
     );
     return updatedStatusData;
   } catch (error) {
-    errorlogger.error("Error updating multiple users:", error);
+    console.log("Error updating multiple users:", error);
     throw new Error("Failed to update multiple data");
   }
 }
@@ -110,18 +110,18 @@ async function updateInvoiceInformationDB(id, data) {
       { new: true }
     );
     if (!updateInvoiceInfo) {
-      logger.info("No matching document found for ID:", id);
+      console.log("No matching document found for ID:", id);
       return null;
     }
 
     if (updateInvoiceInfo) {
       return updateInvoiceInfo;
     } else {
-      logger.info("No matching document found for ID:", id);
+      console.log("No matching document found for ID:", id);
       return null;
     }
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     throw new Error("Internal server error from service");
   }
 }
@@ -139,7 +139,7 @@ async function updateInvoicePIStatusDB(data) {
 
     return updatedStatusData;
   } catch (error) {
-    errorlogger.error("Error updating multiple users:", error);
+    console.log("Error updating multiple users:", error);
     throw new Error("Failed to update multiple data");
   }
 }

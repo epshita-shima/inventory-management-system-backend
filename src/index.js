@@ -66,9 +66,9 @@ mongoose.Promise = global.Promise;
 mongoose
   .connect(uri)
   .then(() => {
-    logger.info("connection successfull");
+    console.log("connection successfull");
   })
-  .catch((err) => errorlogger.error(err));
+  .catch((err) => console.log(err));
 
 // connect(process.env.MONGO_URI)
 // MongoClient.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -137,5 +137,5 @@ process.on('unhandledRejection',err=>{
 app.use(globalErrorHandler);
 
 app.listen(port, () => {
-  logger.info(`app litstening at port ${port}`);
+  console.log(`app litstening at port ${port}`);
 });

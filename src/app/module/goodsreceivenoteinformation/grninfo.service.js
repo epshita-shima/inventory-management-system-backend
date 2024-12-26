@@ -6,7 +6,7 @@ async function getGoodsReceiveNoteInfoDB() {
     const grnInfo = await GoodsReceiveNoteInfoModel.find();
     return grnInfo;
   } catch (error) {
-    errorlogger.error("Error fetching item size:", error);
+    console.log("Error fetching item size:", error);
   }
 }
 
@@ -23,7 +23,7 @@ async function getGoodsReceiveNoteInfoByIdDB(id) {
     const singleGRNInfo = await GoodsReceiveNoteInfoModel.findById(id);
     return singleGRNInfo;
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     throw new Error("Internal server error from service");
   }
 }
@@ -52,7 +52,7 @@ async function getFilteredGRNDataInformationDB(
           end: month.end,
         }));
       } catch (error) {
-        errorlogger.error("Error parsing selectMonth:", error);
+        console.log("Error parsing selectMonth:", error);
         throw new Error("Invalid selectMonth format");
       }
       filter.$or = dateRanges.map((range) => ({
@@ -67,7 +67,7 @@ async function getFilteredGRNDataInformationDB(
       return data;
     }
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
   }
 }
 
@@ -81,11 +81,11 @@ async function updateGoodsReceiveNoteInfoDB(id, data) {
     if (updateGRNInfo) {
       return updateGRNInfo;
     } else {
-     logger.info("No matching document found for ID:", id);
+     console.log("No matching document found for ID:", id);
       return null;
     }
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     throw new Error("Internal server error from service");
   }
 }

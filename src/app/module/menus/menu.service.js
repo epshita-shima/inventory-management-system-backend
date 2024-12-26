@@ -8,7 +8,7 @@ const getMenuItemDB = async () => {
 
     return menuitem;
   } catch (error) {
-    errorlogger.error("Error fetching menu:", error);
+    console.log("Error fetching menu:", error);
   }
 };
 
@@ -156,7 +156,7 @@ const getMenuByIdDB = async (id) => {
       return parentMenu;
     }
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     throw new Error("Internal server error from service");
   }
 };
@@ -235,7 +235,7 @@ const updateSingleMenuDB = async (dataToUpdate) => {
 
     return updatedUser;
   } catch (error) {
-    errorlogger.error("Error updating multiple users:", error);
+    console.log("Error updating multiple users:", error);
     throw new Error("Failed to isUpdated multiple data");
   }
 };
@@ -265,7 +265,7 @@ const updateSingleMenuDataDB = async (id, data) => {
           if (updatedItem) {
             return updatedItem;
           } else {
-            logger.info("No matching document found for ID:", id);
+            console.log("No matching document found for ID:", id);
             return new Error("Error inserting menu item: " + error.message);;
           }
         }
@@ -279,7 +279,7 @@ const updateSingleMenuDataDB = async (id, data) => {
         if (updatedItem) {
           return updatedItem;
         } else {
-          logger.info("No matching document found for ID:", id);
+          console.log("No matching document found for ID:", id);
           return null;
         }
       }
@@ -292,12 +292,12 @@ const updateSingleMenuDataDB = async (id, data) => {
       if (updatedItem) {
         return updatedItem;
       } else {
-        logger.info("No matching document found for ID:", id);
+        console.log("No matching document found for ID:", id);
         return null;
       }
     }
   } catch (error) {
-    errorlogger.error("Error updating multiple users:", error);
+    console.log("Error updating multiple users:", error);
     throw new Error("Failed to isUpdated multiple data");
   }
 };

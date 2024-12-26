@@ -7,7 +7,7 @@ const saveCompany=async(req, res)=> {
     const savedCompany = await companyService.saveCompanyDetails(companyName,companyAddress, companyContact,companyEmail,footerAddress,footerContact);
     res.json(savedCompany);
   } catch (error) {
-    errorlogger.error('Error saving company details:', error);
+    console.log('Error saving company details:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 }
@@ -17,7 +17,7 @@ const  getAllCompanies=async(req, res)=> {
       const companies = await companyService.getAllCompanies();
       res.json(companies);
     } catch (error) {
-      errorlogger.error('Error fetching companies:', error);
+      console.log('Error fetching companies:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
   }

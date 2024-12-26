@@ -7,7 +7,7 @@ async function getIBankInfoDB(){
         const bankInfo= await BankInfoModel.find();
         return bankInfo;
       } catch (error) {
-        errorlogger.error("Error fetching item size:", error);
+        console.log("Error fetching item size:", error);
       }
 }
 async function insertBankInfoDB(bankInfoData) {

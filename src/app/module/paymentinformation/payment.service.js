@@ -7,7 +7,7 @@ async function getIPaymentInfoDB(){
         const paymentInfo= await PaymentInfoModel.find();
         return paymentInfo;
       } catch (error) {
-        errorlogger.error("Error fetching item size:", error);
+        console.log("Error fetching item size:", error);
       }
 }
 async function insertPaymentInfoDB(paymentData) {

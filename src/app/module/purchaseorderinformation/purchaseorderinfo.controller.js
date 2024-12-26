@@ -28,7 +28,7 @@ const getPurchaseOrderInfoByIdController = async (req, res) => {
     }
     return res.status(200).json(singlePurchaseOrderInfo);
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -53,7 +53,7 @@ const updatePurchaseOrderInfoStatusController = async (req, res) => {
       await PurchaseOrderInfoService.updatePurchaseOrderInfoStatusDB(req.body);
     return res.status(200).json(result);
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -64,7 +64,7 @@ const deletePurchaseOrderInfoInformationController = async (req, res) => {
     const poInfo = await PurchaseOrderInfoService.deletePurchaseOrderInfoDB(id);
     return res.status(200).json(poInfo);
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

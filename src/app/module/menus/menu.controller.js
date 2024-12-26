@@ -36,7 +36,7 @@ const getMenuById = async (req, res) => {
     }
     return res.status(200).json(menu);
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -49,7 +49,7 @@ const getMenuChangingParentById = async (req, res) => {
     }
     return res.status(200).json(menu);
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -60,7 +60,7 @@ const updatedSingleMenuItems = async (req, res) => {
     const result = await menuItemService.updateSingleMenuDB(req.body);
     return res.status(200).json(result);
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -90,7 +90,7 @@ const deleteMenuController = async (req, res) => {
       const menu = await menuItemService.deleteMenuDB(id);
       return res.status(200).json(menu);
   } catch (error) {
-      errorlogger.error(error);
+      console.log(error);
       return res.status(500).json({ message: 'Internal server error' });
   }
 };

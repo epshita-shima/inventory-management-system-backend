@@ -34,7 +34,7 @@ async function getFilteredForProductionDatewiseDetailsReportInfoDB(
 
     return data;
   } catch (error) {
-   errorlogger.error(error);
+   console.log(error);
     throw new Error("Error fetching payment method info");
   }
 }
@@ -107,7 +107,7 @@ async function getFilteredForProductionDatewiseSummaryReportInfoDB(
     });
     return Object.values(groupedData);
   } catch (error) {
-   errorlogger.error(error);
+   console.log(error);
     throw new Error("Error fetching payment method info");
   }
 }
@@ -145,7 +145,7 @@ async function getFilteredForProductionItemwiseDetailsReportInfoDB(
 
     return data;
   } catch (error) {
-   errorlogger.error(error);
+   console.log(error);
     throw new Error("Error fetching payment method info");
   }
 }
@@ -187,7 +187,7 @@ async function getFilteredForRawMaterialConsumptionDetailsReportInfoDB(
       return data;
     }
   } catch (error) {
-   errorlogger.error(error);
+   console.log(error);
     throw new Error("Error fetching payment method info");
   }
 }
@@ -249,7 +249,7 @@ async function getFilteredForRawMaterialConsumptionSummaryReportInfoDB(
 
     return Object.values(groupedData);
   } catch (error) {
-   errorlogger.error(error);
+   console.log(error);
     throw new Error("Error fetching payment method info");
   }
 }

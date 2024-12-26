@@ -42,7 +42,7 @@ const getGoodsReceiveNoteInfoByIdController = async (req, res) => {
     }
     return res.status(200).json(singleGRNInfo);
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -69,7 +69,7 @@ const deleteGoodsReceiveNoteInfoController = async (req, res) => {
     );
     return res.status(200).json(grnInfo);
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

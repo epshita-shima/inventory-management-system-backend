@@ -348,7 +348,7 @@ async function getFilteredForManagementCombineReportDB(fromDate, toDate) {
       groupedReturnResult,
     };
   } catch (error) {
-    errorlogger.error("Error fetching data:", error);
+    console.log("Error fetching data:", error);
     throw new Error("Error fetching payment method info");
   }
 }

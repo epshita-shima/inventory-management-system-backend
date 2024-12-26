@@ -40,7 +40,7 @@ const getFinishGoodsDeliverInfoByIdController = async (req, res) => {
     }
     return res.status(200).json(singleDataInfo);
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

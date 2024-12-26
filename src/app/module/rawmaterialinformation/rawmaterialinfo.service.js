@@ -6,7 +6,7 @@ async function getItemInfoDB() {
     const itemInfoData = await RMItemInfoModel.find();
     return itemInfoData;
   } catch (error) {
-    errorlogger.error("Error fetching items unit:", error);
+    console.log("Error fetching items unit:", error);
   }
 }
 
@@ -23,7 +23,7 @@ async function getItemInfoByIdDB(id) {
     const singleItem = await RMItemInfoModel.findById(id);
     return singleItem;
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     throw new Error("Internal server error from service");
   }
 }
@@ -38,11 +38,11 @@ async function updateItemInformationDB(id, data) {
     if (updatedItemInfo) {
       return updatedItemInfo;
     } else {
-      logger.info("No matching document found for ID:", id);
+      console.log("No matching document found for ID:", id);
       return null;
     }
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     throw new Error("Internal server error from service");
   }
 }
@@ -61,7 +61,7 @@ async function updateItemInformationStatusDB( data) {
     const updatedStatusData = await Promise.all(promises);
     return updatedStatusData;
   } catch (error) {
-    errorlogger.error("Error updating multiple users:", error);
+    console.log("Error updating multiple users:", error);
     throw new Error("Failed to update multiple data");
   }
 }

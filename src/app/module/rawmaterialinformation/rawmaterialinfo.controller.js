@@ -29,7 +29,7 @@ const getItemInfoByIdController = async (req, res) => {
     }
     return res.status(200).json(singleItemInfo);
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -53,7 +53,7 @@ const updateItemInformationStatusController = async (req, res) => {
       const result = await RMIteminfoService.updateItemInformationStatusDB(req.body);
       return res.status(200).json(result);
   } catch (error) {
-      errorlogger.error(error);
+      console.log(error);
       res.status(500).json({ message: 'Internal server error' });
   }
 };
@@ -64,7 +64,7 @@ const deleteItemInformationController = async (req, res) => {
       const itemInfo = await RMIteminfoService.deleteItemInformationDB(id);
       return res.status(200).json(itemInfo);
   } catch (error) {
-      errorlogger.error(error);
+      console.log(error);
       return res.status(500).json({ message: 'Internal server error' });
   }
 };

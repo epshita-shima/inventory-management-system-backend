@@ -6,7 +6,7 @@ async function getPurchaseOrderInfoDB() {
     const urchaseOrderData = await PurchaseOrderInfoModel.find();
     return urchaseOrderData;
   } catch (error) {
-    errorlogger.error("Error fetching items unit:", error);
+    console.log("Error fetching items unit:", error);
   }
 }
 
@@ -23,7 +23,7 @@ async function getPurchaseOrderInfoByIdDB(id) {
     const singlePurchaseOrderInfo = await PurchaseOrderInfoModel.findById(id);
     return singlePurchaseOrderInfo;
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     throw new Error("Internal server error from service");
   }
 }
@@ -39,7 +39,7 @@ async function updatePurchaseOrderInfoDB(id, data) {
         { new: true }
       );
     if (!updatePurchaseOrderInfo) {
-      logger.info("No matching document found for ID:", id);
+      console.log("No matching document found for ID:", id);
       return null;
     }
     for (const item of data.detailsData) {
@@ -71,11 +71,11 @@ async function updatePurchaseOrderInfoDB(id, data) {
     if (updatePurchaseOrderInfo) {
       return updatePurchaseOrderInfo;
     } else {
-      logger.info("No matching document found for ID:", id);
+      console.log("No matching document found for ID:", id);
       return null;
     }
   } catch (error) {
-    errorlogger.error(error);
+    console.log(error);
     throw new Error("Internal server error from service");
   }
 }
@@ -89,7 +89,7 @@ async function updatePurchaseOrderInfoStatusDB(updateStatus) {
     );
     return updatedStatusData;
   } catch (error) {
-    errorlogger.error("Error updating multiple users:", error);
+    console.log("Error updating multiple users:", error);
     throw new Error("Failed to update multiple data");
   }
 }

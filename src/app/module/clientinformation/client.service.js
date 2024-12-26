@@ -7,7 +7,7 @@ async function getClientInfoDB() {
       const clientInfoData = await ClientInfoModel.find();
       return clientInfoData;
     } catch (error) {
-      errorlogger.error("Error fetching client:", error);
+      console.log("Error fetching client:", error);
     }
   }
 
@@ -25,7 +25,7 @@ async function getClientInfoByIdDB(id) {
       const singleclient = await ClientInfoModel.findById(id);
       return singleclient;
     } catch (error) {
-      errorlogger.error(error);
+      console.log(error);
       throw new Error("Internal server error from service");
     }
   }
@@ -63,7 +63,7 @@ async function getClientInfoByIdDB(id) {
       const updatedStatusData = await Promise.all(promises);
       return updatedStatusData;
     } catch (error) {
-      errorlogger.error("Error updating multiple users:", error);
+      console.log("Error updating multiple users:", error);
       throw new Error("Failed to update multiple data");
     }
   }
