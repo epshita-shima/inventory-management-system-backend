@@ -29,6 +29,9 @@ app.use(express.urlencoded({ extended: true }));
 //         next(error); 
 //     }
 // });
+app.get('/', (req, res) => {
+  res.send('Running inventory management');
+});
 app.use('/api/v1', routes);
 // app.use((err, req, res, next) => {
 //   console.error('Error:', err.message);
