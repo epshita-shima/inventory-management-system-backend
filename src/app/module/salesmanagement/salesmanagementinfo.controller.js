@@ -20,9 +20,9 @@ async function insertInvoiceInformationController(req, res,next) {
 }
 
 const getFilteredInvoiceInfoController = async (req, res) => {
-  const { customerID } = req.query; // Assuming customerID is passed as a query parameter
+  const { customerID,piNumber } = req.query;
   try {
-    const filteredData = await SalesManagementService.getFilteredInvoiceInfoDB(customerID);
+    const filteredData = await SalesManagementService.getFilteredInvoiceInfoDB(customerID,piNumber);
     res.json(filteredData);
   } catch (error) {
     errorlogger.error('Error in controller:', error);

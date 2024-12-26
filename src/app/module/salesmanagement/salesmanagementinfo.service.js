@@ -14,28 +14,39 @@ async function getInvoiceInformationDB() {
 
 async function insertInvoiceInformationDB(piOrderInfo) {
   try {
-    const insertPIInfo=await SalesManagementModel.insertMany(piOrderInfo);
-    if(insertPIInfo){
-      return insertPIInfo
+    const insertPIInfo = await SalesManagementModel.insertMany(piOrderInfo);
+    if (insertPIInfo) {
+      return insertPIInfo;
+    } else {
+      throw new ApiError(400, "Failed to create");
     }
-  else{
-    throw new ApiError(400,'Failed to create')
-  }
   } catch (error) {
-    throw error
+    throw error;
   }
 }
 
-async function getFilteredInvoiceInfoDB(customerID) {
+async function getFilteredInvoiceInfoDB(customerID, piNumber) {
   try {
-    const data = await SalesManagementModel.find({ customerID: customerID });
-    return data;
+    const filter = {};
+    if (customerID) {
+      filter.customerID = customerID;
+    }
+
+    if (piNumber) {
+      filter._id = piNumber;
+    }
+
+    if (Object.keys(filter).length === 0 && filter.constructor === Object) {
+      return [];
+    } else {
+      const data = await SalesManagementModel.find(filter).lean();
+      return data;
+    }
   } catch (error) {
     errorlogger.error("Error querying data:", error);
     throw error;
   }
 }
-
 
 async function getInvoiceInformationByIdDB(id) {
   try {
