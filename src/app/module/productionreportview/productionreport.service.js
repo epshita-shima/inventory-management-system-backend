@@ -1,4 +1,3 @@
-const { errorlogger } = require("../../../shared/logger");
 const ProductionModel = require("../productioninformation/productioninfo.model");
 
 async function getFilteredForProductionDatewiseDetailsReportInfoDB(

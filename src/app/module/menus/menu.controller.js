@@ -1,4 +1,3 @@
-const { errorlogger } = require("../../../shared/logger");
 const menuItemService = require("./menu.service");
 
 const getMenuItems = async (req, res, next) => {

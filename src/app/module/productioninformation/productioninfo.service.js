@@ -1,5 +1,4 @@
 const ApiError = require("../../../errors/ApiError");
-const { errorlogger, logger } = require("../../../shared/logger");
 const ProductionInfoModel = require("./productioninfo.model");
 
 async function getProductionInfoDB() {

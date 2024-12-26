@@ -1,4 +1,3 @@
-const { errorlogger } = require("../../../shared/logger");
 const PurchaseManagementModel = require("../goodsreceivenoteinformation/grninfo.model");
 
 async function getFilteredForPurchaseReporDB(

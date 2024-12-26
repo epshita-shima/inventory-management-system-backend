@@ -22,9 +22,13 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/v1', routes);
 
-app.get('/',async(req,res,next)=>{
-  Promise.reject(new Error('Unhandled promise rejection'))
-})
+app.get('/', async (req, res, next) => {
+    try {
+        await Promise.reject(new Error('Handled promise rejection'));
+    } catch (error) {
+        next(error); 
+    }
+});
 // app.get('/',async(req,res,next)=>{
 //   console.log(x)
 // })

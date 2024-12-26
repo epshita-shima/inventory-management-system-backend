@@ -1,4 +1,3 @@
-const { errorlogger, logger } = require("../../../shared/logger");
 const CFTInfosModal = require("./cft.model");
 
 async function getCFTInfosDB(){

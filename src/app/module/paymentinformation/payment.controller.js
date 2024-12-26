@@ -1,4 +1,3 @@
-const { errorlogger } = require("../../../shared/logger");
 const PaymentInfoService = require("./payment.service");
 
 const getPaymentInfoController = async (req, res, next) => {

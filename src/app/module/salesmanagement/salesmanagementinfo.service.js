@@ -1,5 +1,4 @@
 const ApiError = require("../../../errors/ApiError");
-const { errorlogger, logger } = require("../../../shared/logger");
 const SalesManagementModel = require("./salesmanagementinfo.model");
 const mongoose = require("mongoose");
 

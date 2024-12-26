@@ -1,4 +1,3 @@
-const { errorlogger, logger } = require("../../../shared/logger");
 const FinishGoodItemInfoModel = require("./finishgoods.model");
 
 async function getItemInfoDB() {

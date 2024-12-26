@@ -1,4 +1,4 @@
-const { errorlogger } = require('../../../shared/logger');
+// const { errorlogger } = require('../../../shared/logger');
 const BankInfoModel=require('./bankinfo.model')
 
 

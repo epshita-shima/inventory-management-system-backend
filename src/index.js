@@ -9,7 +9,6 @@ const dynamicFields = require("./app/module/multer/configuration");
 require("dotenv").config();
 const cors = require("cors");
 const ApiError = require("./errors/ApiError");
-const { logger, errorlogger } = require("./shared/logger");
 const  globalErrorHandler  = require("./app/middlewares/globalErrorHandler");
 
 const app = express();

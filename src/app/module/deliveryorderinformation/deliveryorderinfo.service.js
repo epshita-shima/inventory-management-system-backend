@@ -1,4 +1,3 @@
-const { errorlogger } = require("../../../shared/logger");
 const DOInfoModel = require("./deliveryorderinfo.module");
 
 async function getDOInfoDB() {

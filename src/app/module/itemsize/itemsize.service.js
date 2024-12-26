@@ -1,4 +1,3 @@
-const { errorlogger } = require("../../../shared/logger");
 const ItemsizeModal = require("./itemsize.model");
 
 async function getItemSizesDB(){

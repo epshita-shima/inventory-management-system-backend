@@ -2,7 +2,6 @@ const Server = require("http");
 const mongoose = require("mongoose");
 const app = require("./app");
 const config = require("./config");
-const { errorlogger, logger } = require("./shared/logger");
 
 process.on("uncaughtException", (error) => {
   console.log(error);

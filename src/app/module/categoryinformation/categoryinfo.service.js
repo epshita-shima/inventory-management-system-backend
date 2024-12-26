@@ -1,4 +1,3 @@
-const { errorlogger } = require("../../../shared/logger");
 const CategoryInfoModal = require("./categoryinfo.model");
 
 async function getCategoryInfoDB(){

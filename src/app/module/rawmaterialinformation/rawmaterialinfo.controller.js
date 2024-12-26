@@ -1,4 +1,3 @@
-const { errorlogger } = require("../../../shared/logger");
 const RMIteminfoService = require("./rawmaterialinfo.service");
 
 const getItemInfoController = async (req, res, next) => {

@@ -1,4 +1,3 @@
-const { errorlogger } = require('../../../shared/logger');
 const ClientInfoModel = require('./client.model');
 
 

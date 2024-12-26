@@ -1,4 +1,3 @@
-const { errorlogger } = require("../../../shared/logger");
 const PaymentReceiveInfoModel = require("./paymentmethodinformation.model");
 
 async function getPaymentMethodInfoDB() {

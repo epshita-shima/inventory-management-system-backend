@@ -3,7 +3,6 @@ const DeliveryOrderInfoModal = require("../deliveryorderinformation/deliveryorde
 const SalesManagementModel = require("../salesmanagement/salesmanagementinfo.model");
 
 const mongoose = require("mongoose");
-const { errorlogger, logger } = require("../../../shared/logger");
 
 async function getFinishGoodsDeliverInfoDB() {
   try {

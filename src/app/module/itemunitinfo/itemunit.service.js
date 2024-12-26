@@ -1,4 +1,3 @@
-const { errorlogger } = require('../../../shared/logger');
 const ItemUnitInfoModel=require('./itemunit.model')
 
 async function getItemUnitDB(){

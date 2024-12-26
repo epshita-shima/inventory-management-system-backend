@@ -1,4 +1,3 @@
-const { errorlogger } = require("../../../shared/logger");
 const ProductionInfoService = require("./productioninfo.service");
 
 async function getProductionInfoController(req, res, next) {

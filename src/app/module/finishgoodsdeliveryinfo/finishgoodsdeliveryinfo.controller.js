@@ -1,4 +1,3 @@
-const { errorlogger } = require("../../../shared/logger");
 const FinishGoodsDeliveryInfoService = require("./finishgoodsdeliveryinfo.service");
 
 async function getFinishGoodsDeliveryInfoController(req, res, next) {

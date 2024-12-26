@@ -1,4 +1,3 @@
-const { errorlogger } = require("../../../shared/logger");
 const SalesManagementService = require("./salesmanagementinfo.service");
 
 async function getInvoiceInformationController(req, res, next) {

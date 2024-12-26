@@ -1,4 +1,3 @@
-const { errorlogger } = require("../../../shared/logger");
 const PurchaseOrderInfoService = require("./purchaseorderinfo.service");
 
 async function getPurchaseOrderInfoController(req, res, next) {

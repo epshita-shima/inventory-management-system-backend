@@ -1,4 +1,3 @@
-const { errorlogger, logger } = require("../../../shared/logger");
 const RMItemInfoModel = require("./rawmaterialinfo.model");
 
 async function getItemInfoDB() {
