@@ -1,4 +1,5 @@
 const User = require("./user.model");
+const bcrypt = require('bcrypt');
 
 const createUserToDB = async (payload) => {
   console.log(payload);
@@ -60,19 +61,25 @@ const updateUserDB = async (id, isactive) => {
 };
 
 const updateUserPasswordDB = async (id, password) => {
+  const hashedPassword = await bcrypt.hash(password, 10);
+  console.log('user password',id,hashedPassword)
   try {
     const user = await User.findByIdAndUpdate(
       id,
-      { password: password },
-      { new: true }
+      { password: hashedPassword },
+      { new: true, runValidators: true }
     );
     if (!user) {
       throw new Error("User not found");
     }
 
+    // const promises = []; // Replace with actual logic
+    // const updatedUsersPassword = await Promise.all(promises);
+
     return user;
   } catch (error) {
-    throw new Error("Internal server error");
+    console.error("Error in updateUserPasswordDB:", error.message, error.stack);
+    throw error;
   }
 };
 
