@@ -11,15 +11,14 @@ async function getFilteredForOrderReportInfoDB(
 ) {
   try {
     const filter = {};
-    if (fromDate) {
-      filter.piDate = fromDate;
-    }
-    if (toDate) {
-      filter.piDate = toDate;
-    }
     if (fromDate && toDate) {
-      filter.piDate = { $gte: fromDate, $lte: toDate };
+      filter.piDate = { $gte: new Date(fromDate), $lte: new Date(new Date(toDate).setHours(23, 59, 59, 999)) };
+    } else if (fromDate) {
+      filter.piDate = { $gte: new Date(fromDate) };
+    } else if (toDate) {
+      filter.piDate = { $lte: new Date(new Date(toDate).setHours(23, 59, 59, 999)) };
     }
+
 
     if (clientId) {
       filter.customerID = clientId;
@@ -63,14 +62,12 @@ async function getFilteredForOrderSummaryReportInfoDB(
 ) {
   try {
     const filter = {};
-    if (fromDate) {
-      filter.piDate = fromDate;
-    }
-    if (toDate) {
-      filter.piDate = toDate;
-    }
     if (fromDate && toDate) {
-      filter.piDate = { $gte: fromDate, $lte: toDate };
+      filter.piDate = { $gte: new Date(fromDate), $lte: new Date(new Date(toDate).setHours(23, 59, 59, 999)) };
+    } else if (fromDate) {
+      filter.piDate = { $gte: new Date(fromDate) };
+    } else if (toDate) {
+      filter.piDate = { $lte: new Date(new Date(toDate).setHours(23, 59, 59, 999)) };
     }
 
     if (clientId) {
@@ -227,14 +224,12 @@ async function getFilteredForSalesReportInfoDB(
 ) {
   try {
     const filter = {};
-    if (fromDate) {
-      filter.finishGoodsDeliveryDate = fromDate;
-    }
-    if (toDate) {
-      filter.finishGoodsDeliveryDate = toDate;
-    }
     if (fromDate && toDate) {
-      filter.finishGoodsDeliveryDate = { $gte: fromDate, $lte: toDate };
+      filter.finishGoodsDeliveryDate = { $gte: new Date(fromDate), $lte: new Date(new Date(toDate).setHours(23, 59, 59, 999)) };
+    } else if (fromDate) {
+      filter.finishGoodsDeliveryDate = { $gte: new Date(fromDate) };
+    } else if (toDate) {
+      filter.finishGoodsDeliveryDate = { $lte: new Date(new Date(toDate).setHours(23, 59, 59, 999)) };
     }
 
     if (clientId) {
@@ -282,17 +277,12 @@ async function getFilteredForSalesSummaryReportInfoDB(
 ) {
   try {
     const filter = {};
-    if (fromDate) {
-      filter.finishGoodsDeliveryDate = fromDate;
-    }
-    if (toDate) {
-      filter.finishGoodsDeliveryDate = toDate;
-    }
     if (fromDate && toDate) {
-      filter.finishGoodsDeliveryDate = {
-        $gte: new Date(fromDate),
-        $lte: new Date(toDate),
-      };
+      filter.finishGoodsDeliveryDate = { $gte: new Date(fromDate), $lte: new Date(new Date(toDate).setHours(23, 59, 59, 999)) };
+    } else if (fromDate) {
+      filter.finishGoodsDeliveryDate = { $gte: new Date(fromDate) };
+    } else if (toDate) {
+      filter.finishGoodsDeliveryDate = { $lte: new Date(new Date(toDate).setHours(23, 59, 59, 999)) };
     }
 
     if (clientId) {
@@ -391,18 +381,17 @@ async function getFilteredForSalesReturnReportDetailsInfoDB(
   toDate,
   itemId,
   clientId,
-  piId,
-  reportStatus
+  piId
 ) {
   try {
     // Construct filter based on parameters
     const filter = {};
     if (fromDate && toDate) {
-      filter.returnDate = { $gte: fromDate, $lte: toDate };
+      filter.returnDate = { $gte: new Date(fromDate), $lte: new Date(new Date(toDate).setHours(23, 59, 59, 999)) };
     } else if (fromDate) {
-      filter.returnDate = { $gte: fromDate };
+      filter.returnDate = { $gte: new Date(fromDate) };
     } else if (toDate) {
-      filter.returnDate = { $lte: toDate };
+      filter.returnDate = { $lte: new Date(new Date(toDate).setHours(23, 59, 59, 999)) };
     }
 
     if (clientId) filter.clientId = clientId;
@@ -448,11 +437,11 @@ async function getFilteredForSalesReturnSummaryReportInfoDB(
     // Construct filter based on parameters
     const filter = {};
     if (fromDate && toDate) {
-      filter.returnDate = { $gte: fromDate, $lte: toDate };
+      filter.returnDate = { $gte: new Date(fromDate), $lte: new Date(new Date(toDate).setHours(23, 59, 59, 999)) };
     } else if (fromDate) {
-      filter.returnDate = { $gte: fromDate };
+      filter.returnDate = { $gte: new Date(fromDate) };
     } else if (toDate) {
-      filter.returnDate = { $lte: toDate };
+      filter.returnDate = { $lte: new Date(new Date(toDate).setHours(23, 59, 59, 999)) };
     }
 
     if (clientId) filter.clientId = clientId;
@@ -551,16 +540,14 @@ async function getFilteredForCombineReport(
 ) {
   try {
     const orderFilter = {};
-    console.log("formdate", itemId);
-    // Date range filter
     if (fromDate && toDate) {
-      const dateRange = { $gte: new Date(fromDate), $lte: new Date(toDate) };
+      const dateRange = { $gte: new Date(fromDate), $lte: new Date(new Date(toDate).setHours(23, 59, 59, 999)) };
       orderFilter.piDate = dateRange;
     } else if (fromDate) {
       const startDate = { $gte: new Date(fromDate) };
       orderFilter.piDate = startDate;
     } else if (toDate) {
-      const endDate = { $lte: new Date(toDate) };
+      const endDate = { $lte: new Date(new Date(toDate).setHours(23, 59, 59, 999)) };
       orderFilter.piDate = endDate;
     }
 
