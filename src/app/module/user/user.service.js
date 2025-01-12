@@ -2,13 +2,16 @@ const User = require("./user.model");
 const bcrypt = require('bcrypt');
 
 const createUserToDB = async (payload) => {
-  console.log(payload);
+  console.log('payload',payload.password);
   try {
     const existingUserRole = await User.findOne({ username: payload.username });
     if (existingUserRole) {
       throw new Error("User roll with the same name already exists");
     }
+    const hashedPassword=await bcrypt.hash(payload.password,10)
+    payload.password= hashedPassword;
     const user = await User.create(payload);
+    console.log('with has password',user)
     return user;
   } catch (error) {
     console.error("Error saving data to MongoDB:", error);
