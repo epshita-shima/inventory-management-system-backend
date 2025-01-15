@@ -1,4 +1,4 @@
-const express =require('express');
+const express = require("express");
 const userCreateRoute = require("../module/user/user.route");
 const userRoleRoutes = require("../module/userrole/userrole.route");
 const menuItemRoutes = require("../module/menus/menu.route");
@@ -26,118 +26,122 @@ const salesReportViewRoute = require("../module/salesreportview/allreportview.ro
 const productionReportViewRoute = require("../module/productionreportview/productionreport.route");
 const combineReportRoute = require("../module/combinereport/combinereport.route");
 const purchaseReportRoute = require("../module/purchasereport/purchasereport.route");
+const userLoginChecking = require("../module/checkingtoken/checkingtoken.route");
 const router = express.Router();
 
 const moduleRoutes = [
   {
-    path: '/users',
+    path: "/users",
     route: userCreateRoute,
   },
   {
-    path: '/userrole',
+    path: "/jwt",
+    route: userLoginChecking,
+  },
+  {
+    path: "/userrole",
     route: userRoleRoutes,
   },
   {
-    path: '/menuitems',
+    path: "/menuitems",
     route: menuItemRoutes,
   },
   {
-    path: '/serial',
+    path: "/serial",
     route: serialGenerate,
   },
   {
-    path: '/company',
+    path: "/company",
     route: companyRoute,
   },
   {
-    path: '/itemsize',
+    path: "/itemsize",
     route: itemsizeRoute,
   },
   {
-    path: '/itemunit',
+    path: "/itemunit",
     route: itemunitRoute,
   },
   {
-    path: '/finishgoodsinfo',
+    path: "/finishgoodsinfo",
     route: finishgoodsinfoRoute,
   },
   {
-    path: '/rawmaterialinfo',
+    path: "/rawmaterialinfo",
     route: rawmaterialRoute,
   },
   {
-    path: '/categoryinfo',
+    path: "/categoryinfo",
     route: categoryInfoRoute,
   },
   {
-    path: '/cftinfo',
+    path: "/cftinfo",
     route: cftInfoRoute,
   },
   {
-    path: '/supplierinfo',
+    path: "/supplierinfo",
     route: supplierInfoRoute,
   },
   {
-    path: '/clientinfo',
+    path: "/clientinfo",
     route: clientInfoRoute,
   },
   {
-    path: '/paymentinfo',
+    path: "/paymentinfo",
     route: paymentInfoRoute,
   },
   {
-    path: '/bankinfo',
+    path: "/bankinfo",
     route: bankInfoRoute,
   },
   {
-    path: '/purchaseorderinfo',
+    path: "/purchaseorderinfo",
     route: purchaseOrderInfoRoute,
   },
   {
-    path: '/grninfo',
+    path: "/grninfo",
     route: goodsReceiveNoteRoute,
   },
   {
-    path: '/production',
+    path: "/production",
     route: productionRoute,
   },
   {
-    path: '/invoiceinfo',
+    path: "/invoiceinfo",
     route: salesManagementRoute,
   },
   {
-    path: '/payment-receive',
+    path: "/payment-receive",
     route: paymentMethodInfoRoute,
   },
   {
-    path: '/delivery-order',
+    path: "/delivery-order",
     route: deliveryOrderInfo,
   },
   {
-    path: '/finish-goods-delivery',
+    path: "/finish-goods-delivery",
     route: finishGoodsDelivery,
   },
   {
-    path: '/return-deliver',
+    path: "/return-deliver",
     route: returnDeliveredRoute,
   },
   {
-    path: '/report',
+    path: "/report",
     route: salesReportViewRoute,
   },
   {
-    path: '/production-report',
+    path: "/production-report",
     route: productionReportViewRoute,
   },
   {
-    path: '/combine-report',
+    path: "/combine-report",
     route: combineReportRoute,
   },
   {
-    path: '/purchase-report',
+    path: "/purchase-report",
     route: purchaseReportRoute,
   },
-
 ];
-moduleRoutes.forEach(route => router.use(route.path, route.route));
-module.exports=router
+moduleRoutes.forEach((route) => router.use(route.path, route.route));
+module.exports = router;

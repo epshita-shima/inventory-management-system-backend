@@ -2,6 +2,9 @@ const ClientInfoService=require('./client.service')
 
 const getClientInfoController = async (req, res, next) => {
     const data = req.body;
+    console.log('req.query',req.query)
+    console.log('from valid token',req.loginUser)
+    // console.log('client cookies',req.cookies)
     const clientInfoData = await ClientInfoService.getClientInfoDB(data);
     res.json(clientInfoData);
   };

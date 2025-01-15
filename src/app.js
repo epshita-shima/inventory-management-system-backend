@@ -8,7 +8,7 @@ const app = express();
 const routes=require('./app/routes')
 const cookieParser =require('cookie-parser');
 
-app.use(cors());
+// app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/uploads", express.static("uploads"));
@@ -16,11 +16,10 @@ app.use("/uploads", express.static("uploads"));
 app.use(dynamicFields);
 
 // app.use(cors({ origin: 'https://steady-starlight-5941ea.netlify.app', credentials: true }));
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-
 
 // app.get('/', async (req, res, next) => {
 //     try {
@@ -29,6 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 //         next(error); 
 //     }
 // });
+
 app.get('/', (req, res) => {
   res.send('Running inventory management');
 });

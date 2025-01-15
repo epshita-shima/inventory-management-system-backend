@@ -8,8 +8,8 @@ const createUserToDB = async (payload) => {
     if (existingUserRole) {
       throw new Error("User roll with the same name already exists");
     }
-    const hashedPassword=await bcrypt.hash(payload.password,10)
-    payload.password= hashedPassword;
+    const hashedPassword=await bcrypt.hash(payload.hashPassword,10)
+    payload.hashPassword= hashedPassword;
     const user = await User.create(payload);
     console.log('with has password',user)
     return user;
