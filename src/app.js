@@ -7,7 +7,7 @@ const  globalErrorHandler  = require("./app/middlewares/globalErrorHandler");
 const app = express();
 const routes=require('./app/routes')
 const cookieParser =require('cookie-parser');
-
+const verifyToken=require('./app/middlewares/verifyToken')
 // app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -32,7 +32,9 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/', (req, res) => {
   res.send('Running inventory management');
 });
-app.use('/api/v1', routes);
+
+app.use('/api/v1',verifyToken, routes);
+
 // app.use((err, req, res, next) => {
 //   console.error('Error:', err.message);
 

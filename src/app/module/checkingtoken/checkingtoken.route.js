@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const ChekingTokenController=require('./checkingtoken.service')
-const loggerMiddleware=require('../../middlewares/loggerTestMiddleware')
+const ChekingTokenController=require('./checkingtoken.service');
+const loggerMiddleware=require('../../middlewares/loggerTestMiddleware');
 
 router.post('/',loggerMiddleware,ChekingTokenController.userLogin);
+router.post('/logout',ChekingTokenController.userLogout);
 
-module.exports=router
+module.exports=router;

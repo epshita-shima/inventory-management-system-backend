@@ -4,7 +4,7 @@ const ClientInfoController=require('./client.controller')
 const loggerMiddleware=require('../../middlewares/loggerTestMiddleware');
 const verifyToken=require('../../middlewares/verifyToken');
 
-router.get('/',loggerMiddleware,verifyToken,ClientInfoController.getClientInfoController);
+router.get('/',ClientInfoController.getClientInfoController);
 router.post('/',ClientInfoController.insertClientInfoController);
 router.get('/:id',ClientInfoController.getClientInfoByIdController);
 router.put('/:id',ClientInfoController.updateClientInformationController);

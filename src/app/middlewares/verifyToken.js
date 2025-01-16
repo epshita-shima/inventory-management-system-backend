@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 const verifyToken=async(req,res,next)=>{
-  const token=req.cookies?.token;
+  const token=req.cookies?.cookie;
   console.log('value of the token in middleware',token)
   if(!token){
     return res.status(401).json({message:'not authorizd'})
