@@ -26,14 +26,14 @@ const salesReportViewRoute = require("../module/salesreportview/allreportview.ro
 const productionReportViewRoute = require("../module/productionreportview/productionreport.route");
 const combineReportRoute = require("../module/combinereport/combinereport.route");
 const purchaseReportRoute = require("../module/purchasereport/purchasereport.route");
-const tokenCreate = require("../module/checkingtoken/checkingtoken.route");
+const tokenCreate = require("../module/auth/auth.route");
 const router = express.Router();
 
 const moduleRoutes = [
-  // {
-  //   path: "/users",
-  //   route: userCreateRoute,
-  // },
+  {
+    path: "/users",
+    route: userCreateRoute,
+  },
   {
     path: "/jwt",
     route: tokenCreate,
