@@ -6,6 +6,7 @@ const verifyToken=async(req,res,next)=>{
   if(!token){
     return res.status(401).json({message:'not authorizd'})
   }
+  
   jwt.verify(token,process.env.ACCESS_SECRET_TOKEN,(err,decoded)=>{
     if(err){
       console.log('err',err)
@@ -15,7 +16,6 @@ const verifyToken=async(req,res,next)=>{
     req.loginUser=decoded
     next()
   })
-  
 }
 
 module.exports = verifyToken

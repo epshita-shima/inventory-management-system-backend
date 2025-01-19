@@ -37,13 +37,12 @@ async function getFilteredGRNDataInformationDB(
 ) {
   try {
     const filter = {};
-
-    if (supplierPONo) {
+    if (fromDate && toDate) {
+      filter.receiveDate = { $gte: fromDate, $lte: toDate };
+    } else if (supplierPONo) {
       filter.supplierPoNo = supplierPONo;
     } else if (supplierId) {
       filter.supplierId = supplierId;
-    } else if (fromDate && toDate) {
-      filter.receiveDate = { $gte: fromDate, $lte: toDate };
     } else if (selectMonth) {
       let dateRanges = [];
       try {
@@ -59,9 +58,9 @@ async function getFilteredGRNDataInformationDB(
         receiveDate: { $gte: range.start, $lte: range.end },
       }));
     }
-
+    console.log("filter", filter);
     if (Object.keys(filter).length === 0 && filter.constructor === Object) {
-      return []; 
+      return [];
     } else {
       const data = await GoodsReceiveNoteInfoModel.find(filter);
       return data;
@@ -81,7 +80,7 @@ async function updateGoodsReceiveNoteInfoDB(id, data) {
     if (updateGRNInfo) {
       return updateGRNInfo;
     } else {
-     console.log("No matching document found for ID:", id);
+      console.log("No matching document found for ID:", id);
       return null;
     }
   } catch (error) {

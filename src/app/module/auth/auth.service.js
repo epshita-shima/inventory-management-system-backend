@@ -6,16 +6,7 @@ const userLogin = async (req, res, next) => {
     const userInfo = await UserModel.find();
     const data = req.body;
     const singleUser = userInfo?.find((item) => item.username === data.username);
-    console.log(
-      "singleUser.username =",
-      singleUser.username,
-      "data.username=",
-      data.username,
-      "singleUser.password=",
-      singleUser.password,
-      "data.password=",
-      data.password
-    );
+
     if (
       singleUser.username == data.username &&
       singleUser.password == data.password
@@ -48,12 +39,10 @@ const userLogin = async (req, res, next) => {
 };
 
 const userLogout = (req, res) => {
-  res.cookie("cookie", "", {
+  const user=req.body
+  res.clearCookie("cookie",  {
     httpOnly: true,
     secure: false,
-    samesite: "lax",
-    path: "/",
-    expires: new Date(0),
   });
   res.status(200).json({
     success: true,
