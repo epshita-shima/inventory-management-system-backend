@@ -45,13 +45,18 @@ const getUserById = async (req, res) => {
 const updateUser = async (req, res) => {
   const { id } = req.params;
   const { isactive } = req.body;
-
   try {
     const user = await userService.updateUserDB(id, isactive);
-    return res.status(200).json(user);
+    return res.status(200).json({
+      success: true,
+      message: "Data Update Successfully",
+      data:user
+    });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 };
 const updateUserPassword = async (req, res) => {
@@ -69,13 +74,11 @@ const updateUserPassword = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    return res
-      .status(500)
-      .json({
-        status: "error",
-        message: "Contact with Admin",
-        error: error.message,
-      });
+    return res.status(500).json({
+      status: "error",
+      message: "Contact with Admin",
+      error: error.message,
+    });
   }
 };
 

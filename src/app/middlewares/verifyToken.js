@@ -1,15 +1,28 @@
 const jwt = require("jsonwebtoken");
+const blacklist = require("../module/auth/blacklistToken");
 
 const verifyToken=async(req,res,next)=>{
-  const token=req.cookies?.cookie;
-  console.log('value of the token in middleware',token)
+  console.log('req.headers',req.headers)
+  const token=req.headers['authorization']?.split(' ')[1]
+  console.log('token',token)
+  // const token=req.cookies?.cookie;
   if(!token){
     return res.status(401).json({message:'not authorizd'})
   }
-  
+
+  if (blacklist.includes(token)) {
+    return res.status(401).json({ message: "Token is invalid" });
+  }
+
   jwt.verify(token,process.env.ACCESS_SECRET_TOKEN,(err,decoded)=>{
     if(err){
       console.log('err',err)
+      if(err){
+        res.clearCookie("cookie",  {
+          httpOnly: true,
+          secure: false,
+        });
+      }
       return res.status(401).json({message:'unauthorized'})
     }
     console.log('value in the token',decoded);
