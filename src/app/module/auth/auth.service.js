@@ -2,55 +2,63 @@ const jwt = require("jsonwebtoken");
 const cookie = require("cookie-parser");
 const UserModel = require("../user/user.model");
 const blacklist = require("./blacklistToken");
+const crypto = require("crypto-browserify");
 
 const userLogin = async (req, res, next) => {
+  // const randomBytes = crypto.randomBytes(64).toString('hex');
+
   try {
-    const data = req.body;
-    console.log('data',data)
-    const singleUser = await UserModel.find({ username: data.username });
-console.log('singleUser',singleUser)
-    const userTokenCreationPayload = {
-      username: singleUser[0].username,
-      password: singleUser[0].password,
-      userRole: singleUser[0].roleId,
-      isActive: singleUser[0].isactive,
-    };
-    console.log('userTokenCreationPayload',userTokenCreationPayload)
-    if (
-      singleUser[0].username == data.username &&
-      singleUser[0].password == data.password
-    ) {
-      console.log('working')
-      const accesstoken = jwt.sign(
-        userTokenCreationPayload,
-        process.env.ACCESS_SECRET_TOKEN,
-        {
-          expiresIn: "10m",
-        }
-      );
-      const refreshToken = jwt.sign(
-        userTokenCreationPayload,
-        process.env.REFRESH_SECRET_TOKEN,
-        {
-          expiresIn: "1hr",
-        }
-      );
-      res.cookie("cookie", refreshToken, {
-        httpOnly: true,
-        secure: false,
-      });
-      res.status(200).json({
-        data: singleUser[0],
-        success: true,
-        message: "Login successful",
-        token: accesstoken,
-      });
-    } else {
-      res.status(401).json({
-        success: false,
-        message: "Login Faild",
-      });
+    const { username, password } = req.body;
+    if (!username || !password) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: "Username and password are required",
+        });
     }
+
+    const singleUser = await UserModel.findOne({ username });
+    if (!singleUser) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid username or password" });
+    }
+
+    const userTokenCreationPayload = {
+      username: singleUser.username,
+      userRole: singleUser.roleId,
+      isActive: singleUser.isactive,
+    };
+    const accesstoken = jwt.sign(
+      userTokenCreationPayload,
+      process.env.ACCESS_SECRET_TOKEN,
+      {
+        expiresIn: "1m",
+      }
+    );
+
+    const refreshToken = jwt.sign(
+      userTokenCreationPayload,
+      process.env.REFRESH_SECRET_TOKEN,
+      {
+        expiresIn: "1hr",
+      }
+    );
+
+    res.cookie("cookie", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 3600000,
+    });
+
+    res.status(200).json({
+      data: singleUser,
+      success: true,
+      message: "Login successful",
+      token: accesstoken,
+    });
   } catch (error) {
     res.status(500).json({
       status: "error",
@@ -60,18 +68,22 @@ console.log('singleUser',singleUser)
 };
 
 const refreshAccessToken = async (req, res) => {
-
-  try{
+  try {
     const refreshToken = req.cookies?.cookie;
+    console.log("hit refresh");
     if (refreshToken) {
       jwt.verify(
         refreshToken,
         process.env.REFRESH_SECRET_TOKEN,
         async (err, decoded) => {
+          console.log("refresh", decoded);
           if (err) {
             return res.status(401).json({ message: "unauthorized" });
           } else {
-            const user = await UserModel.findOne({ username: decoded.username });
+            const user = await UserModel.findOne({
+              username: decoded.username,
+            });
+            console.log('user',user)
             if (!user) {
               res.status(404).json({
                 success: false,
@@ -91,7 +103,7 @@ const refreshAccessToken = async (req, res) => {
                 expiresIn: "10m",
               }
             );
-  
+            console.log(accessNewtoken);
             res.status(200).json({
               data: user[0],
               success: true,
@@ -102,15 +114,13 @@ const refreshAccessToken = async (req, res) => {
         }
       );
     }
-  }
-  catch(error){
+  } catch (error) {
     console.error(error);
     res.status(500).json({
       status: "error",
       message: "Failed to refresh access token",
     });
   }
- 
 };
 
 const userLogout = (req, res) => {
@@ -132,4 +142,4 @@ const userLogout = (req, res) => {
   });
 };
 
-module.exports = { userLogin, userLogout,refreshAccessToken };
+module.exports = { userLogin, userLogout, refreshAccessToken };

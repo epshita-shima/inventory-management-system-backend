@@ -2,9 +2,9 @@ const jwt = require("jsonwebtoken");
 const blacklist = require("../module/auth/blacklistToken");
 
 const verifyToken=async(req,res,next)=>{
-  console.log('req.headers',req.headers)
+console.log('blacklist',blacklist)
   const token=req.headers['authorization']?.split(' ')[1]
-  console.log('token',token)
+// console.log(token)
   // const token=req.cookies?.cookie;
   if(!token){
     return res.status(401).json({message:'not authorizd'})
@@ -15,6 +15,9 @@ const verifyToken=async(req,res,next)=>{
   }
 
   jwt.verify(token,process.env.ACCESS_SECRET_TOKEN,(err,decoded)=>{
+    console.log('decoded',decoded)
+    console.log('error',err)
+   
     if(err){
       console.log('err',err)
       if(err){
@@ -25,6 +28,7 @@ const verifyToken=async(req,res,next)=>{
       }
       return res.status(401).json({message:'unauthorized'})
     }
+
     console.log('value in the token',decoded);
     req.loginUser=decoded
     next()
