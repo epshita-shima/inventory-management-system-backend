@@ -2,6 +2,7 @@ const SalesManagementService = require("./salesmanagementinfo.service");
 
 async function getInvoiceInformationController(req, res, next) {
   const data = req.body;
+  console.log('get data from invoice',req.body)
   const invoiceData = await SalesManagementService.getInvoiceInformationDB(
     data
   );

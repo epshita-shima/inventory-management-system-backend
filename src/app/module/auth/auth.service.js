@@ -6,19 +6,18 @@ const crypto = require("crypto-browserify");
 
 const userLogin = async (req, res, next) => {
   // const randomBytes = crypto.randomBytes(64).toString('hex');
-
+  console.log("hit login");
   try {
     const { username, password } = req.body;
     if (!username || !password) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Username and password are required",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Username and password are required",
+      });
     }
 
-    const singleUser = await UserModel.findOne({ username });
+    const singleUser = await UserModel.findOne({ username, password });
+
     if (!singleUser) {
       return res
         .status(401)
@@ -27,6 +26,7 @@ const userLogin = async (req, res, next) => {
 
     const userTokenCreationPayload = {
       username: singleUser.username,
+      password: singleUser.password,
       userRole: singleUser.roleId,
       isActive: singleUser.isactive,
     };
@@ -34,7 +34,7 @@ const userLogin = async (req, res, next) => {
       userTokenCreationPayload,
       process.env.ACCESS_SECRET_TOKEN,
       {
-        expiresIn: "1m",
+        expiresIn: "6m",
       }
     );
 
@@ -42,7 +42,7 @@ const userLogin = async (req, res, next) => {
       userTokenCreationPayload,
       process.env.REFRESH_SECRET_TOKEN,
       {
-        expiresIn: "1hr",
+        expiresIn: "24hr",
       }
     );
 
@@ -76,14 +76,18 @@ const refreshAccessToken = async (req, res) => {
         refreshToken,
         process.env.REFRESH_SECRET_TOKEN,
         async (err, decoded) => {
-          console.log("refresh", decoded);
           if (err) {
-            return res.status(401).json({ message: "unauthorized" });
+            res.clearCookie("cookie", {
+              httpOnly: true,
+              secure: false,
+            });
+          
+            return res.status(401).json({ message: "Unauthorized" });
           } else {
             const user = await UserModel.findOne({
               username: decoded.username,
+              password: decoded.password,
             });
-            console.log('user',user)
             if (!user) {
               res.status(404).json({
                 success: false,
@@ -91,21 +95,21 @@ const refreshAccessToken = async (req, res) => {
               });
             }
             const userTokenCreationPayload = {
-              username: user[0].username,
-              password: user[0].password,
-              userRole: user[0].roleId,
-              isActive: user[0].isactive,
+              username: user.username,
+              password: user.password,
+              userRole: user.roleId,
+              isActive: user.isactive,
             };
             const accessNewtoken = jwt.sign(
               userTokenCreationPayload,
               process.env.ACCESS_SECRET_TOKEN,
               {
-                expiresIn: "10m",
+                expiresIn: "2m",
               }
             );
             console.log(accessNewtoken);
             res.status(200).json({
-              data: user[0],
+              data: user,
               success: true,
               message: "Access token refreshed successfully",
               token: accessNewtoken,

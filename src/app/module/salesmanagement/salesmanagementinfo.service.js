@@ -1,10 +1,11 @@
+const mongoose = require("mongoose");
 const ApiError = require("../../../errors/ApiError");
 const SalesManagementModel = require("./salesmanagementinfo.model");
-const mongoose = require("mongoose");
 
 async function getInvoiceInformationDB() {
   try {
     const salesData = await SalesManagementModel.find();
+    console.log('salesData',salesData)
     return salesData;
   } catch (error) {
     console.log("Error fetching production data:", error);
