@@ -33,25 +33,9 @@ app.get('/', (req, res) => {
   res.send('Running inventory management');
 });
 
-app.use('/api/v1',verifyToken, routes);
 app.use('/api/v2',routes)
-// app.use((err, req, res, next) => {
-//   console.error('Error:', err.message);
+app.use('/api/v1',verifyToken, routes);
 
-//   res.status(err.status || 500).json({
-//       success: false,
-//       message: err.message || 'Internal Server Error',
-//       errorMessages: [
-//           {
-//               path: req.originalUrl,
-//               message: err.message || 'Internal Server Error',
-//           },
-//       ],
-//   });
-// });
-// app.get('/',async(req,res,next)=>{
-//   console.log(x)
-// })
 app.use(globalErrorHandler);
 
 module.exports=app

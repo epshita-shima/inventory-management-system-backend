@@ -58,7 +58,6 @@ async function getFilteredGRNDataInformationDB(
         receiveDate: { $gte: range.start, $lte: range.end },
       }));
     }
-    console.log("filter", filter);
     if (Object.keys(filter).length === 0 && filter.constructor === Object) {
       return [];
     } else {

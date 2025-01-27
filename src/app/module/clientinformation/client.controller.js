@@ -2,8 +2,6 @@ const ClientInfoService=require('./client.service')
 
 const getClientInfoController = async (req, res, next) => {
     const data = req.body;
-    console.log('req.query',req.query)
-    // console.log('client cookies',req.cookies)
     const clientInfoData = await ClientInfoService.getClientInfoDB(data);
     res.json(clientInfoData);
   };
@@ -41,9 +39,7 @@ const insertClientInfoController = async (req, res, next) => {
   const updateClientInformationController = async (req, res) => {
     try {
       const { id } = req.params;
-      console.log(id);
-      const updatedClientData = req.body; // Assuming the updated data is sent in the request body
-      console.log("updatedClientData", updatedClientData);
+      const updatedClientData = req.body; 
       const result = await ClientInfoService.updateClientInformationDB(
         id,
         updatedClientData

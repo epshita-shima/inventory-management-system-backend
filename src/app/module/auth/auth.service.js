@@ -6,7 +6,6 @@ const crypto = require("crypto-browserify");
 
 const userLogin = async (req, res, next) => {
   // const randomBytes = crypto.randomBytes(64).toString('hex');
-  console.log("hit login");
   try {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -34,7 +33,7 @@ const userLogin = async (req, res, next) => {
       userTokenCreationPayload,
       process.env.ACCESS_SECRET_TOKEN,
       {
-        expiresIn: "6m",
+        expiresIn: "2m",
       }
     );
 
@@ -70,7 +69,6 @@ const userLogin = async (req, res, next) => {
 const refreshAccessToken = async (req, res) => {
   try {
     const refreshToken = req.cookies?.cookie;
-    console.log("hit refresh");
     if (refreshToken) {
       jwt.verify(
         refreshToken,
@@ -107,7 +105,6 @@ const refreshAccessToken = async (req, res) => {
                 expiresIn: "2m",
               }
             );
-            console.log(accessNewtoken);
             res.status(200).json({
               data: user,
               success: true,
@@ -117,6 +114,12 @@ const refreshAccessToken = async (req, res) => {
           }
         }
       );
+    }
+    else{
+      res.status(500).json({
+        status: "error",
+        message: "Failed to refresh access token",
+      });
     }
   } catch (error) {
     console.error(error);
@@ -130,20 +133,26 @@ const refreshAccessToken = async (req, res) => {
 const userLogout = (req, res) => {
   const user = req.body;
   const token = req.cookies?.cookie;
-  console.log("token logout", token); // Get token from cookie
-
-  if (token) {
-    blacklist.push(token);
+  if(!token){
+    res.status(401).json({
+      success: true,
+      message: "Logged out successfully",
+    });
   }
-  res.clearCookie("cookie", {
-    httpOnly: true,
-    secure: false,
-  });
+ else {
+    blacklist.push(token);
+    res.clearCookie("cookie", {
+      httpOnly: true,
+      secure: false,
+    });
+  
+    res.status(200).json({
+      success: true,
+      message: "Logged out successfully",
+    });
+  }
 
-  res.status(200).json({
-    success: true,
-    message: "Logged out successfully",
-  });
+
 };
 
 module.exports = { userLogin, userLogout, refreshAccessToken };

@@ -3,7 +3,6 @@ const CFTInfoModel = require("./cft.model");
 var fs = require("fs");
 const getCFTInfoController = async (req, res, next) => {
   const data = req.body;
-  console.log(data);
   const CFTInfoData = await CFTInfosService.getCFTInfosDB(data);
   res.json(CFTInfoData);
 };
@@ -12,8 +11,6 @@ const insertCFTInfoController = async (req, res, next) => {
   try {
     const datas = Array.isArray(req.body) ? req.body[0] : req.body;
     const { makeBy, makeDate, updateBy, updateDate, detailsData } = datas;
-    console.log(makeBy, makeDate, updateBy, updateDate, detailsData);
-    console.log("req.files:", req.files);
 
     let detailsDatas = datas.detailsData.map((detail, index) => {
       const image = req.files && req.files[index] ? req.files[index].path : "";
@@ -34,7 +31,6 @@ const insertCFTInfoController = async (req, res, next) => {
       updateDate: datas.updateDate,
     });
 
-    console.log("newImage", newImage);
     const CFTInfo = await CFTInfosService.insertCFTInfosDB(newImage);
     res.status(200).json({
       status: "success",
@@ -65,16 +61,17 @@ const getCFTInfoByIdController = async (req, res) => {
 const updateCFTInfoController = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log("update req body",req.body,req.files)
     const detailsDatas = req.body.detailsData.map((detail, index) => {
       const dynamicFieldName = `detailsData[${index}][image]`;
-      const newFile = req.files.find(file => file.fieldname === dynamicFieldName); // Find the specific file to update
-console.log('newfile',newFile)
+      const newFile = req.files.find(
+        (file) => file.fieldname === dynamicFieldName
+      ); // Find the specific file to update
+
       // Check if the current detail's image field is empty
       if (newFile) {
         detail.image = newFile.path; // Set the new file path to the image field
       } else {
-        console.error('Expected a File object but got:', newFile);
+        console.error("Expected a File object but got:", newFile);
       }
 
       return {
@@ -83,7 +80,7 @@ console.log('newfile',newFile)
         image: detail.image, // Updated image field
       };
     });
-    
+
     const updateCFTInfoData = {
       openingDate: req.body.openingDate,
       detailsData: detailsDatas,
@@ -95,8 +92,7 @@ console.log('newfile',newFile)
       updateDate: req.body.updateDate,
     };
 
-  
-console.log('updateCFTInfoData',updateCFTInfoData)
+    console.log("updateCFTInfoData", updateCFTInfoData);
     const result = await CFTInfosService.updateCFTInfosDB(
       id,
       updateCFTInfoData

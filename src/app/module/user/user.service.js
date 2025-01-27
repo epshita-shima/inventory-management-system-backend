@@ -1,17 +1,15 @@
 const User = require("./user.model");
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 
 const createUserToDB = async (payload) => {
-  console.log('payload',payload.password);
   try {
     const existingUserRole = await User.findOne({ username: payload.username });
     if (existingUserRole) {
       throw new Error("User roll with the same name already exists");
     }
-    const hashedPassword=await bcrypt.hash(payload.hashPassword,10)
-    payload.hashPassword= hashedPassword;
+    const hashedPassword = await bcrypt.hash(payload.hashPassword, 10);
+    payload.hashPassword = hashedPassword;
     const user = await User.create(payload);
-    console.log('with has password',user)
     return user;
   } catch (error) {
     console.error("Error saving data to MongoDB:", error);
@@ -32,7 +30,6 @@ const getUserDB = async () => {
 };
 
 const getUserByIdDB = async (id) => {
-  console.log(id);
   try {
     const user = await User.findById(id);
     if (!user) {
@@ -51,7 +48,7 @@ const updateUserDB = async (id, isactive) => {
       { isactive: isactive },
       { new: true }
     );
-    console.log(user, "service");
+
     if (!user) {
       throw new Error("User not found");
     }
@@ -64,7 +61,6 @@ const updateUserDB = async (id, isactive) => {
 
 const updateUserPasswordDB = async (id, password) => {
   const hashedPassword = await bcrypt.hash(password, 10);
-  console.log('user password',id,hashedPassword)
   try {
     const user = await User.findByIdAndUpdate(
       id,
@@ -131,8 +127,6 @@ const updateUserMultipleDataDB = async (dataToUpdate) => {
       menulist,
       updatedAt: Date.now(),
     };
-    console.log(updateData)
-    // Update the user
     const updatedUser = await User.findByIdAndUpdate(_id, updateData, {
       new: true,
     });
@@ -147,7 +141,6 @@ const updateUserMultipleDataDB = async (dataToUpdate) => {
 const deleteUserDB = async (id) => {
   try {
     const deletedUser = await User.findByIdAndDelete(id);
-    console.log(deletedUser, "delete");
     if (!deletedUser) {
       throw new Error("User not found");
     }
@@ -165,5 +158,5 @@ module.exports = {
   updateUserMultipleStatusDB,
   updateUserMultipleDataDB,
   deleteUserDB,
-  updateUserPasswordDB
+  updateUserPasswordDB,
 };

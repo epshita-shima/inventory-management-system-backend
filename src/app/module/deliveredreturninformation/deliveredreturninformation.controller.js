@@ -8,7 +8,6 @@ async function getReturnDeliveredInfoController(req, res, next) {
   }
   
 async function insertReturnDeliveredInfoController(req, res) {
-    console.log('return deliver',req.body)
     try {
       const insertedReturnDeliveredInfo =
         await ReturnDeliveredInfoService.insertReturnDeliveredInfoDB(req.body);

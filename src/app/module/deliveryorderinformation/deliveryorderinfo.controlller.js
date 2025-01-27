@@ -12,7 +12,6 @@ async function getDOAfterDeliverInfoController(req, res, next) {
 }
 
 const getFilteredDOApproveInfoController = async (req, res) => {
-  console.log("do approve", req.query);
   const { approveStatus } = req.query; // Assuming approveStatus is passed as a query parameter
   try {
     const filteredData = await DOInfoService.getFilteredDOApproveInfoDB(
@@ -49,7 +48,6 @@ const getDOInfoByIdController = async (req, res) => {
   }
 };
 const getDOSingleInfoByIdController = async (req, res) => {
-  console.log("single do", req.query);
   const { id } = req.query;
   try {
     const singleDOInfo = await DOInfoService.getDOSingleInfoByIdDB(id);
@@ -65,7 +63,6 @@ const getDOSingleInfoByIdController = async (req, res) => {
 
 const updateDOApproveStatusController = async (req, res) => {
   try {
-    console.log("controller", req.body);
     const result = await DOInfoService.updateDOApproveStatusDB(req.body);
     return res.status(200).json(result);
   } catch (error) {

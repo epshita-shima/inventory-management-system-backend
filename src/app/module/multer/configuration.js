@@ -26,15 +26,14 @@ const upload = multer({
     fileSize: 1024 * 1024 * 2,
   },
 });
-  
+
 const dynamicFields = (req, res, next) => {
   upload.any()(req, res, (err) => {
     if (err) {
       return next(err);
     }
     try {
-      const data = JSON.parse(JSON.stringify(req.body));  
-      console.log(data)
+      const data = JSON.parse(JSON.stringify(req.body));
       req.body = data;
       next();
     } catch (parseError) {
@@ -43,5 +42,4 @@ const dynamicFields = (req, res, next) => {
   });
 };
 
-  
 module.exports = dynamicFields;

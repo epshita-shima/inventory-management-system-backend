@@ -2,31 +2,33 @@ const SalesManagementService = require("./salesmanagementinfo.service");
 
 async function getInvoiceInformationController(req, res, next) {
   const data = req.body;
-  console.log('get data from invoice',req.body)
   const invoiceData = await SalesManagementService.getInvoiceInformationDB(
     data
   );
   res.json(invoiceData);
 }
 
-async function insertInvoiceInformationController(req, res,next) {
+async function insertInvoiceInformationController(req, res, next) {
   try {
     const insertedInvoice =
       await SalesManagementService.insertInvoiceInformationDB(req.body);
     res.status(200).json(insertedInvoice);
   } catch (error) {
-    next(error)
+    next(error);
   }
 }
 
 const getFilteredInvoiceInfoController = async (req, res) => {
-  const { customerID,piNumber } = req.query;
+  const { customerID, piNumber } = req.query;
   try {
-    const filteredData = await SalesManagementService.getFilteredInvoiceInfoDB(customerID,piNumber);
+    const filteredData = await SalesManagementService.getFilteredInvoiceInfoDB(
+      customerID,
+      piNumber
+    );
     res.json(filteredData);
   } catch (error) {
-    console.log('Error in controller:', error);
-    res.status(500).json({ error: 'An error occurred while fetching data' });
+    console.log("Error in controller:", error);
+    res.status(500).json({ error: "An error occurred while fetching data" });
   }
 };
 
@@ -47,28 +49,32 @@ const getInvoiceInformationByIdController = async (req, res) => {
 
 const updateInvoiceSpecialPIApproveController = async (req, res) => {
   try {
-      const result = await SalesManagementService.updateSpecialInvoiceApproveDB(req.body);
-      return res.status(200).json(result);
+    const result = await SalesManagementService.updateSpecialInvoiceApproveDB(
+      req.body
+    );
+    return res.status(200).json(result);
   } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 const updateInvoiceShipmentNoController = async (req, res) => {
   try {
-      const result = await SalesManagementService.updateInvoiceShipmentNoDB(req.body);
-      return res.status(200).json(result);
+    const result = await SalesManagementService.updateInvoiceShipmentNoDB(
+      req.body
+    );
+    return res.status(200).json(result);
   } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 const updateInvoiceInformationController = async (req, res) => {
   try {
     const { id } = req.params;
-    const updateInvoiceData = req.body; 
+    const updateInvoiceData = req.body;
     const result = await SalesManagementService.updateInvoiceInformationDB(
       id,
       updateInvoiceData
@@ -81,11 +87,13 @@ const updateInvoiceInformationController = async (req, res) => {
 
 const updateInvoiceStatusController = async (req, res) => {
   try {
-      const result = await SalesManagementService.updateInvoicePIStatusDB(req.body);
-      return res.status(200).json(result);
+    const result = await SalesManagementService.updateInvoicePIStatusDB(
+      req.body
+    );
+    return res.status(200).json(result);
   } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: 'Internal server error' });
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 

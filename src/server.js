@@ -30,7 +30,6 @@ async function bootstrap() {
       .catch((err) => console.log(err));
 
     server = app.listen(config.port, () => {
-      // console.log(`Application  listening on port ${config.port}`);
       console.log(`Application  listening on port ${config.port}`);
     });
   } catch (err) {

@@ -8,7 +8,6 @@ async function getFilteredForPurchaseReporDB(
   poId
 ) {
   try {
-    console.log("purchase service", fromDate, toDate, itemId, supplierId, poId);
     const filter = {};
     if (fromDate) {
       filter.receiveDate = fromDate;
@@ -62,11 +61,6 @@ async function getFilteredForSalesSummaryReportInfoDB(
   poId
 ) {
   try {
-    console.log('summary service',fromDate,
-      toDate,
-      itemId,
-      supplierId,
-      poId)
     const filter = {};
     if (fromDate) {
       filter.receiveDate = fromDate;
@@ -92,10 +86,7 @@ async function getFilteredForSalesSummaryReportInfoDB(
     if (Object.keys(filter).length === 0) {
       return [];
     }
-
-    console.log('filters',filter)
     const data = await PurchaseManagementModel.find(filter).lean();
-    console.log('data',data)
     if (!data.length) return [];
 
     const groupedData = {};

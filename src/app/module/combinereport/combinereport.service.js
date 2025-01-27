@@ -6,7 +6,6 @@ const ReturnModel = require("../deliveredreturninformation/deliveredreturninform
 const RawMaterialModel = require("../rawmaterialinformation/rawmaterialinfo.model");
 const FinishGoodsModel = require("../finishgoodsinformation/finishgoods.model");
 async function getFilteredForManagementCombineReportDB(fromDate, toDate) {
-  console.log("combine service", fromDate, toDate); // Fixing the typo
   try {
     const purchasefilter = {};
     const orderFilter = {};

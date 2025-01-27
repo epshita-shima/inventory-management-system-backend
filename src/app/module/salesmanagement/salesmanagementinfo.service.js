@@ -5,7 +5,6 @@ const SalesManagementModel = require("./salesmanagementinfo.model");
 async function getInvoiceInformationDB() {
   try {
     const salesData = await SalesManagementModel.find();
-    console.log('salesData',salesData)
     return salesData;
   } catch (error) {
     console.log("Error fetching production data:", error);
