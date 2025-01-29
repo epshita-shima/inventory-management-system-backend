@@ -33,7 +33,7 @@ const userLogin = async (req, res, next) => {
       userTokenCreationPayload,
       process.env.ACCESS_SECRET_TOKEN,
       {
-        expiresIn: "2m",
+        expiresIn: "10m",
       }
     );
 
@@ -102,7 +102,7 @@ const refreshAccessToken = async (req, res) => {
               userTokenCreationPayload,
               process.env.ACCESS_SECRET_TOKEN,
               {
-                expiresIn: "2m",
+                expiresIn: "10m",
               }
             );
             res.status(200).json({
