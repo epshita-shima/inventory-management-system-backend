@@ -5,6 +5,26 @@ async function getPurchaseOrderInfoController(req, res, next) {
   const POData = await PurchaseOrderInfoService.getPurchaseOrderInfoDB(data);
   res.json(POData);
 }
+async function getPurchaseOrderCashInfoController(req, res, next) {
+  const data = req.body;
+  const POData = await PurchaseOrderInfoService.filteredPurchaseCashModalData(data);
+  res.json(POData);
+}
+async function getPurchaseOrderLCInfoController(req, res, next) {
+  const data = req.body;
+  const POData = await PurchaseOrderInfoService.filteredPurchaseLCModalData(data);
+  res.json(POData);
+}
+async function getPurchaseOrderApproveInfoController(req, res, next) {
+  const data = req.body;
+  const POData = await PurchaseOrderInfoService.filteredPurchaseApproveModalData(data);
+  res.json(POData);
+}
+async function getPurchaseOrderUnApproveInfoController(req, res, next) {
+  const data = req.body;
+  const POData = await PurchaseOrderInfoService.filteredPurchaseUnApproveModalData(data);
+  res.json(POData);
+}
 
 async function insertPurchaseOrderInfoController(req, res) {
   try {
@@ -69,6 +89,10 @@ const deletePurchaseOrderInfoInformationController = async (req, res) => {
 };
 module.exports = {
   getPurchaseOrderInfoController,
+  getPurchaseOrderCashInfoController,
+  getPurchaseOrderLCInfoController,
+  getPurchaseOrderApproveInfoController,
+  getPurchaseOrderUnApproveInfoController,
   insertPurchaseOrderInfoController,
   getPurchaseOrderInfoByIdController,
   updatePurchaseOrderInfoController,

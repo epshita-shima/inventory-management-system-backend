@@ -1,6 +1,7 @@
 const PurchaseOrderInfoModel = require("./purchaseorderinfo.model");
 const GoodsReceivedNoteModel = require("../goodsreceivenoteinformation/grninfo.model");
-
+const PaymentMoodModel=require('../paymentinformation/paymentinfo.model');
+const { trusted } = require("mongoose");
 async function getPurchaseOrderInfoDB() {
   try {
     const urchaseOrderData = await PurchaseOrderInfoModel.find();
@@ -94,6 +95,52 @@ async function updatePurchaseOrderInfoStatusDB(updateStatus) {
   }
 }
 
+const filteredPurchaseCashModalData=async()=>{
+  try {
+    const getPOData = await PurchaseOrderInfoModel.find();
+    const filteredCashPOData = getPOData.filter((po) =>po.paymentId.toString()== '667d2b983e37e91c4e1f3a1f')
+    ;
+    return filteredCashPOData;
+  } catch (error) {
+    console.log("Error updating multiple users:", error);
+    throw new Error("Failed to update multiple data");
+  }
+}
+const filteredPurchaseApproveModalData=async()=>{
+  try {
+    const getPOData = await PurchaseOrderInfoModel.find();
+    const filteredCashPOData = getPOData.filter((po) =>po.approveStatus== true)
+    ;
+    return filteredCashPOData;
+  } catch (error) {
+    console.log("Error updating multiple users:", error);
+    throw new Error("Failed to update multiple data");
+  }
+}
+const filteredPurchaseUnApproveModalData=async()=>{
+  try {
+    const getPOData = await PurchaseOrderInfoModel.find();
+    const filteredCashPOData = getPOData.filter((po) =>po.approveStatus== false)
+    ;
+    return filteredCashPOData;
+  } catch (error) {
+    console.log("Error updating multiple users:", error);
+    throw new Error("Failed to update multiple data");
+  }
+}
+
+const filteredPurchaseLCModalData=async()=>{
+  try {
+    const getPOData = await PurchaseOrderInfoModel.find();
+    const filteredCashPOData = getPOData.filter((po) =>po.paymentId.toString()=='667d2b983e37e91c4e1f3a20')
+    ;
+    return filteredCashPOData;
+  } catch (error) {
+    console.log("Error updating multiple users:", error);
+    throw new Error("Failed to update multiple data");
+  }
+}
+
 const deletePurchaseOrderInfoDB = async (id) => {
   try {
     const deletePOInfoData = await PurchaseOrderInfoModel.findByIdAndDelete(id);
@@ -111,5 +158,9 @@ module.exports = {
   getPurchaseOrderInfoByIdDB,
   updatePurchaseOrderInfoDB,
   updatePurchaseOrderInfoStatusDB,
+  filteredPurchaseCashModalData,
+  filteredPurchaseLCModalData,
+  filteredPurchaseApproveModalData,
+  filteredPurchaseUnApproveModalData,
   deletePurchaseOrderInfoDB,
 };
