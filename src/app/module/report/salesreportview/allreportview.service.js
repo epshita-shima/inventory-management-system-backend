@@ -1,6 +1,6 @@
-const OrderManagementModel = require("../salesmanagement/salesmanagementinfo.model");
-const SalesManagementModel = require("../finishgoodsdeliveryinfo/finishgoodsdeliveryinfo.model");
-const ReturnManagementModel = require("../deliveredreturninformation/deliveredreturninformation.model");
+const OrderManagementModel = require("../../salesmanagement/salesmanagementinfo.model");
+const SalesManagementModel = require("../../finishgoodsdeliveryinfo/finishgoodsdeliveryinfo.model");
+const ReturnManagementModel = require("../../deliveredreturninformation/deliveredreturninformation.model");
 
 async function getFilteredForOrderReportInfoDB(
   fromDate,

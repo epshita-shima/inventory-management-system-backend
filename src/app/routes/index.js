@@ -22,10 +22,11 @@ const paymentMethodInfoRoute = require("../module/paymentmethodinformation/payme
 const deliveryOrderInfo = require("../module/deliveryorderinformation/deliveryorderinfo.route");
 const finishGoodsDelivery = require("../module/finishgoodsdeliveryinfo/finishgoodsdeliveryinfo.route");
 const returnDeliveredRoute = require("../module/deliveredreturninformation/deliveredreturninformation.route");
-const salesReportViewRoute = require("../module/salesreportview/allreportview.route");
-const productionReportViewRoute = require("../module/productionreportview/productionreport.route");
-const combineReportRoute = require("../module/combinereport/combinereport.route");
-const purchaseReportRoute = require("../module/purchasereport/purchasereport.route");
+const salesReportViewRoute = require("../module/report/salesreportview/allreportview.route");
+const productionReportViewRoute = require("../module/report/productionreportview/productionreport.route");
+const combineReportRoute = require("../module/report/combinereport/combinereport.route");
+const purchaseReportRoute = require("../module/report/purchasereport/purchasereport.route");
+const stockReportRoute = require("../module/report/stockreport/stockreport.route");
 const tokenCreate = require("../module/auth/auth.route");
 const router = express.Router();
 
@@ -141,6 +142,10 @@ const moduleRoutes = [
   {
     path: "/purchase-report",
     route: purchaseReportRoute,
+  },
+  {
+    path: "/stock-report",
+    route: stockReportRoute,
   },
 ];
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

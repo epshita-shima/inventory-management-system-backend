@@ -1,10 +1,11 @@
-const GRNSModel = require("../goodsreceivenoteinformation/grninfo.model");
-const OrderModel = require("../salesmanagement/salesmanagementinfo.model");
-const ProductionModel = require("../productioninformation/productioninfo.model");
-const SalesModel = require("../finishgoodsdeliveryinfo/finishgoodsdeliveryinfo.model");
-const ReturnModel = require("../deliveredreturninformation/deliveredreturninformation.model");
-const RawMaterialModel = require("../rawmaterialinformation/rawmaterialinfo.model");
-const FinishGoodsModel = require("../finishgoodsinformation/finishgoods.model");
+const GRNSModel = require("../../goodsreceivenoteinformation/grninfo.model");
+const OrderModel = require("../../salesmanagement/salesmanagementinfo.model");
+const ProductionModel = require("../../productioninformation/productioninfo.model");
+const SalesModel = require("../../finishgoodsdeliveryinfo/finishgoodsdeliveryinfo.model");
+const ReturnModel = require("../../deliveredreturninformation/deliveredreturninformation.model");
+const RawMaterialModel = require("../../rawmaterialinformation/rawmaterialinfo.model");
+const FinishGoodsModel = require("../../finishgoodsinformation/finishgoods.model");
+
 async function getFilteredForManagementCombineReportDB(fromDate, toDate) {
   try {
     const purchasefilter = {};

@@ -1,4 +1,4 @@
-const ProductionModel = require("../productioninformation/productioninfo.model");
+const ProductionModel = require("../../productioninformation/productioninfo.model");
 
 async function getFilteredForProductionDatewiseDetailsReportInfoDB(
   fromDate,

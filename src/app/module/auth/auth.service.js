@@ -151,8 +151,6 @@ const userLogout = (req, res) => {
       message: "Logged out successfully",
     });
   }
-
-
 };
 
 module.exports = { userLogin, userLogout, refreshAccessToken };

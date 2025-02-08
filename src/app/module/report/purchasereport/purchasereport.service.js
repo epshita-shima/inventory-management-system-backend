@@ -1,4 +1,4 @@
-const PurchaseManagementModel = require("../goodsreceivenoteinformation/grninfo.model");
+const PurchaseManagementModel = require("../../goodsreceivenoteinformation/grninfo.model");
 
 async function getFilteredForPurchaseReporDB(
   fromDate,
