@@ -1,6 +1,7 @@
 const PurchaseModel = require("../../purchaseorderinformation/purchaseorderinfo.model");
 const ProductionModel = require("../../productioninformation/productioninfo.model");
 const RawMaterialModel = require("../../rawmaterialinformation/rawmaterialinfo.model");
+
 async function getRawMaterialStockReportDB(fromDate, toDate) {
   try {
     const purchaseFilter = {};
@@ -65,13 +66,13 @@ async function getRawMaterialStockReportDB(fromDate, toDate) {
     }, {});
 
     const rawMaterialStockReport = resultPurchase.map((purchase) => {
-      const purchaseConsumption = productionMap[purchase.itemId] || 0;
+      const productionConsumption = productionMap[purchase.itemId] || 0;
       return {
         itemId: purchase.itemId,
         purchaseQuantity: purchase.purchaseQuantity,
-        purchaseConsumption: purchaseConsumption,
+        productionConsumption: productionConsumption,
         purchasePrice:purchase.purchasePrice,
-        stockInHand: purchase.purchaseQuantity - purchaseConsumption,
+        stockInHand: purchase.purchaseQuantity - productionConsumption,
       };
     });
     console.log("rawMaterialStockReport", rawMaterialStockReport);

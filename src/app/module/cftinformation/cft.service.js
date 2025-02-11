@@ -47,12 +47,13 @@ async function insertCFTInfosDB(cftData) {
   }
 
   async function updateCFTInfosStatusDB( data) {
+    console.log('new date',new Date().toLocaleDateString('en-CA'))
     try {
       const promises = data?.map(async (updateStatus) => {
         // Update isactive field for each user
         const updatedStatusData = await CFTInfosModal.findByIdAndUpdate(
           updateStatus._id,
-          { isActive: updateStatus.isActive },
+          { isActive: updateStatus.isActive ,closingDate:new Date().toLocaleDateString('en-CA')},
           { new: true }
         );
         return updatedStatusData;

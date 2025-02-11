@@ -165,26 +165,30 @@ async function getFilteredForRawMaterialConsumptionDetailsReportInfoDB(
     if (fromDate && toDate) {
       filter.productionDate = { $gte: fromDate, $lte: toDate };
     }
+    if (itemId) {
+      filter["detailsData.itemId"] = itemId;
+    }
 
     if (Object.keys(filter).length === 0) {
       return [];
     }
-
     const data = await ProductionModel.find(filter).lean();
-    if (itemId) {
-      const filteredData = data.flatMap((detail) => {
-        const matchedDetails = detail.detailsData.filter(
-          (item) => item.itemId === itemId
-        );
-        if (matchedDetails.length > 0) {
-          return [{ ...detail, detailsData: matchedDetails }];
-        }
-        return [];
-      });
-      return filteredData;
-    } else {
+    // console.log('data',data)
+    // if (itemId) {
+    //   console.log('itemId',itemId)
+    //   const filteredData = data.flatMap((detail) => {
+    //     const matchedDetails = detail.detailsData.filter(
+    //       (item) => item.itemId === itemId
+    //     );
+    //     if (matchedDetails.length > 0) {
+    //       return [{ ...detail, detailsData: matchedDetails }];
+    //     }
+    //     return [];
+    //   });
+    //   return filteredData;
+    // } else {
       return data;
-    }
+    // }
   } catch (error) {
    console.log(error);
     throw new Error("Error fetching payment method info");
