@@ -2,6 +2,7 @@ const StockReportService = require("./stockreport.service");
 
 const getFiltredForStockReportInfoController = async (req, res) => {
   const { fromDate, toDate } = req.query;
+  console.log('fromDate, toDate',fromDate, toDate)
   try {
     const getData =await StockReportService.getRawMaterialStockReportDB(
       fromDate,

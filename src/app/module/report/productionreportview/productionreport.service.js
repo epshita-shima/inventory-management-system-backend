@@ -33,7 +33,7 @@ async function getFilteredForProductionDatewiseDetailsReportInfoDB(
 
     return data;
   } catch (error) {
-   console.log(error);
+    console.log(error);
     throw new Error("Error fetching payment method info");
   }
 }
@@ -106,7 +106,7 @@ async function getFilteredForProductionDatewiseSummaryReportInfoDB(
     });
     return Object.values(groupedData);
   } catch (error) {
-   console.log(error);
+    console.log(error);
     throw new Error("Error fetching payment method info");
   }
 }
@@ -144,7 +144,7 @@ async function getFilteredForProductionItemwiseDetailsReportInfoDB(
 
     return data;
   } catch (error) {
-   console.log(error);
+    console.log(error);
     throw new Error("Error fetching payment method info");
   }
 }
@@ -154,6 +154,9 @@ async function getFilteredForRawMaterialConsumptionDetailsReportInfoDB(
   toDate,
   itemId
 ) {
+  console.log(  'production',fromDate,
+    toDate,
+    itemId)
   try {
     const filter = {};
     if (fromDate) {
@@ -172,25 +175,73 @@ async function getFilteredForRawMaterialConsumptionDetailsReportInfoDB(
     if (Object.keys(filter).length === 0) {
       return [];
     }
-    const data = await ProductionModel.find(filter).lean();
-    // console.log('data',data)
-    // if (itemId) {
-    //   console.log('itemId',itemId)
-    //   const filteredData = data.flatMap((detail) => {
-    //     const matchedDetails = detail.detailsData.filter(
-    //       (item) => item.itemId === itemId
-    //     );
-    //     if (matchedDetails.length > 0) {
-    //       return [{ ...detail, detailsData: matchedDetails }];
-    //     }
-    //     return [];
-    //   });
-    //   return filteredData;
-    // } else {
+    if (itemId) {
+      const data = await ProductionModel.aggregate([
+        { $match: filter }, // Find documents that contain the matching itemId
+        {
+          $project: {
+            productionDate: 1,
+            batchNo: 1,
+            totalBatch: 1,
+            receipeQtyRatio: 1,
+            productionItemName: 1,
+            productionQty: 1,
+            productionStart: 1,
+            productionEnd: 1,
+            totalHour: 1,
+            wastageQty: 1,
+            expectedProductionQtyPerBatch: 1,
+            expectedProductionQty: 1,
+            excessOrLessProductionQty: 1,
+            productionStatus: 1,
+            makeBy: 1,
+            updateBy: 1,
+            makeDate: 1,
+            updateDate: 1,
+            detailsData: {
+              $filter: {
+                input: "$detailsData",
+                as: "item",
+                cond: { $eq: ["$$item.itemId", itemId] }, // Only return items that match itemId
+              },
+            },
+          },
+        },
+      ]);
       return data;
-    // }
+    }
+    if(fromDate && toDate) {
+      console.log('fromDate && toDate',fromDate, toDate)
+      const data = await ProductionModel.aggregate([
+        { $match:filter }, // Filter by date range
+        {
+          $project: {
+            productionDate: 1,
+            batchNo: 1,
+            totalBatch: 1,
+            receipeQtyRatio: 1,
+            productionItemName: 1,
+            productionQty: 1,
+            productionStart: 1,
+            productionEnd: 1,
+            totalHour: 1,
+            wastageQty: 1,
+            expectedProductionQtyPerBatch: 1,
+            expectedProductionQty: 1,
+            excessOrLessProductionQty: 1,
+            productionStatus: 1,
+            makeBy: 1,
+            updateBy: 1,
+            makeDate: 1,
+            updateDate: 1,
+            detailsData: 1,
+          },
+        },
+      ]);
+      return data;
+    }
   } catch (error) {
-   console.log(error);
+    console.log(error);
     throw new Error("Error fetching payment method info");
   }
 }
@@ -227,7 +278,7 @@ async function getFilteredForRawMaterialConsumptionSummaryReportInfoDB(
         const materialUsed = parseInt(detail.materialUsed, 10);
         if (isNaN(materialUsed)) return;
 
-        if ((!itemId || detail.itemId === itemId)){
+        if (!itemId || detail.itemId === itemId) {
           const dateKey = new Date(item.productionDate)
             .toISOString()
             .split("T")[0];
@@ -235,7 +286,7 @@ async function getFilteredForRawMaterialConsumptionSummaryReportInfoDB(
 
           if (detail.itemId) {
             key = `${dateKey}-${detail.itemId}`;
-          } 
+          }
 
           if (!groupedData[key]) {
             groupedData[key] = {
@@ -252,7 +303,7 @@ async function getFilteredForRawMaterialConsumptionSummaryReportInfoDB(
 
     return Object.values(groupedData);
   } catch (error) {
-   console.log(error);
+    console.log(error);
     throw new Error("Error fetching payment method info");
   }
 }
@@ -262,5 +313,5 @@ module.exports = {
   getFilteredForProductionDatewiseSummaryReportInfoDB,
   getFilteredForProductionItemwiseDetailsReportInfoDB,
   getFilteredForRawMaterialConsumptionDetailsReportInfoDB,
-  getFilteredForRawMaterialConsumptionSummaryReportInfoDB
+  getFilteredForRawMaterialConsumptionSummaryReportInfoDB,
 };

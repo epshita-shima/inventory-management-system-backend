@@ -3,6 +3,7 @@ const ProductionModel = require("../../productioninformation/productioninfo.mode
 const RawMaterialModel = require("../../rawmaterialinformation/rawmaterialinfo.model");
 
 async function getRawMaterialStockReportDB(fromDate, toDate) {
+  console.log(fromDate, toDate)
   try {
     const purchaseFilter = {};
     const productionFilter = {};
@@ -75,7 +76,7 @@ async function getRawMaterialStockReportDB(fromDate, toDate) {
         stockInHand: purchase.purchaseQuantity - productionConsumption,
       };
     });
-    console.log("rawMaterialStockReport", rawMaterialStockReport);
+
     return rawMaterialStockReport;
   } catch (error) {
     console.error("Error in getFilteredForCombineReport:", error);

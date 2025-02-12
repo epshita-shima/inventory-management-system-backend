@@ -7,6 +7,11 @@ async function getFilteredForPurchaseReporDB(
   supplierId,
   poId
 ) {
+  console.log( fromDate,
+    toDate,
+    itemId,
+    supplierId,
+    poId)
   try {
     const filter = {};
     if (fromDate) {
@@ -30,7 +35,7 @@ async function getFilteredForPurchaseReporDB(
     if (Object.keys(filter).length === 0) {
       return [];
     }
-
+console.log("filter",filter)
     const data = await PurchaseManagementModel.find(filter).lean();
 
     if (itemId) {

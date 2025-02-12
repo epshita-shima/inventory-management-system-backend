@@ -27,6 +27,7 @@ async function getPurchaseOrderUnApproveInfoController(req, res, next) {
 }
 
 async function insertPurchaseOrderInfoController(req, res) {
+  console.log('req.body',req.body)
   try {
     const insertedPO = await PurchaseOrderInfoService.insertPurchaseOrderInfoDB(
       req.body
