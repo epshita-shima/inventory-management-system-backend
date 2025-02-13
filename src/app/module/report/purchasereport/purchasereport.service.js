@@ -7,11 +7,7 @@ async function getFilteredForPurchaseReporDB(
   supplierId,
   poId
 ) {
-  console.log( fromDate,
-    toDate,
-    itemId,
-    supplierId,
-    poId)
+  console.log(fromDate, toDate, itemId, supplierId, poId);
   try {
     const filter = {};
     if (fromDate) {
@@ -23,7 +19,9 @@ async function getFilteredForPurchaseReporDB(
     if (fromDate && toDate) {
       filter.receiveDate = { $gte: fromDate, $lte: toDate };
     }
-
+    if (itemId) {
+      filter["detailsData.itemId"] = itemId;
+    }
     if (supplierId) {
       filter.supplierId = supplierId;
     }
@@ -35,21 +33,43 @@ async function getFilteredForPurchaseReporDB(
     if (Object.keys(filter).length === 0) {
       return [];
     }
-console.log("filter",filter)
-    const data = await PurchaseManagementModel.find(filter).lean();
+    console.log("filter", filter);
+
 
     if (itemId) {
-      const filteredData = data.flatMap((detail) => {
-        const matchedDetails = detail.detailsData.filter(
-          (item) => item.itemId === itemId
-        );
-        if (matchedDetails.length > 0) {
-          return [{ ...detail, detailsData: matchedDetails }];
-        }
-        return [];
-      });
-      return filteredData;
+      const data = await PurchaseManagementModel.aggregate([
+        { $match: filter },
+        {
+          $project: {
+            pOSingleId: 1,
+            grnSerialNo: 1,
+            supplierId: 1,
+            supplierPoNo: 1,
+            receiveDate: 1,
+            challanNo: 1,
+            grandTotalQuantity: 1,
+            grandTotalReceivedQuantity: 1,
+            grandTotalAmount: 1,
+            isAccountPostingStatus: 1,
+            vocuherNo: 1,
+            voucherDate: 1,
+            makeBy: 1,
+            updateBy: 1,
+            makeDate: 1,
+            updateDate: 1,
+            detailsData: {
+              $filter: {
+                input: "$detailsData",
+                as: "item",
+                cond: { $eq: ["$$item.itemId", itemId] }, // Only return items that match itemId
+              },
+            },
+          },
+        },
+      ]);
+      return data;
     } else {
+      const data = await PurchaseManagementModel.find(filter).lean();
       return data;
     }
   } catch (error) {
@@ -66,6 +86,11 @@ async function getFilteredForSalesSummaryReportInfoDB(
   poId
 ) {
   try {
+    console.log('service',fromDate,
+      toDate,
+      itemId,
+      supplierId,
+      poId)
     const filter = {};
     if (fromDate) {
       filter.receiveDate = fromDate;
@@ -79,6 +104,9 @@ async function getFilteredForSalesSummaryReportInfoDB(
         $lte: toDate,
       };
     }
+    if (itemId) {
+      filter["detailsData.itemId"] = itemId;
+    }
 
     if (supplierId) {
       filter.supplierId = supplierId;
@@ -91,7 +119,9 @@ async function getFilteredForSalesSummaryReportInfoDB(
     if (Object.keys(filter).length === 0) {
       return [];
     }
+
     const data = await PurchaseManagementModel.find(filter).lean();
+
     if (!data.length) return [];
 
     const groupedData = {};
@@ -99,6 +129,7 @@ async function getFilteredForSalesSummaryReportInfoDB(
     // Process data and group by returnDate, itemId, supplierId, and poId
     data.forEach((item) => {
       item.detailsData.forEach((detail) => {
+        console.log('detail',detail)
         const purchaseQty = parseInt(detail.quantity, 10);
         if (isNaN(purchaseQty)) return;
         const purchaseAmount = parseInt(detail.amount, 10);

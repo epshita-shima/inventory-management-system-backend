@@ -21,7 +21,7 @@ const getFiltredForPurchaseDetailsReportController = async (req, res) => {
 
 const getFiltredForPurchaseSummaryReportController = async (req, res) => {
   const { fromDate, toDate, itemId, supplierId, poId, reportStatus } = req.query;
-
+console.log(fromDate, toDate, itemId, supplierId, poId, reportStatus)
   try {
     const  filteredData =
         await PurchaseReportService.getFilteredForSalesSummaryReportInfoDB(

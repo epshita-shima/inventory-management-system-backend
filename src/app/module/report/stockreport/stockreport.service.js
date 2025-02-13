@@ -1,9 +1,13 @@
 const PurchaseModel = require("../../purchaseorderinformation/purchaseorderinfo.model");
 const ProductionModel = require("../../productioninformation/productioninfo.model");
 const RawMaterialModel = require("../../rawmaterialinformation/rawmaterialinfo.model");
+const DeliveredModal = require("../../finishgoodsdeliveryinfo/finishgoodsdeliveryinfo.model");
+const ReturnDataModel = require("../../deliveredreturninformation/deliveredreturninformation.model");
+const FinishGoodsModel = require("../../finishgoodsinformation/finishgoods.model");
+const mongoose = require("mongoose");
 
 async function getRawMaterialStockReportDB(fromDate, toDate) {
-  console.log(fromDate, toDate)
+  console.log(fromDate, toDate);
   try {
     const purchaseFilter = {};
     const productionFilter = {};
@@ -37,7 +41,7 @@ async function getRawMaterialStockReportDB(fromDate, toDate) {
         const quantity = parseInt(detail.quantity, 10) || 0;
         const unitPrice = parseInt(detail.unitPrice, 10) || 0;
         if (!acc[itemId]) {
-          acc[itemId] = { itemId, purchaseQuantity: 0,purchasePrice:0 };
+          acc[itemId] = { itemId, purchaseQuantity: 0, purchasePrice: 0 };
         }
         acc[itemId].purchaseQuantity += quantity;
         acc[itemId].purchasePrice += unitPrice;
@@ -72,7 +76,7 @@ async function getRawMaterialStockReportDB(fromDate, toDate) {
         itemId: purchase.itemId,
         purchaseQuantity: purchase.purchaseQuantity,
         productionConsumption: productionConsumption,
-        purchasePrice:purchase.purchasePrice,
+        purchasePrice: purchase.purchasePrice,
         stockInHand: purchase.purchaseQuantity - productionConsumption,
       };
     });
@@ -83,6 +87,75 @@ async function getRawMaterialStockReportDB(fromDate, toDate) {
     throw error;
   }
 }
+
+async function getFinishGoodsStockReportDB(fromDate, toDate) {
+  console.log(fromDate, toDate);
+  try {
+    const deliveredFilter = {};
+    const returnFilter = {};
+    const productionFilter = {};
+    if (fromDate) {
+      deliveredFilter.finishGoodsDeliveryDate = fromDate;
+      returnFilter.returnDate = fromDate;
+      productionFilter.productionDate = fromDate;
+    }
+    if (toDate) {
+      deliveredFilter.finishGoodsDeliveryDate = toDate;
+      returnFilter.returnDate = toDate;
+      productionFilter.productionDate = toDate;
+    }
+    if (fromDate && toDate) {
+      deliveredFilter.finishGoodsDeliveryDate = {
+        $gte: fromDate,
+        $lte: toDate,
+      };
+      returnFilter.returnDate = {
+        $gte: fromDate,
+        $lte: toDate,
+      };
+
+      productionFilter.productionDate = {
+        $gte: fromDate,
+        $lte: toDate,
+      };
+    }
+    const deliveredInfo = await DeliveredModal.find(deliveredFilter).lean();
+    const productionInfo = await ProductionModel.find(productionFilter).lean();
+    const returnDataInfo = await ReturnDataModel.find(returnFilter).lean();
+    const finishGoodsInfo = await FinishGoodsModel.find().lean();
+    const stockData = finishGoodsInfo.map((item) => {
+      const itemId = item._id;
+
+      const productionQty = productionInfo
+        .filter((prod) => prod.productionItemName == itemId)
+        .reduce((sum, prod) => sum + (prod.productionQty || 0), 0);
+
+      const deliveredQty = deliveredInfo
+        .flatMap((del) => del.detailsData)
+        .filter((detail) =>
+          new mongoose.Types.ObjectId(detail.itemId).equals(itemId)
+        )
+        .reduce((sum, detail) => sum + (parseFloat(detail.deliverQty) || 0), 0);
+
+      const returnQty = returnDataInfo
+        .flatMap((ret) => ret.detailsData)
+        .filter((detail) =>
+          new mongoose.Types.ObjectId(detail.itemId).equals(itemId)
+        )
+        .reduce((sum, detail) => sum + (parseFloat(detail.returnQty) || 0), 0);
+
+      const stockInHand = productionQty - deliveredQty + returnQty;
+
+      return { itemId, productionQty, deliveredQty, returnQty, stockInHand };
+    });
+    return stockData;
+  } catch (error) {
+    console.error("Error in getFilteredForCombineReport:", error);
+    throw error;
+  }
+}
+
 module.exports = {
   getRawMaterialStockReportDB,
+  getFinishGoodsStockReportDB,
 };
