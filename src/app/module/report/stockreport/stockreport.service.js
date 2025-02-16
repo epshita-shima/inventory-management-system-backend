@@ -123,32 +123,35 @@ async function getFinishGoodsStockReportDB(fromDate, toDate) {
     const productionInfo = await ProductionModel.find(productionFilter).lean();
     const returnDataInfo = await ReturnDataModel.find(returnFilter).lean();
     const finishGoodsInfo = await FinishGoodsModel.find().lean();
-    const stockData = finishGoodsInfo.map((item) => {
-      const itemId = item._id;
-
-      const productionQty = productionInfo
-        .filter((prod) => prod.productionItemName == itemId)
-        .reduce((sum, prod) => sum + (prod.productionQty || 0), 0);
-
-      const deliveredQty = deliveredInfo
-        .flatMap((del) => del.detailsData)
-        .filter((detail) =>
-          new mongoose.Types.ObjectId(detail.itemId).equals(itemId)
-        )
-        .reduce((sum, detail) => sum + (parseFloat(detail.deliverQty) || 0), 0);
-
-      const returnQty = returnDataInfo
-        .flatMap((ret) => ret.detailsData)
-        .filter((detail) =>
-          new mongoose.Types.ObjectId(detail.itemId).equals(itemId)
-        )
-        .reduce((sum, detail) => sum + (parseFloat(detail.returnQty) || 0), 0);
-
-      const stockInHand = productionQty - deliveredQty + returnQty;
-
-      return { itemId, productionQty, deliveredQty, returnQty, stockInHand };
-    });
-    return stockData;
+    if(deliveredInfo.length > 0 || productionInfo.length > 0  || returnDataInfo.length > 0 ){
+      const stockData = finishGoodsInfo.map((item) => {
+        const itemId = item._id;
+  
+        const productionQty = productionInfo
+          .filter((prod) => prod.productionItemName == itemId)
+          .reduce((sum, prod) => sum + (prod.productionQty || 0), 0);
+  
+        const deliveredQty = deliveredInfo
+          .flatMap((del) => del.detailsData)
+          .filter((detail) =>
+            new mongoose.Types.ObjectId(detail.itemId).equals(itemId)
+          )
+          .reduce((sum, detail) => sum + (parseFloat(detail.deliverQty) || 0), 0);
+  
+        const returnQty = returnDataInfo
+          .flatMap((ret) => ret.detailsData)
+          .filter((detail) =>
+            new mongoose.Types.ObjectId(detail.itemId).equals(itemId)
+          )
+          .reduce((sum, detail) => sum + (parseFloat(detail.returnQty) || 0), 0);
+  
+        const stockInHand = productionQty !==0 ? productionQty- (deliveredQty + returnQty) : (deliveredQty + returnQty);
+  
+        return { itemId, productionQty, deliveredQty, returnQty, stockInHand };
+      });
+      return stockData;
+    }
+ 
   } catch (error) {
     console.error("Error in getFilteredForCombineReport:", error);
     throw error;

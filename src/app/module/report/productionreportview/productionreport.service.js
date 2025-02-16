@@ -7,6 +7,7 @@ async function getFilteredForProductionDatewiseDetailsReportInfoDB(
   batchNo
 ) {
   try {
+    console.log('click',productionItemName)
     const filter = {};
     if (fromDate) {
       filter.productionDate = fromDate;
@@ -30,7 +31,7 @@ async function getFilteredForProductionDatewiseDetailsReportInfoDB(
     }
 
     const data = await ProductionModel.find(filter).lean();
-
+console.log('data',data)
     return data;
   } catch (error) {
     console.log(error);
