@@ -58,6 +58,24 @@ const updateUserDB = async (id, isactive) => {
     throw new Error("Internal server error");
   }
 };
+const updateUserInformationDB = async (id, data) => {
+  try {
+    console.log('update user',data)
+    const user = await User.findByIdAndUpdate(
+      id,
+      { $set: data },
+      { new: true }
+    );
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    return user;
+  } catch (error) {
+    throw new Error("Internal server error");
+  }
+};
 
 const updateUserPasswordDB = async (id, password) => {
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -159,4 +177,5 @@ module.exports = {
   updateUserMultipleDataDB,
   deleteUserDB,
   updateUserPasswordDB,
+  updateUserInformationDB
 };

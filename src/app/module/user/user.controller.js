@@ -59,6 +59,19 @@ const updateUser = async (req, res) => {
     });
   }
 };
+const updateUserInformationController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedUserData = req.body;
+    const result = await userService.updateUserInformationDB(
+      id,
+      updatedUserData
+    );
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 const updateUserPassword = async (req, res) => {
   const { id } = req.params;
   const { password } = req.body;
@@ -123,4 +136,5 @@ module.exports = {
   updateUserMultipleField,
   deleteUser,
   updateUserPassword,
+  updateUserInformationController
 };

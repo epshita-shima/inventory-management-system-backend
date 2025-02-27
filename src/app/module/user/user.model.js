@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
   roleId: { type: String, required: true },
   menulist: [
     {
-      id:{ type: String },
+      id:{ type: String ,required:true},
       trackId: { type: String },
       label: { type: String, required: true },
       url: { type: String, required: true },
