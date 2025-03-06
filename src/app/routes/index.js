@@ -28,6 +28,7 @@ const combineReportRoute = require("../module/report/combinereport/combinereport
 const purchaseReportRoute = require("../module/report/purchasereport/purchasereport.route");
 const stockReportRoute = require("../module/report/stockreport/stockreport.route");
 const tokenCreate = require("../module/auth/auth.route");
+const salesChart=require('../module/report/chartreport/chart.route')
 const router = express.Router();
 
 const moduleRoutes = [
@@ -142,6 +143,10 @@ const moduleRoutes = [
   {
     path: "/purchase-report",
     route: purchaseReportRoute,
+  },
+  {
+    path: "/sales-chart",
+    route: salesChart,
   },
   {
     path: "/stock-report",

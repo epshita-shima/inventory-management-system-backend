@@ -3,6 +3,7 @@ const FinishGoodIteminfoService = require("./finishgoods.service");
 const getItemInfoController = async (req, res, next) => {
   const data = req.body;
   const itemInfoData = await FinishGoodIteminfoService.getItemInfoDB(data);
+  
   res.json(itemInfoData);
 };
 

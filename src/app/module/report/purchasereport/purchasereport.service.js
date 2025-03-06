@@ -1,13 +1,13 @@
 const PurchaseManagementModel = require("../../goodsreceivenoteinformation/grninfo.model");
 
-async function getFilteredForPurchaseReporDB(
+async function getFilteredForPurchaseDetailsReporDB(
   fromDate,
   toDate,
   itemId,
   supplierId,
   poId
 ) {
-  console.log(fromDate, toDate, itemId, supplierId, poId);
+
   try {
     const filter = {};
     if (fromDate) {
@@ -33,8 +33,6 @@ async function getFilteredForPurchaseReporDB(
     if (Object.keys(filter).length === 0) {
       return [];
     }
-    console.log("filter", filter);
-
 
     if (itemId) {
       const data = await PurchaseManagementModel.aggregate([
@@ -78,7 +76,7 @@ async function getFilteredForPurchaseReporDB(
   }
 }
 
-async function getFilteredForSalesSummaryReportInfoDB(
+async function getFilteredForPurchaseSummaryReportInfoDB(
   fromDate,
   toDate,
   itemId,
@@ -187,6 +185,6 @@ async function getFilteredForSalesSummaryReportInfoDB(
 }
 
 module.exports = {
-  getFilteredForPurchaseReporDB,
-  getFilteredForSalesSummaryReportInfoDB,
+  getFilteredForPurchaseDetailsReporDB,
+  getFilteredForPurchaseSummaryReportInfoDB,
 };

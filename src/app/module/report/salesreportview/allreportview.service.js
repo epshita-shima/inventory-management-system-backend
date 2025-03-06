@@ -391,8 +391,32 @@ async function getFilteredForSalesSummaryReportInfoDB(
         }
       });
     });
+    const dataSales = Object.values(groupedData);
 
-    return Object.values(groupedData);
+    const getGrandTotalDeliverQtyByMonth = (data) => {
+      if (data.length === 0) return [];
+    
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    
+      // Initialize all months with default value
+      const monthlyTotals = monthNames.map((month) => ({
+        month,
+        totalMonthlyQty: 0,
+      }));
+    
+      // Process data and update the corresponding month
+      data.forEach((item) => {
+        const date = new Date(item.deliverDate);
+        const monthIndex = date.getMonth();
+        monthlyTotals[monthIndex].totalMonthlyQty += item.totalDeliverQty;
+      });
+    
+      return monthlyTotals;
+    };
+    
+    const monthlySalesData = getGrandTotalDeliverQtyByMonth(dataSales);
+
+    return {dataSales,monthlySalesData}
   } catch (error) {
     console.error(error);
     throw new Error("Error fetching payment method info");

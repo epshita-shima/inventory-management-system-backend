@@ -1,5 +1,5 @@
 const ProductionModel = require("../../productioninformation/productioninfo.model");
-
+const RawMaterialItemModel = require("../../rawmaterialinformation/rawmaterialinfo.model");
 async function getFilteredForProductionDatewiseDetailsReportInfoDB(
   fromDate,
   toDate,
@@ -7,7 +7,7 @@ async function getFilteredForProductionDatewiseDetailsReportInfoDB(
   batchNo
 ) {
   try {
-    console.log('click',productionItemName)
+    console.log("click", productionItemName);
     const filter = {};
     if (fromDate) {
       filter.productionDate = fromDate;
@@ -31,7 +31,7 @@ async function getFilteredForProductionDatewiseDetailsReportInfoDB(
     }
 
     const data = await ProductionModel.find(filter).lean();
-console.log('data',data)
+    console.log("data", data);
     return data;
   } catch (error) {
     console.log(error);
@@ -140,7 +140,7 @@ async function getFilteredForProductionItemwiseDetailsReportInfoDB(
     if (Object.keys(filter).length === 0) {
       return [];
     }
-
+ 
     const data = await ProductionModel.find(filter).lean();
 
     return data;
@@ -155,9 +155,7 @@ async function getFilteredForRawMaterialConsumptionDetailsReportInfoDB(
   toDate,
   itemId
 ) {
-  console.log(  'production',fromDate,
-    toDate,
-    itemId)
+  console.log("production", fromDate, toDate, itemId);
   try {
     const filter = {};
     if (fromDate) {
@@ -211,10 +209,10 @@ async function getFilteredForRawMaterialConsumptionDetailsReportInfoDB(
       ]);
       return data;
     }
-    if(fromDate && toDate) {
-      console.log('fromDate && toDate',fromDate, toDate)
+    if (fromDate && toDate) {
+      console.log("fromDate && toDate", fromDate, toDate);
       const data = await ProductionModel.aggregate([
-        { $match:filter }, // Filter by date range
+        { $match: filter }, // Filter by date range
         {
           $project: {
             productionDate: 1,
@@ -253,6 +251,7 @@ async function getFilteredForRawMaterialConsumptionSummaryReportInfoDB(
   itemId
 ) {
   try {
+    console.log("raw consumption summary", fromDate, toDate, itemId);
     const filter = {};
     if (fromDate) {
       filter.productionDate = fromDate;
@@ -302,7 +301,64 @@ async function getFilteredForRawMaterialConsumptionSummaryReportInfoDB(
       });
     });
 
-    return Object.values(groupedData);
+    const getGrandTotalMaterialUsedByMonth = async (data) => {
+      if (data.length === 0) return [];
+      const rawItem = await RawMaterialItemModel.find();
+
+      const monthNames = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+
+      // Using an object to group data by month and itemId
+      const monthlyTotals = data.reduce((acc, item) => {
+        const date = new Date(item.date);
+        const monthIndex = date.getMonth();
+        const monthKey = monthNames[monthIndex];
+
+        const itemName = rawItem.find(
+          (itemData) => itemData._id == item.itemId
+        );
+        const itemKey = `${monthKey}-${item.itemId}`; // Unique key combining month and itemId
+
+        if (!acc[itemKey]) {
+          acc[itemKey] = {
+            month: monthKey,
+            itemId: item.itemId,
+            itemName: itemName ? itemName.itemName : "Unknown",
+            totalMaterialUsed: 0,
+          };
+        }
+
+        acc[itemKey].totalMaterialUsed += item.totalMaterialUsed;
+
+        return acc;
+      }, {});
+
+      console.log("monthlyTotals", Object.values(monthlyTotals));
+
+      // Convert object to array and sort by month
+      return Object.values(monthlyTotals).sort(
+        (a, b) => monthNames.indexOf(a.month) - monthNames.indexOf(b.month)
+      );
+    };
+
+    const rawConsumptionData = Object.values(groupedData);
+    const monthlyRawConsumption = await getGrandTotalMaterialUsedByMonth(
+      rawConsumptionData
+    );
+    const monthlyRawConsumptionData = Object.values(monthlyRawConsumption);
+    return { monthlyRawConsumptionData, rawConsumptionData };
   } catch (error) {
     console.log(error);
     throw new Error("Error fetching payment method info");

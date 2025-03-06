@@ -1,8 +1,10 @@
 const RMItemInfoModel = require("./rawmaterialinfo.model");
+const fs = require("fs");
 
 async function getItemInfoDB() {
   try {
     const itemInfoData = await RMItemInfoModel.find();
+
     return itemInfoData;
   } catch (error) {
     console.log("Error fetching items unit:", error);

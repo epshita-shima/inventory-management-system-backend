@@ -5,7 +5,7 @@ const getFiltredForPurchaseDetailsReportController = async (req, res) => {
   const { fromDate, toDate, itemId, supplierId, poId, reportStatus } = req.query;
   try {
     const  filteredData =
-        await PurchaseReportService.getFilteredForPurchaseReporDB(
+        await PurchaseReportService.getFilteredForPurchaseDetailsReporDB(
           fromDate,
           toDate,
           itemId,
@@ -24,7 +24,7 @@ const getFiltredForPurchaseSummaryReportController = async (req, res) => {
 console.log(fromDate, toDate, itemId, supplierId, poId, reportStatus)
   try {
     const  filteredData =
-        await PurchaseReportService.getFilteredForSalesSummaryReportInfoDB(
+        await PurchaseReportService.getFilteredForPurchaseSummaryReportInfoDB(
           fromDate,
           toDate,
           itemId,

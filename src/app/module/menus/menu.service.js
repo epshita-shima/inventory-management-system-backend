@@ -1,10 +1,12 @@
 const MenuItem = require("./menu.model");
 const { ObjectId } = require("mongodb");
-
+// const fs = require("fs");
 const getMenuItemDB = async () => {
   try {
     const menuitem = await MenuItem.MenuItem.find();
 
+    // fs.writeFileSync("menuitem.json", JSON.stringify(menuitem, null, 2));
+    // console.log("Data exported successfully!");
     return menuitem;
   } catch (error) {
     console.log("Error fetching menu:", error);

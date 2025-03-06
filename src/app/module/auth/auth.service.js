@@ -3,17 +3,21 @@ const cookie = require("cookie-parser");
 const UserModel = require("../user/user.model");
 const blacklist = require("./blacklistToken");
 const crypto = require("crypto-browserify");
-
+const fs = require("fs");
 const userLogin = async (req, res, next) => {
   // const randomBytes = crypto.randomBytes(64).toString('hex');
   try {
     const { username, password } = req.body;
+    console.log('username',username, password)
     if (!username || !password) {
       return res.status(400).json({
         success: false,
         message: "Username and password are required",
       });
     }
+    // const alluser=await UserModel.find()
+    // fs.writeFileSync("UserModel.json", JSON.stringify(alluser, null, 2));
+    // console.log("Data exported successfully!");
 
     const singleUser = await UserModel.findOne({ username, password });
 

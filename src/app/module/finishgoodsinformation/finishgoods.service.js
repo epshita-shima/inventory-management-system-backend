@@ -3,6 +3,7 @@ const FinishGoodItemInfoModel = require("./finishgoods.model");
 async function getItemInfoDB() {
   try {
     const itemInfoData = await FinishGoodItemInfoModel.find();
+
     return itemInfoData;
   } catch (error) {
     console.log("Error fetching items unit:", error);
