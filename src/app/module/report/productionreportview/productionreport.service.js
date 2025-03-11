@@ -1,5 +1,6 @@
 const ProductionModel = require("../../productioninformation/productioninfo.model");
 const RawMaterialItemModel = require("../../rawmaterialinformation/rawmaterialinfo.model");
+const FinishGoodsItemModel=require("../../finishgoodsinformation/finishgoods.model")
 async function getFilteredForProductionDatewiseDetailsReportInfoDB(
   fromDate,
   toDate,
@@ -46,7 +47,9 @@ async function getFilteredForProductionDatewiseSummaryReportInfoDB(
   batchNo
 ) {
   try {
+
     const filter = {};
+   
     if (fromDate) {
       filter.productionDate = fromDate;
     }
@@ -105,7 +108,50 @@ async function getFilteredForProductionDatewiseSummaryReportInfoDB(
         groupedData[key].totalProductionQty += item.productionQty;
       }
     });
-    return Object.values(groupedData);
+    const getGrandTotalDeliverQtyByMonth = async (data) => {
+      if (data.length === 0) return [];
+    
+      const finishGoodsItem = await FinishGoodsItemModel.find();
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      
+      // Initialize all months with default value, without itemName
+      const monthlyTotals = monthNames.map((month) => ({
+        month,
+        totalMonthlyQty: 0,
+        itemName: "", // We'll dynamically set itemName later
+      }));
+    
+      // Process data and update the corresponding month
+      data.forEach((item) => {
+        const date = new Date(item.date);
+        const monthIndex = date.getMonth();
+        
+        // Find itemName for the current item
+        const finishItem = finishGoodsItem.find(
+          (itemData) => itemData._id.toString() === item.productionItemName.toString()
+        );
+        const finishItemName = finishItem ? finishItem.itemName : "Unknown"; 
+    
+        console.log(`Item: ${finishItemName}, Month: ${monthNames[monthIndex]}, Quantity: ${item.totalProductionQty}`);
+    
+        // Set the itemName if it's the first time for that month
+        if (!monthlyTotals[monthIndex].itemName) {
+          monthlyTotals[monthIndex].itemName = finishItemName;
+        }
+    
+        // Update total quantity for the month
+        monthlyTotals[monthIndex].totalMonthlyQty += item.totalProductionQty;
+      });
+    
+      return monthlyTotals;
+    };
+    
+    const finishGoodsProduction = Object.values(groupedData);
+    console.log('finishGoodsProduction',finishGoodsProduction)
+    const monthlyFinishGoodsProductionData = await getGrandTotalDeliverQtyByMonth(finishGoodsProduction);
+
+    
+    return {monthlyFinishGoodsProductionData,finishGoodsProduction};
   } catch (error) {
     console.log(error);
     throw new Error("Error fetching payment method info");
@@ -140,7 +186,7 @@ async function getFilteredForProductionItemwiseDetailsReportInfoDB(
     if (Object.keys(filter).length === 0) {
       return [];
     }
- 
+
     const data = await ProductionModel.find(filter).lean();
 
     return data;
@@ -339,7 +385,6 @@ async function getFilteredForRawMaterialConsumptionSummaryReportInfoDB(
             totalMaterialUsed: 0,
           };
         }
-
         acc[itemKey].totalMaterialUsed += item.totalMaterialUsed;
 
         return acc;

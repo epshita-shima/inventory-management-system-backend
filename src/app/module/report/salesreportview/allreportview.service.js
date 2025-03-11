@@ -402,15 +402,37 @@ async function getFilteredForSalesSummaryReportInfoDB(
       const monthlyTotals = monthNames.map((month) => ({
         month,
         totalMonthlyQty: 0,
+        totalMonthlyAmount:0,
+        detailsData: [] 
       }));
     
       // Process data and update the corresponding month
       data.forEach((item) => {
         const date = new Date(item.deliverDate);
         const monthIndex = date.getMonth();
+        const year = date.getFullYear();
+        const monthName = monthNames[monthIndex];
+        const existingYearData = monthlyTotals[monthIndex].detailsData.find(
+          (entry) => Object.keys(entry)[0] === `${year} ${monthName}`
+        );
+        if (existingYearData) {
+          // If year data already exists for that month, update the totals
+          existingYearData[`${year} ${monthName}`].totalQty += item.totalDeliverQty;
+          existingYearData[`${year} ${monthName}`].totalAmount += item.totalDeliverAmount;
+        } else {
+          // Otherwise, create a new entry for that year and month
+          monthlyTotals[monthIndex].detailsData.push({
+            [`${year} ${monthName}`]: {
+              totalQty: item.totalDeliverQty,
+              totalAmount: item.totalDeliverAmount
+            }
+          });
+        }
         monthlyTotals[monthIndex].totalMonthlyQty += item.totalDeliverQty;
+        monthlyTotals[monthIndex].totalMonthlyAmount += item. totalDeliverAmount;
       });
-    
+      
+      console.log('monthlyTotals',monthlyTotals)
       return monthlyTotals;
     };
     
