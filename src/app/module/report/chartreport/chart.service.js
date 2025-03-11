@@ -9,8 +9,6 @@ async function getSalesTotalDB() {
     const purchaseData = await PurchaseManagementModel.find();
     const productionData = await ProductionModel.find();
 
-    if (!salesData.length) return [];
-    if (!purchaseData.length) return [];
     const uniqueItemIds = [
       ...new Set(
         salesData.flatMap((item) => item.detailsData.map((d) => d.itemId))
@@ -153,6 +151,7 @@ async function getSalesTotalDB() {
       },
       0
     );
+
     return {
       grandTotalSalesQuantity: grandTotalSalesQuantity,
       grandTotalSalesAmount: grandTotalSalesAmount,

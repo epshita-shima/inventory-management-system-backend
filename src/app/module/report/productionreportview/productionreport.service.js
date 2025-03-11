@@ -297,7 +297,6 @@ async function getFilteredForRawMaterialConsumptionSummaryReportInfoDB(
   itemId
 ) {
   try {
-    console.log("raw consumption summary", fromDate, toDate, itemId);
     const filter = {};
     if (fromDate) {
       filter.productionDate = fromDate;
