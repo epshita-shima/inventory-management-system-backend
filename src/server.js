@@ -22,12 +22,13 @@ async function bootstrap() {
     }
 
     mongoose.Promise = global.Promise;
+    mongoose.set("bufferCommands", false);
     mongoose
-      .connect(uri)
+      .connect(uri,{ useNewUrlParser: true, useUnifiedTopology: true, maxPoolSize: 10,serverSelectionTimeoutMS: 3000, })
       .then(() => {
         console.log("connection successfull");
       })
-      .catch((err) => console.log(err));
+      .catch((err) =>  console.error("❌ MongoDB connection error:", err));
 
     server = app.listen(config.port, () => {
       console.log(`Application  listening on port ${config.port}`);

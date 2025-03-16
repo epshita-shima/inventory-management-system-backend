@@ -7,7 +7,6 @@ const FinishGoodsModel = require("../../finishgoodsinformation/finishgoods.model
 const mongoose = require("mongoose");
 
 async function getRawMaterialStockReportDB(fromDate, toDate) {
-  console.log(fromDate, toDate);
   try {
     const purchaseFilter = {};
     const productionFilter = {};
@@ -32,7 +31,7 @@ async function getRawMaterialStockReportDB(fromDate, toDate) {
     }
     const purchaseInfo = await PurchaseModel.find().lean();
     const productionInfo = await ProductionModel.find().lean();
-    const rawMaterialData = await RawMaterialModel.find().lean();
+    // const rawMaterialData = await RawMaterialModel.find().lean();
 
     const groupedPurchaseData = purchaseInfo
       .flatMap((purchase) => purchase.detailsData)
