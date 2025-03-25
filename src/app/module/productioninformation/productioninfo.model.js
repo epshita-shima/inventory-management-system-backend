@@ -1,14 +1,28 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+const ItemDetailsSchema=new Schema({
+  purchaseDate:{ type: Date, required: true },
+  purchaseQuantity:{ type: Number, required: true },
+  purchaseRate:{ type: Number, required: true },
+  purchaseAmount:{ type: Number, required: true },
+  closingStock:{ type: Number, required: true },
+  materialUsed:{ type: Number, required: true },
+})
+
+
 const DetailsDataSchema = new Schema({
   itemId: { type: String, required: true },
   receipe: { type: String, required: true },
-  materialUsed: { type: Number, required: true },
+  totalMaterialUsed: { type: Number, required: true },
   asPerRatio: { type: Number, required: true },
   excess: { type: Number },
   less: { type: Number },
   consumptionStatus:{ type: String, required: true },
+  itemDetails: { 
+    type: [ItemDetailsSchema], 
+    required: true
+  },
 });
 
 const ProductionInfoSchema = new Schema({
@@ -32,12 +46,13 @@ const ProductionInfoSchema = new Schema({
   updateDate: { type: Date },
   detailsData: { 
     type: [DetailsDataSchema], 
-    required: true // Make detailsData required
+    required: true
   },
-
 });
+
 const ProductionInfoInfoModel = mongoose.model(
   "prodctioninformation",
   ProductionInfoSchema
 );
+
 module.exports = ProductionInfoInfoModel;

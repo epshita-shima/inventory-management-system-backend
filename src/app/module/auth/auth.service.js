@@ -72,7 +72,7 @@ const crypto = require("crypto-browserify");
 
 const userLogin = async (req, res, next) => {
   try {
-    console.time("Total Execution Time"); // Start tracking total execution time
+    console.time("Total Execution Time"); 
 
     console.time("Extracting Request Data");
     const { username, password } = req.body;
@@ -88,7 +88,7 @@ const userLogin = async (req, res, next) => {
     console.time("Finding User in Database");
     
     const singleUser = await UserModel.findOne({ username })
-      // .select("username password firstname lastname isactive roleId menulist hashPassword")
+      .select("username password firstname lastname  menulist")
       .lean();
       console.timeEnd("Finding User in Database");
     if (!singleUser) {
@@ -96,8 +96,7 @@ const userLogin = async (req, res, next) => {
         .status(401)
         .json({ success: false, message: "Invalid username or password" });
     }
-console.log('singleUser',singleUser)
-    console.time("Creating JWT Payload");
+
     const userTokenCreationPayload = {
       username: singleUser.username,
       password: singleUser.password,

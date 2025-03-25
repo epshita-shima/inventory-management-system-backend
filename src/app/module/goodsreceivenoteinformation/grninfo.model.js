@@ -5,6 +5,7 @@ const DetailsDataSchema = new Schema({
     pOSingleId:{ type: String, required: true },
     itemId: { type: String, required: true },
     quantity: { type: Number, required: true },
+    previousReceivedQuantity:{ type: Number, required: true },
     unitPrice: { type: Number, required: true },
     amount: { type: Number, required: true },
   });

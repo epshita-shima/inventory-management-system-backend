@@ -37,7 +37,20 @@ console.log(fromDate, toDate, itemId, supplierId, poId, reportStatus)
     res.status(500).json({ error: "An error occurred while fetching data" });
   }
 };
+const getFiltredForPurchaseItemReportController = async (req, res) => {
+  const { itemId } = req.query;
+  try {
+    const  filteredData =
+        await PurchaseReportService.getFilteredForPurchaseItemReportInfoDB(
+          itemId
+        );
+      res.json(filteredData);
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+};
 module.exports={
   getFiltredForPurchaseDetailsReportController,
-  getFiltredForPurchaseSummaryReportController
+  getFiltredForPurchaseSummaryReportController,
+  getFiltredForPurchaseItemReportController
 }

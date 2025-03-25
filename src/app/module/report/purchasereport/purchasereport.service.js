@@ -1,4 +1,5 @@
 const PurchaseManagementModel = require("../../goodsreceivenoteinformation/grninfo.model");
+const mongoose = require("mongoose");
 
 async function getFilteredForPurchaseDetailsReporDB(
   fromDate,
@@ -7,7 +8,6 @@ async function getFilteredForPurchaseDetailsReporDB(
   supplierId,
   poId
 ) {
-
   try {
     const filter = {};
     if (fromDate) {
@@ -84,11 +84,7 @@ async function getFilteredForPurchaseSummaryReportInfoDB(
   poId
 ) {
   try {
-    console.log('service',fromDate,
-      toDate,
-      itemId,
-      supplierId,
-      poId)
+    console.log("service", fromDate, toDate, itemId, supplierId, poId);
     const filter = {};
     if (fromDate) {
       filter.receiveDate = fromDate;
@@ -127,7 +123,7 @@ async function getFilteredForPurchaseSummaryReportInfoDB(
     // Process data and group by returnDate, itemId, supplierId, and poId
     data.forEach((item) => {
       item.detailsData.forEach((detail) => {
-        console.log('detail',detail)
+        console.log("detail", detail);
         const purchaseQty = parseInt(detail.quantity, 10);
         if (isNaN(purchaseQty)) return;
         const purchaseAmount = parseInt(detail.amount, 10);
@@ -184,7 +180,42 @@ async function getFilteredForPurchaseSummaryReportInfoDB(
   }
 }
 
+async function getFilteredForPurchaseItemReportInfoDB(itemId) {
+  try {
+    const filter = {};
+
+    if (itemId) {
+      filter["detailsData.itemId"] = itemId;
+    }
+
+    const purchaseData = await PurchaseManagementModel.find(filter).lean();
+    const filteredData = purchaseData
+      ?.map((item) => {
+        const dateKey = new Date(item.receiveDate).toISOString().split("T")[0];
+        const matchingDetails = item.detailsData.filter(
+          (detail) => detail.itemId?.toString() === itemId // Make sure both are strings
+        );
+        console.log('matchingDetails',matchingDetails)
+        return matchingDetails.map((detail) => ({
+          receivedDate: dateKey,
+          itemId: detail.itemId,
+          poId: detail.pOSingleId,
+          quantity: detail.quantity,
+          amount: detail.amount,
+          unitPrice: detail.unitPrice,
+         closingStock:0
+        }));
+      })
+      .flat();
+    return filteredData;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error fetching purchase summary report info");
+  }
+}
+
 module.exports = {
   getFilteredForPurchaseDetailsReporDB,
   getFilteredForPurchaseSummaryReportInfoDB,
+  getFilteredForPurchaseItemReportInfoDB,
 };
