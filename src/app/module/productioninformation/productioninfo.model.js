@@ -1,16 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const ItemDetailsSchema=new Schema({
-  purchaseDate:{ type: Date, required: true },
-  purchaseQuantity:{ type: Number, required: true },
-  purchaseRate:{ type: Number, required: true },
-  purchaseAmount:{ type: Number, required: true },
-  closingStock:{ type: Number, required: true },
-  materialUsed:{ type: Number, required: true },
-})
-
-
 const DetailsDataSchema = new Schema({
   itemId: { type: String, required: true },
   receipe: { type: String, required: true },
@@ -19,10 +9,6 @@ const DetailsDataSchema = new Schema({
   excess: { type: Number },
   less: { type: Number },
   consumptionStatus:{ type: String, required: true },
-  itemDetails: { 
-    type: [ItemDetailsSchema], 
-    required: true
-  },
 });
 
 const ProductionInfoSchema = new Schema({
