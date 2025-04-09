@@ -28,7 +28,8 @@ const combineReportRoute = require("../module/report/combinereport/combinereport
 const purchaseReportRoute = require("../module/report/purchasereport/purchasereport.route");
 const stockReportRoute = require("../module/report/stockreport/stockreport.route");
 const tokenCreate = require("../module/auth/auth.route");
-const salesChart=require('../module/report/chartreport/chart.route')
+const salesChart = require("../module/report/chartreport/chart.route");
+const rawMaterialConsumptionRoute = require("../module/rmconsumptiondetailbynetworth/rmconsumptiondetail.route");
 const router = express.Router();
 
 const moduleRoutes = [
@@ -151,6 +152,10 @@ const moduleRoutes = [
   {
     path: "/stock-report",
     route: stockReportRoute,
+  },
+  {
+    path: "/raw-consumption",
+    route: rawMaterialConsumptionRoute,
   },
 ];
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

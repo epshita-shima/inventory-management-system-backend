@@ -26,6 +26,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/v2',routes)
 app.use('/api/v1',verifyToken, routes);
+// app.use('/api/v1', routes);
 
 app.use(globalErrorHandler);
 

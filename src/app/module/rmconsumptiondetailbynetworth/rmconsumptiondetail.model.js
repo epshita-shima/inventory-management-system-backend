@@ -7,10 +7,11 @@ const rmConsumptionDetailSchema = new mongoose.Schema({
   rate: { type: Number, required: true },
   amount: { type: Number, required: true },
   materialUsed:{ type: Number, required: true },
+  closingStock:{ type: Number, required: true },
   makeBy: { type: String, required: true },
   updateBy: { type: String },
-  makeDate: { type: String, required: true },
-  updateDate: { type: String },
+  makeDate: { type: Date, required: true }, 
+  updateDate: { type: Date }, 
 });
 
 const RMConsumptionDetailModel = mongoose.model(

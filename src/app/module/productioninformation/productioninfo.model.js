@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const DetailsDataSchema = new Schema({
   itemId: { type: String, required: true },
-  receipe: { type: String, required: true },
+  receipe: { type: Number, required: true },
   totalMaterialUsed: { type: Number, required: true },
   asPerRatio: { type: Number, required: true },
   excess: { type: Number },
@@ -18,8 +18,8 @@ const ProductionInfoSchema = new Schema({
   receipeQtyRatio: { type: String, required: true },
   productionItemName: { type: String, required: true },
   productionQty: { type: Number, required: true },
-  productionStart: { type: String, required: true },
-  productionEnd: { type: String, required: true },
+  productionStart: { type: Date, required: true },
+  productionEnd: { type: Date, required: true },
   totalHour: { type: Number, required: true },
   wastageQty: { type: Number, required: true },
   expectedProductionQtyPerBatch: { type: Number, required: true },

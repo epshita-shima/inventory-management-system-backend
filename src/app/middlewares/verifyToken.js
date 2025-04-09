@@ -3,8 +3,10 @@ const blacklist = require("../module/auth/blacklistToken");
 
 const verifyToken=async(req,res,next)=>{
   const token=req.headers['authorization']?.split(' ')[1]
+  console.log('cookie',req)
   const refreshToken=req.cookies.cookie
-
+console.log('token',token)
+console.log(refreshToken)
   if(!token || !refreshToken){
     return res.status(401).json({message:'not authorizd'})
   }
