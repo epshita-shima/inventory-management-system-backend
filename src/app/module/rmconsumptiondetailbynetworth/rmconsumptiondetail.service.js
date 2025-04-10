@@ -1,12 +1,20 @@
 const RawMaterialConsumptionModel=require('./rmconsumptiondetail.model')
 
-async function insertRawMaterialConsumptiontDB(rawConsumption) {
+async function getRawMaterialConsimptionDB(){
   try {
-    console.log('rawConsumption',rawConsumption)
-    return await RawMaterialConsumptionModel.insertMany(rawConsumption);
+    const rawConsumptionData= await RawMaterialConsumptionModel.find();
+    return rawConsumptionData;
   } catch (error) {
-    throw new Error("Error inserting items: " + error.message);
+    console.log('Error featching raw consumption data',error)
   }
 }
 
-module.exports={insertRawMaterialConsumptiontDB}
+async function insertRawMaterialConsumptiontDB(rawConsumption) {
+  try {
+    return await RawMaterialConsumptionModel.insertMany(rawConsumption);
+  } catch (error) {
+    throw new Error("Error inserting items: " + error.message);   
+  }
+}
+
+module.exports={getRawMaterialConsimptionDB,insertRawMaterialConsumptiontDB}

@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const DetailsDataSchema = new Schema({
   itemId: { type: String, required: true },
   receipe: { type: Number, required: true },
-  totalMaterialUsed: { type: Number, required: true },
+  materialUsed: { type: Number, required: true },
   asPerRatio: { type: Number, required: true },
   excess: { type: Number },
   less: { type: Number },
