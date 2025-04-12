@@ -25,6 +25,7 @@ const menuItemSchema = new mongoose.Schema({
   isRemoved: { type: Boolean ,required: true},
   isUpdated: { type: Boolean ,required: true},
   isPDF: { type: Boolean ,required: true},
+  order:{ type: String },
   createdAt: {
     type: Date,
     default: Date.now,
