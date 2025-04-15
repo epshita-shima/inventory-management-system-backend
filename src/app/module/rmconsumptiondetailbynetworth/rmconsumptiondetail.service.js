@@ -3,7 +3,7 @@ const RawMaterialConsumptionModel=require('./rmconsumptiondetail.model')
 async function getRawMaterialConsimptionDB(){
   try {
     const rawConsumptionData= await RawMaterialConsumptionModel.find();
-    return rawConsumptionData;
+    return rawConsumptionData
   } catch (error) {
     console.log('Error featching raw consumption data',error)
   }
