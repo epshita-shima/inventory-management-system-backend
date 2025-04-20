@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const rmConsumptionDetailSchema = new mongoose.Schema({
-  purchaseDate: { type: String, required: true },
+  productionDate: { type: String, required: true },
   itemId: { type: String, required: true },
   quantity: { type: Number, required: true },
   rate: { type: Number, required: true },
