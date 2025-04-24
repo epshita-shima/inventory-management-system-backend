@@ -195,7 +195,7 @@ async function getFilteredForPurchaseItemReportInfoDB(itemId) {
         const matchingDetails = item.detailsData.filter(
           (detail) => detail.itemId?.toString() === itemId // Make sure both are strings
         );
-        console.log('matchingDetails',matchingDetails)
+       
         return matchingDetails.map((detail) => ({
           receivedDate: dateKey,
           itemId: detail.itemId,
@@ -203,6 +203,7 @@ async function getFilteredForPurchaseItemReportInfoDB(itemId) {
           quantity: detail.quantity,
           amount: detail.amount,
           unitPrice: detail.unitPrice,
+          grnDetailsId:detail._id,
          closingStock:0
         }));
       })

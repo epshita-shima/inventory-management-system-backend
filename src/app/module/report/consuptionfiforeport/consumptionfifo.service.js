@@ -25,13 +25,33 @@ const getConsumptionDB = async (fromDate, toDate, itemId) => {
       consumptionFilter.itemId = itemId;
       purchaseFilter["detailsData.itemId"] = itemId;
     }
-    const prevPurchaseDate = await GRNModel.find({
-      receiveDate: { $lt: fromDate },
-    });
-    const prevConsumptionIssue = await ConsumptionModel.find({
-      productionDate: { $lt: new Date(fromDate) },
-    });
+    const prevPurchaseData = await GRNModel.aggregate([
+      { $match: { receiveDate: { $lt: fromDate } } }, // Find documents that contain the matching itemId
+      {
+        $project: {
+          receiveDate: 1,
+          detailsData: {
+            $filter: {
+              input: "$detailsData",
+              as: "item",
+              cond: { $eq: ["$$item.itemId", itemId] },
+            },
+          },
+        },
+      },
+    ]);
 
+    console.log("prevPurchaseData", prevPurchaseData);
+    const prevConsumptionIssue = await ConsumptionModel.aggregate([
+      {
+        $match: {
+          itemId: itemId,
+          productionDate: { $lt: fromDate },
+        },
+      },
+    ]);
+
+    console.log("fromDate", fromDate);
     const consumptionIssue = await ConsumptionModel.aggregate([
       {
         $match: {
@@ -41,8 +61,6 @@ const getConsumptionDB = async (fromDate, toDate, itemId) => {
       },
     ]);
     console.log("consumptionIssue", consumptionIssue);
-    // const purchaseData = await GRNModel.find(purchaseFilter);
-
     const purchaseData = await GRNModel.aggregate([
       { $match: purchaseFilter }, // Find documents that contain the matching itemId
       {
@@ -59,7 +77,6 @@ const getConsumptionDB = async (fromDate, toDate, itemId) => {
       },
       // { $match: { "detailsData.0": { $exists: true } } },
     ]);
-    // console.log('purchaseData',purchaseData)
 
     const purchaseGroup = {};
     purchaseData.forEach((items) => {
@@ -88,82 +105,50 @@ const getConsumptionDB = async (fromDate, toDate, itemId) => {
     });
     const purchaseGroupData = Object.values(purchaseGroup);
 
-    const prevPurchaseGroup = {};
-    prevPurchaseDate.forEach((items) => {
-      items.detailsData.forEach((detail) => {
-        let key;
-        const dateKey = items.receiveDate;
-        const itemKey = detail?.itemId;
-        if (detail?.itemId) {
-          key = `${itemKey}`;
-        }
-
-        if (!prevPurchaseGroup[key]) {
-          prevPurchaseGroup[key] = {
-            date: dateKey,
-            itemId: detail?.itemId,
-            totalQuantity: 0,
-            avgRate: 0,
-            totalAmount: 0,
-          };
-          prevPurchaseGroup[key].totalQuantity += detail?.quantity;
-          prevPurchaseGroup[key].totalAmount += detail?.amount;
-          prevPurchaseGroup[key].avgRate += prevPurchaseGroup[key]?.totalAmount
-            ? prevPurchaseGroup[key]?.totalAmount /
-              prevPurchaseGroup[key]?.totalQuantity
-            : 0;
-        }
-      });
-    });
-
-    const prevConsumptionIssueGroup = {};
-    prevConsumptionIssue.forEach((item) => {
-      let key = `${item?.itemId}`;
-
-      if (!prevConsumptionIssueGroup[key]) {
-        prevConsumptionIssueGroup[key] = {
-          date: new Date(item.productionDate).toLocaleDateString("en-CA"),
-          itemId: item?.itemId,
-          totalMaterialUsed: 0,
-          totalAvgRate: 0,
-          totalAmount: 0,
-        };
-        prevConsumptionIssueGroup[key].totalMaterialUsed += item?.materialUsed;
-        prevConsumptionIssueGroup[key].totalAmount += item?.amount;
-        prevConsumptionIssueGroup[key].totalAvgRate +=
-          prevConsumptionIssueGroup[key]?.totalAmount
-            ? prevConsumptionIssueGroup[key]?.totalAmount /
-              prevConsumptionIssueGroup[key]?.totalMaterialUsed
-            : 0;
-      }
-    });
-
-    // console.log("prevConsumptionIssueGroup", prevConsumptionIssueGroup);
-    const prevConsumptionIssueData = Object.values(prevConsumptionIssueGroup);
-    const prevPurchaseData = Object.values(prevPurchaseGroup);
-    const calculateOpeningBalance = prevPurchaseData.map((purchase, index) => {
-      const prevConsumptionIssue = prevConsumptionIssueData.find(
-        (issue) => issue?.itemId === purchase?.itemId
+    console.log('prevPurchaseData',prevPurchaseData)
+    const { totalPrevPurchaseQuantity, totalPrevPurchaseAmount } =
+      prevPurchaseData.reduce(
+        (acc, items) => {
+          items.detailsData.forEach((detail) => {
+            acc.totalPrevPurchaseQuantity += detail.quantity || 0;
+            acc.totalPrevPurchaseAmount += detail.amount || 0;
+          });
+          return acc;
+        },
+        { totalPrevPurchaseQuantity: 0, totalPrevPurchaseAmount: 0 }
       );
-      if (!prevConsumptionIssueData) return purchase;
 
-      const updateAmount = purchase?.totalAmount
-        ? purchase?.totalAmount - prevConsumptionIssue?.totalAmount
-        : 0;
-      const updateQuantity =
-        purchase.totalQuantity - prevConsumptionIssue?.totalMaterialUsed;
-      return {
-        date: purchase.date,
-        itemId: prevConsumptionIssue?.itemId
-          ? prevConsumptionIssue?.itemId
-          : "",
-        amount: updateAmount ? updateAmount : 0,
-        quantity: updateQuantity ? updateQuantity : 0,
-        rate: updateQuantity ? updateAmount / updateQuantity : 0,
-      };
-    });
+    const avgPrevPurchaseRate = totalPrevPurchaseQuantity
+      ? totalPrevPurchaseAmount / totalPrevPurchaseQuantity
+      : 0;
 
-    // console.log("calculateOpeningBalance", calculateOpeningBalance);
+    console.log("prevConsumptionIssue", prevConsumptionIssue);
+    console.log(
+      "prevPurchaseData",
+      totalPrevPurchaseQuantity,
+      totalPrevPurchaseAmount
+    );
+    const { totalPrevIssueQuantity, totalPrevIssueAmount } =
+      prevConsumptionIssue.reduce(
+        (acc, issue) => {
+          acc.totalPrevIssueAmount += issue.amount || 0;
+          acc.totalPrevIssueQuantity += issue.materialUsed || 0;
+          return acc;
+        },
+        { totalPrevIssueQuantity: 0, totalPrevIssueAmount: 0 }
+      );
+
+    const avgPrevIssueRate = totalPrevIssueQuantity
+      ? totalPrevIssueAmount / totalPrevIssueQuantity
+      : 0;
+
+    let openingQuantity = totalPrevPurchaseQuantity - totalPrevIssueQuantity;
+    let openingAmount = totalPrevPurchaseAmount - totalPrevIssueAmount;
+
+    console.log('openingQuantity=',openingQuantity,'openingAmount=',openingAmount)
+    let avgOpeningRate = openingQuantity
+      ? parseFloat((openingAmount / openingQuantity).toFixed(2))
+      : 0;
 
     const getDateRange = (fromDate, toDate) => {
       const dates = [];
@@ -177,13 +162,12 @@ const getConsumptionDB = async (fromDate, toDate, itemId) => {
     };
 
     const processStockData = (
-      prevPurchaseData,
+      purchaseGroupData,
       consumptionIssue,
       fromDate,
       toDate
     ) => {
       const dateRange = getDateRange(fromDate, toDate);
-      const formattedData = [];
 
       const groupedIssues = {};
       consumptionIssue.forEach((item) => {
@@ -207,108 +191,94 @@ const getConsumptionDB = async (fromDate, toDate, itemId) => {
         groupedIssues[key].totalAmount += item.amount || 0;
         groupedIssues[key].closingStock += item.closingStock || 0;
       });
+
       const issueGroup = Object.values(groupedIssues);
 
-      dateRange.forEach((dateStr, index) => {
-        const openingQty = calculateOpeningBalance[index]?.quantity;
-        const openingRate = calculateOpeningBalance[index]?.rate;
-        const openingAmount =
-          calculateOpeningBalance[index]?.quantity *
-          calculateOpeningBalance[index]?.rate;
+      const result = [];
+      let prevOpening = {
+        quantity: openingQuantity,
+        amount: openingAmount,
+        rate: avgOpeningRate,
+      };
+      for (const [index, date] of dateRange.entries()) {
+        const purchasesOnDate = purchaseGroupData.filter(
+          (p) => p.date === date
+        );
+        const issuesOnDate = issueGroup.filter((i) => i.date === date);
 
-        const purchaseQty = purchaseGroupData[index]?.totalQuantity ?? "_";
-        const purchaseRate = purchaseGroupData[index]?.avgRate ?? "_";
-        const purchaseAmount =
-          purchaseGroupData[index]?.totalQuantity *
-            purchaseGroupData[index]?.avgRate ?? "-";
-
-       const issueEntry = issueGroup.filter((item) => item.date === dateStr);
-       let issueQuantity=0;
-       let issueAmount =0;
-       issueEntry.forEach((entry)=>{
-        issueQuantity +=entry.totalQuantity || 0
-        issueAmount +=entry.issueAmount || 0
-       })
-       const issueRate= issueQuantity ?  issueAmount / issueQuantity : 0;
-      //  console.log('issueEntry',issueEntry)
-        // const issueQuantity = issueGroup[index]?.totalQuantity;
-        // const issueAmount = issueGroup[index]?.totalAmount;
-        // const issueRate =
-        //   issueGroup[index]?.totalAmount !== 0
-        //     ? issueGroup[index]?.totalAmount / issueGroup[index]?.totalQuantity
-        //     : 0;
-
-        const closingQuantity = issueGroup[index]?.closingStock;
-        const closingRate = issueGroup[index]?.rate;
-        const closingAmount =
-          issueGroup[index]?.closingStock !== 0
-            ? issueGroup[index]?.closingStock * issueGroup[index]?.rate
-            : 0;
-       
-            issueGroup.forEach((entry,index)=>{
-              if(dateStr === entry?.date){
-                formattedData.push({
-                  date: dateStr ,
-                  opening: {
-                    quantity: openingQty,
-                    rate: openingRate,
-                    amount: openingAmount,
-                  },
-                  purchase: {
-                    quantity: purchaseQty,
-                    rate: purchaseRate,
-                    amount: purchaseAmount,
-                  },
-                  issue: {
-                    quantity: issueQuantity,
-                    rate: issueRate,
-                    amount: issueAmount,
-                  },
-                  closing: {
-                    quantity: closingQuantity,
-                    rate: closingRate,
-                    amount: closingAmount,
-                  },
-                });
+        const maxLen =
+          Math.max(purchasesOnDate.length, issuesOnDate.length) || 1;
+        let currentOpening = { ...prevOpening };
+        for (let i = 0; i < maxLen; i++) {
+          const purchase = purchasesOnDate[i]
+            ? {
+                quantity: purchasesOnDate[i].totalQuantity,
+                rate: purchasesOnDate[i].avgRate,
+                amount: purchasesOnDate[i].totalAmount,
               }
-              else{
-                formattedData.push({
-                  date: dateStr ,
-                  opening: {
-                    quantity: '',
-                    rate: '',
-                    amount: '',
-                  },
-                  purchase: {
-                    quantity: '',
-                    rate: '',
-                    amount: '',
-                  },
-                  issue: {
-                    quantity: '',
-                    rate: '',
-                    amount: '',
-                  },
-                  closing: {
-                    quantity: '',
-                    rate: '',
-                    amount: '',
-                  },
-                });
+            : { quantity: 0, rate: 0, amount: 0 };
+
+          const issue = issuesOnDate[i]
+            ? {
+                quantity: issuesOnDate[i].totalQuantity,
+                rate: issuesOnDate[i].rate,
+                amount: issuesOnDate[i].totalAmount,
               }
-            })
-            
-      
-      });
-      console.log("formatedData", formattedData);
+            : { quantity: 0, rate: 0, amount: 0 };
+
+          const hadMovement = purchase.quantity !== 0 || issue.quantity !== 0;
+
+          const closingQuantity = purchase.quantity - issue.quantity;
+
+            let closingRate = purchase.rate;      // default
+
+            if (hadMovement) {
+              if (closingQuantity !== 0) {
+                closingRate = purchase.rate !== 0 && purchase.rate ;
+              }
+            }
+          const closingAmount = closingQuantity * closingRate;
+          console.log(
+            "closingQuantity=",
+            currentOpening.quantity,
+            purchase.quantity,
+            issue.quantity
+          );
+
+          result.push({
+            date,
+            opening: { ...currentOpening },
+            purchase,
+            issue, // FIFO logic can go here
+
+            closing: {
+              quantity: closingQuantity,
+              rate: closingRate,
+              amount: closingAmount,
+            },
+          });
+
+          // currentOpening = {
+          //   quantity: closingQuantity,
+          //   rate: closingRate,
+          //   amount: closingAmount,
+          // };
+        }
+
+        // prevOpening = { ...currentOpening };
+      }
+      // console.log("result", result);
+      return result;
     };
 
     const processDateDefine = processStockData(
-      prevPurchaseData,
+      purchaseGroupData,
       consumptionIssue,
       fromDate,
       toDate
     );
+    console.log( 'processDateDefine',processDateDefine)
+    return processDateDefine
     // return consumptionIssue;
     // console.log(processDateDefine);
   } catch (error) {
