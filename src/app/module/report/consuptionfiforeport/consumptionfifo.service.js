@@ -742,7 +742,7 @@ function generateStockReport(fromDate, toDate, purchaseGroupData, consumptionIss
   return report;
 }
 
- const report = generateStockReport('2025-04-01', '2025-04-30', purchaseGroupData, consumptionIssue);
+ const report = generateStockReport(fromDate, toDate, purchaseGroupData, consumptionIssue);
   return report
 
   } catch (error) {
