@@ -1,5 +1,58 @@
-const Server = require("http");
-const mongoose = require("mongoose");
+// const Server = require("http");
+// const mongoose = require("mongoose");
+// const app = require("./app");
+// const config = require("./config");
+
+// process.on("uncaughtException", (error) => {
+//   console.log(error);
+//   process.exit(1);
+// });
+
+// let server;
+
+// async function bootstrap() {
+//   try {
+//     const uri = config.database_url;
+
+//     if (!uri) {
+//       console.error(
+//         "Error: MongoDB URI is not defined in the environment variables"
+//       );
+//       process.exit(1);
+//     }
+
+//     mongoose.Promise = global.Promise;
+//     mongoose.set("bufferCommands", false);
+//     mongoose
+//       .connect(uri)
+//       .then(() => {
+//         console.log("connection successfull");
+//       })
+//       .catch((err) =>  console.error("❌ MongoDB connection error:", err));
+
+//     server = app.listen(config.port, () => {
+//       console.log(`Application  listening on port ${config.port}`);
+//     });
+//   } catch (err) {
+//     console.log("Failed to connect database", err);
+//   }
+
+//   process.on("unhandledRejection", (error) => {
+//     console.log("unhandled Rejection is detected,we are closing or sever......")
+//     if (server) {
+//       server.close(() => {
+//         console.log(error);
+//         process.exit(1);
+//       });
+//     } else {
+//       process.exit(1);
+//     }
+//   });
+// }
+
+// bootstrap();
+
+  const mongoose = require("mongoose");
 const app = require("./app");
 const config = require("./config");
 
@@ -15,30 +68,25 @@ async function bootstrap() {
     const uri = config.database_url;
 
     if (!uri) {
-      console.error(
-        "Error: MongoDB URI is not defined in the environment variables"
-      );
+      console.error("MongoDB URI missing");
       process.exit(1);
     }
 
-    mongoose.Promise = global.Promise;
-    mongoose.set("bufferCommands", false);
-    mongoose
-      .connect(uri)
-      .then(() => {
-        console.log("connection successfull");
-      })
-      .catch((err) =>  console.error("❌ MongoDB connection error:", err));
+    // 🔥 IMPORTANT FIX: WAIT FOR CONNECTION
+    await mongoose.connect(uri);
+
+    console.log("✅ MongoDB connected");
 
     server = app.listen(config.port, () => {
-      console.log(`Application  listening on port ${config.port}`);
+      console.log(`🚀 Server running on port ${config.port}`);
     });
+
   } catch (err) {
-    console.log("Failed to connect database", err);
+    console.log("❌ Failed to connect database", err);
   }
 
   process.on("unhandledRejection", (error) => {
-    console.log("unhandled Rejection is detected,we are closing or sever......")
+    console.log("Unhandled rejection, closing server...");
     if (server) {
       server.close(() => {
         console.log(error);
@@ -51,5 +99,3 @@ async function bootstrap() {
 }
 
 bootstrap();
-
-  
