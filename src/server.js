@@ -24,7 +24,7 @@ async function bootstrap() {
     mongoose.Promise = global.Promise;
     mongoose.set("bufferCommands", false);
     mongoose
-      .connect(uri,{ useNewUrlParser: true, useUnifiedTopology: true, maxPoolSize: 10,serverSelectionTimeoutMS: 3000, })
+      .connect(uri)
       .then(() => {
         console.log("connection successfull");
       })

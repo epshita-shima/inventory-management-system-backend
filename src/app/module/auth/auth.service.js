@@ -72,10 +72,11 @@ const crypto = require("crypto-browserify");
 
 const userLogin = async (req, res, next) => {
   try {
-    console.time("Total Execution Time"); 
+    console.time("Total Execution Time");
 
     console.time("Extracting Request Data");
-    const { username, password } = req.body;
+    const { username, password } = req.body; 
+    console.log('username password', username, password);
     console.timeEnd("Extracting Request Data");
 
     if (!username || !password) {
@@ -88,14 +89,27 @@ const userLogin = async (req, res, next) => {
     console.time("Finding User in Database");
     
     const singleUser = await UserModel.findOne({ username })
-      .select("username password firstname lastname  menulist")
+      .select("username password firstname lastname menulist")
       .lean();
-      console.timeEnd("Finding User in Database");
+    console.timeEnd("Finding User in Database");
+
     if (!singleUser) {
       return res
         .status(401)
         .json({ success: false, message: "Invalid username or password" });
     }
+
+
+    console.time("Sorting Menu List");
+    if (singleUser.menulist && singleUser.menulist.length > 0) {
+  
+      singleUser.menulist.sort((a, b) => {
+        const orderA = parseInt(a.orderNo || "999");
+        const orderB = parseInt(b.orderNo || "999");
+        return orderA - orderB;
+      });
+    }
+    console.timeEnd("Sorting Menu List");
 
     const userTokenCreationPayload = {
       username: singleUser.username,
@@ -103,7 +117,6 @@ const userLogin = async (req, res, next) => {
       userRole: singleUser.roleId,
       isActive: singleUser.isactive,
     };
-    console.timeEnd("Creating JWT Payload");
 
     console.time("Generating Access Token");
     const ACCESS_SECRET_TOKEN = process.env.ACCESS_SECRET_TOKEN;
@@ -136,7 +149,7 @@ const userLogin = async (req, res, next) => {
     });
     console.timeEnd("Setting Cookie");
 
-    console.timeEnd("Total Execution Time"); // End tracking total execution time
+    console.timeEnd("Total Execution Time");
 
     res.status(200).json({
       data: singleUser,
