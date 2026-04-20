@@ -1,5 +1,6 @@
-/node_modules
-/.env
-.vercel
-/uploads
-'file.txt' 
+/node_modules
+.vercel
+/uploads
+'file.txt' 
+config.bat
+.env
