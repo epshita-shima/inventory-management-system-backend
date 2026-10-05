@@ -23,9 +23,25 @@ const createUser = async (req, res, next) => {
 };
 
 const getUser = async (req, res, next) => {
-  const data = req.body;
-  const user = await userService.getUserDB(data);
-  res.json(user);
+  try {
+    const user = await userService.getUserDB();
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getCurrentUser = async (req, res) => {
+  try {
+    const user = await userService.getCurrentUserDB(req.loginUser);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 const getUserById = async (req, res) => {
@@ -130,6 +146,7 @@ const deleteUser = async (req, res) => {
 module.exports = {
   createUser,
   getUser,
+  getCurrentUser,
   getUserById,
   updateUser,
   updateUserMultipleStatus,

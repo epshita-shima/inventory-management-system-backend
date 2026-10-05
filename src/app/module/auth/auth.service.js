@@ -3,6 +3,17 @@ const cookie = require("cookie-parser");
 const UserModel = require("../user/user.model");
 const blacklist = require("./blacklistToken");
 const crypto = require("crypto-browserify");
+const {
+  sanitizeUser,
+  verifyUserPassword,
+} = require("../user/user.service");
+
+const buildAuthTokenPayload = (user) => ({
+  userId: String(user._id),
+  username: user.username,
+  userRole: user.roleId,
+  isActive: user.isactive,
+});
 
 // const userLogin = async (req, res, next) => {
 //   // const randomBytes = crypto.randomBytes(64).toString('hex');
@@ -72,12 +83,7 @@ const crypto = require("crypto-browserify");
 
 const userLogin = async (req, res, next) => {
   try {
-    console.time("Total Execution Time");
-
-    console.time("Extracting Request Data");
-    const { username, password } = req.body; 
-    console.log('username password', username, password);
-    console.timeEnd("Extracting Request Data");
+    const { username, password } = req.body;
 
     if (!username || !password) {
       return res.status(400).json({
@@ -86,12 +92,7 @@ const userLogin = async (req, res, next) => {
       });
     }
 
-    console.time("Finding User in Database");
-    
-    const singleUser = await UserModel.findOne({ username })
-      .select("username password firstname lastname menulist")
-      .lean();
-    console.timeEnd("Finding User in Database");
+    const singleUser = await UserModel.findOne({ username });
 
     if (!singleUser) {
       return res
@@ -99,26 +100,22 @@ const userLogin = async (req, res, next) => {
         .json({ success: false, message: "Invalid username or password" });
     }
 
+    const isPasswordValid = await verifyUserPassword(password, singleUser);
+    if (!isPasswordValid) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid username or password" });
+    }
 
-    console.time("Sorting Menu List");
     if (singleUser.menulist && singleUser.menulist.length > 0) {
-  
       singleUser.menulist.sort((a, b) => {
         const orderA = parseInt(a.orderNo || "999");
         const orderB = parseInt(b.orderNo || "999");
         return orderA - orderB;
       });
     }
-    console.timeEnd("Sorting Menu List");
 
-    const userTokenCreationPayload = {
-      username: singleUser.username,
-      password: singleUser.password,
-      userRole: singleUser.roleId,
-      isActive: singleUser.isactive,
-    };
-
-    console.time("Generating Access Token");
+    const userTokenCreationPayload = buildAuthTokenPayload(singleUser);
     const ACCESS_SECRET_TOKEN = process.env.ACCESS_SECRET_TOKEN;
     const REFRESH_SECRET_TOKEN = process.env.REFRESH_SECRET_TOKEN;
     const accesstoken = jwt.sign(
@@ -128,9 +125,6 @@ const userLogin = async (req, res, next) => {
         expiresIn: "10m",
       }
     );
-    console.timeEnd("Generating Access Token");
-
-    console.time("Generating Refresh Token");
     const refreshToken = jwt.sign(
       userTokenCreationPayload,
       REFRESH_SECRET_TOKEN,
@@ -138,21 +132,16 @@ const userLogin = async (req, res, next) => {
         expiresIn: "24h",
       }
     );
-    console.timeEnd("Generating Refresh Token");
 
-    console.time("Setting Cookie");
     res.cookie("cookie", refreshToken, {
       httpOnly: true,
       secure: false,
       sameSite: "strict",
       maxAge: 3600000,
     });
-    console.timeEnd("Setting Cookie");
-
-    console.timeEnd("Total Execution Time");
 
     res.status(200).json({
-      data: singleUser,
+      data: sanitizeUser(singleUser),
       success: true,
       message: "Login successful",
       token: accesstoken,
@@ -182,22 +171,17 @@ const refreshAccessToken = async (req, res) => {
 
             return res.status(401).json({ message: "Unauthorized" });
           } else {
-            const user = await UserModel.findOne({
-              username: decoded.username,
-              password: decoded.password,
-            });
+            const userQuery = decoded.userId
+              ? { _id: decoded.userId }
+              : { username: decoded.username };
+            const user = await UserModel.findOne(userQuery);
             if (!user) {
-              res.status(404).json({
+              return res.status(404).json({
                 success: false,
                 message: "User not found",
               });
             }
-            const userTokenCreationPayload = {
-              username: user.username,
-              password: user.password,
-              userRole: user.roleId,
-              isActive: user.isactive,
-            };
+            const userTokenCreationPayload = buildAuthTokenPayload(user);
             const accessNewtoken = jwt.sign(
               userTokenCreationPayload,
               process.env.ACCESS_SECRET_TOKEN,
@@ -206,7 +190,7 @@ const refreshAccessToken = async (req, res) => {
               }
             );
             res.status(200).json({
-              data: user,
+              data: sanitizeUser(user),
               success: true,
               message: "Access token refreshed successfully",
               token: accessNewtoken,

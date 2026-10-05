@@ -3,11 +3,24 @@ const OrderManagementModel = require("../../salesmanagement/salesmanagementinfo.
 const PurchaseManagementModel = require("../../goodsreceivenoteinformation/grninfo.model");
 const ProductionModel = require("../../productioninformation/productioninfo.model");
 
-async function getSalesTotalDB() {
+async function getSalesTotalDB(fromDate, toDate) {
   try {
-    const salesData = await SalesManagementModel.find();
-    const purchaseData = await PurchaseManagementModel.find();
-    const productionData = await ProductionModel.find();
+    const salesFilter = {};
+    const purchaseFilter = {};
+    const productionFilter = {};
+
+    if (fromDate && toDate) {
+      salesFilter.finishGoodsDeliveryDate = {
+        $gte: new Date(fromDate),
+        $lte: new Date(new Date(toDate).setHours(23, 59, 59, 999)),
+      };
+      purchaseFilter.receiveDate = { $gte: fromDate, $lte: toDate };
+      productionFilter.productionDate = { $gte: fromDate, $lte: toDate };
+    }
+
+    const salesData = await SalesManagementModel.find(salesFilter);
+    const purchaseData = await PurchaseManagementModel.find(purchaseFilter);
+    const productionData = await ProductionModel.find(productionFilter);
 
     const uniqueItemIds = [
       ...new Set(

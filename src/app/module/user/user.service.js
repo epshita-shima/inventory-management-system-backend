@@ -1,41 +1,112 @@
 const User = require("./user.model");
 const bcrypt = require("bcrypt");
 
+const isBcryptHash = (value) =>
+  typeof value === "string" && /^\$2[aby]\$/.test(value);
+
+const sanitizeUser = (user) => {
+  if (!user) {
+    return user;
+  }
+  const obj =
+    typeof user.toObject === "function" ? user.toObject() : { ...user };
+  delete obj.password;
+  delete obj.hashPassword;
+  return obj;
+};
+
+const sanitizeUsers = (users) => {
+  if (!Array.isArray(users)) {
+    return users;
+  }
+  return users.map(sanitizeUser);
+};
+
+const verifyUserPassword = async (plainPassword, user) => {
+  if (!plainPassword || !user) {
+    return false;
+  }
+  const candidates = [...new Set([user.hashPassword, user.password].filter(Boolean))];
+  for (const stored of candidates) {
+    if (isBcryptHash(stored)) {
+      const matched = await bcrypt.compare(plainPassword, stored);
+      if (matched) {
+        return true;
+      }
+    } else if (stored === plainPassword) {
+      return true;
+    }
+  }
+  return false;
+};
+
+const hashPasswordValue = async (plainPassword) => {
+  return bcrypt.hash(plainPassword, 10);
+};
+
 const createUserToDB = async (payload) => {
   try {
     const existingUserRole = await User.findOne({ username: payload.username });
     if (existingUserRole) {
       throw new Error("User roll with the same name already exists");
     }
-    const hashedPassword = await bcrypt.hash(payload.hashPassword, 10);
+    const plainPassword = payload.hashPassword || payload.password;
+    if (!plainPassword) {
+      throw new Error("Password is required");
+    }
+    const hashedPassword = await hashPasswordValue(plainPassword);
     payload.hashPassword = hashedPassword;
+    payload.password = hashedPassword;
     const user = await User.create(payload);
-    return user;
+    return sanitizeUser(user);
   } catch (error) {
     console.error("Error saving data to MongoDB:", error);
-    throw error; // Throw the error to be handled by the caller
+    throw error;
   }
 };
 
 const getUserDB = async () => {
   try {
     const user = await User.find().select({
+      password: 0,
+      hashPassword: 0,
       __v: 0,
     });
-    return user;
+    return sanitizeUsers(user);
   } catch (error) {
-    // Handle errors
     console.error("Error fetching users:", error);
+  }
+};
+
+const getCurrentUserDB = async (loginUser) => {
+  try {
+    if (!loginUser) {
+      return null;
+    }
+    const query = loginUser.userId
+      ? { _id: loginUser.userId }
+      : { username: loginUser.username };
+    const user = await User.findOne(query);
+    if (!user) {
+      return null;
+    }
+    return sanitizeUser(user);
+  } catch (error) {
+    throw new Error("Internal server error from service");
   }
 };
 
 const getUserByIdDB = async (id) => {
   try {
-    const user = await User.findById(id);
+    const user = await User.findById(id).select({
+      password: 0,
+      hashPassword: 0,
+      __v: 0,
+    });
     if (!user) {
       throw new Error("User not found");
     }
-    return user;
+    return sanitizeUser(user);
   } catch (error) {
     throw new Error("Internal server error from service");
   }
@@ -53,17 +124,17 @@ const updateUserDB = async (id, isactive) => {
       throw new Error("User not found");
     }
 
-    return user;
+    return sanitizeUser(user);
   } catch (error) {
     throw new Error("Internal server error");
   }
 };
 const updateUserInformationDB = async (id, data) => {
   try {
-    console.log('update user',data)
+    const { password, hashPassword, ...safeData } = data || {};
     const user = await User.findByIdAndUpdate(
       id,
-      { $set: data },
+      { $set: safeData },
       { new: true }
     );
 
@@ -71,28 +142,25 @@ const updateUserInformationDB = async (id, data) => {
       throw new Error("User not found");
     }
 
-    return user;
+    return sanitizeUser(user);
   } catch (error) {
     throw new Error("Internal server error");
   }
 };
 
 const updateUserPasswordDB = async (id, password) => {
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await hashPasswordValue(password);
   try {
     const user = await User.findByIdAndUpdate(
       id,
-      { password: hashedPassword },
+      { password: hashedPassword, hashPassword: hashedPassword },
       { new: true, runValidators: true }
     );
     if (!user) {
       throw new Error("User not found");
     }
 
-    // const promises = []; // Replace with actual logic
-    // const updatedUsersPassword = await Promise.all(promises);
-
-    return user;
+    return sanitizeUser(user);
   } catch (error) {
     console.error("Error in updateUserPasswordDB:", error.message, error.stack);
     throw error;
@@ -102,13 +170,12 @@ const updateUserPasswordDB = async (id, password) => {
 const updateUserMultipleStatusDB = async (dataToUpdate) => {
   try {
     const promises = dataToUpdate?.map(async (user) => {
-      // Update isactive field for each user
       const updatedUser = await User.findByIdAndUpdate(
         user._id,
         { isactive: user.isactive },
         { new: true }
       );
-      return updatedUser;
+      return sanitizeUser(updatedUser);
     });
     const updatedUsers = await Promise.all(promises);
     return updatedUsers;
@@ -120,26 +187,22 @@ const updateUserMultipleStatusDB = async (dataToUpdate) => {
 
 const updateUserMultipleDataDB = async (dataToUpdate) => {
   try {
-    // Destructure the dataToUpdate object to extract individual fields
     const {
       _id,
       firstname,
       lastname,
       mobileNo,
       username,
-      password,
       isactive,
       roleId,
       menulist,
     } = dataToUpdate;
 
-    // Construct the update object
     const updateData = {
       firstname,
       lastname,
       mobileNo,
       username,
-      password,
       isactive,
       roleId,
       menulist,
@@ -149,7 +212,7 @@ const updateUserMultipleDataDB = async (dataToUpdate) => {
       new: true,
     });
 
-    return updatedUser;
+    return sanitizeUser(updatedUser);
   } catch (error) {
     console.error("Error updating multiple users:", error);
     throw new Error("Failed to update multiple data");
@@ -162,20 +225,24 @@ const deleteUserDB = async (id) => {
     if (!deletedUser) {
       throw new Error("User not found");
     }
-    return deletedUser;
+    return sanitizeUser(deletedUser);
   } catch (error) {
     throw new Error("Internal server error");
   }
 };
 
 module.exports = {
+  sanitizeUser,
+  sanitizeUsers,
+  verifyUserPassword,
   createUserToDB,
   getUserDB,
+  getCurrentUserDB,
   getUserByIdDB,
   updateUserDB,
   updateUserMultipleStatusDB,
   updateUserMultipleDataDB,
   deleteUserDB,
   updateUserPasswordDB,
-  updateUserInformationDB
+  updateUserInformationDB,
 };
