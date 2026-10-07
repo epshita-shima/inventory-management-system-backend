@@ -23,7 +23,7 @@
   "version": "1.0.0",
   "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js",
+    "start": "node init && node src/server.js",
     "seed:dev": "node scripts/seed-dev-inventory.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
